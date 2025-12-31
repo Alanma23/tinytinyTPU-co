@@ -37,7 +37,7 @@ module activation_pipeline (
     );
 
     // Align target with pipeline (normalizer adds one cycle)
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset)
             target_d1 <= 32'sd0;
         else if (valid_in)
@@ -72,19 +72,80 @@ module activation_pipeline (
     );
 
     // Stage 3b: Quantization to UB (inlined affine quantization)
-    // x_q = clip( round(x * (1/S)) + Z , -128, 127 )
+    // Pipeline the arithmetic to ease DSP timing
     logic signed [7:0] ub_q_reg;
-    logic valid_reg;
+    logic             valid_reg;
 
-    logic signed [47:0] mult;
-    logic signed [47:0] mult_rounded;
-    logic signed [31:0] scaled;
-    logic signed [31:0] biased;
+    // Stage 3b.1 - capture operands
+    logic             q_s1_valid;
+    logic signed [31:0] q_s1_data;
+    logic signed [15:0] q_inv_scale_d0;
+    logic signed [7:0]  q_zero_point_d0;
 
-    assign mult = s2_data * q_inv_scale;              // 32x16 -> 48
-    assign mult_rounded = mult + 48'sd128;            // +0.5 * 2^8 for nearest
-    assign scaled = 32'(mult_rounded >>> 8);          // back to Q0
-    assign biased = scaled + {{24{q_zero_point[7]}}, q_zero_point};
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            q_s1_valid      <= 1'b0;
+            q_s1_data       <= '0;
+            q_inv_scale_d0  <= '0;
+            q_zero_point_d0 <= '0;
+        end else begin
+            q_s1_valid      <= s2_valid;
+            q_s1_data       <= s2_data;
+            q_inv_scale_d0  <= q_inv_scale;
+            q_zero_point_d0 <= q_zero_point;
+        end
+    end
+
+    // Stage 3b.2 - multiply via DSP
+    logic             q_s2_valid;
+    logic signed [47:0] mult_reg;
+    logic signed [7:0]  q_zero_point_d1;
+
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            q_s2_valid     <= 1'b0;
+            mult_reg       <= '0;
+            q_zero_point_d1<= '0;
+        end else begin
+            q_s2_valid      <= q_s1_valid;
+            mult_reg        <= q_s1_data * q_inv_scale_d0;  // 32x16 -> 48-bit
+            q_zero_point_d1 <= q_zero_point_d0;
+        end
+    end
+
+    // Stage 3b.3 - round and shift back to Q0
+    logic             q_s3_valid;
+    logic signed [31:0] scaled_reg;
+    logic signed [7:0]  q_zero_point_d2;
+
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            q_s3_valid      <= 1'b0;
+            scaled_reg      <= '0;
+            q_zero_point_d2 <= '0;
+        end else begin
+            logic signed [47:0] mult_rounded;
+            mult_rounded       = mult_reg + 48'sd128; // +0.5 * 2^8 for nearest
+
+            q_s3_valid      <= q_s2_valid;
+            scaled_reg      <= 32'(mult_rounded >>> 8);
+            q_zero_point_d2 <= q_zero_point_d1;
+        end
+    end
+
+    // Stage 3b.4 - apply zero point / bias term
+    logic             q_s4_valid;
+    logic signed [31:0] biased_reg;
+
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            q_s4_valid <= 1'b0;
+            biased_reg <= '0;
+        end else begin
+            q_s4_valid <= q_s3_valid;
+            biased_reg <= scaled_reg + {{24{q_zero_point_d2[7]}}, q_zero_point_d2};
+        end
+    end
 
     // Saturation function
     function automatic logic signed [7:0] sat_int8(input logic signed [31:0] val);
@@ -96,13 +157,13 @@ module activation_pipeline (
             return val[7:0];
     endfunction
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             valid_reg <= 1'b0;
             ub_q_reg  <= 8'sd0;
         end else begin
-            valid_reg <= s2_valid;
-            ub_q_reg  <= sat_int8(biased);
+            valid_reg <= q_s4_valid;
+            ub_q_reg  <= sat_int8(biased_reg);
         end
     end
 
@@ -110,4 +171,3 @@ module activation_pipeline (
     assign ub_data_out = ub_q_reg;
 
 endmodule
-

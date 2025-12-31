@@ -14,22 +14,58 @@ module normalizer (
     output logic signed [31:0] data_out
 );
 
-    // Wider product to hold intermediate result
-    logic signed [47:0] mult;
-    logic signed [47:0] shifted;
+    // Stage 1: capture operands
+    logic        s1_valid;
+    logic signed [31:0] data_in_d;
+    logic signed [15:0] gain_d;
+    logic signed [31:0] bias_d;
+    logic [4:0]         shift_d;
 
-    assign mult = data_in * gain;
-    assign shifted = mult >>> shift;
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            s1_valid   <= 1'b0;
+            data_in_d  <= '0;
+            gain_d     <= '0;
+            bias_d     <= '0;
+            shift_d    <= '0;
+        end else begin
+            s1_valid   <= valid_in;
+            data_in_d  <= data_in;
+            gain_d     <= gain;
+            bias_d     <= bias;
+            shift_d    <= shift;
+        end
+    end
 
-    always_ff @(posedge clk or posedge reset) begin
+    // Stage 2: multiply (maps cleanly into DSP with registered inputs)
+    logic        s2_valid;
+    logic signed [47:0] mult_res;
+    logic signed [31:0] bias_d1;
+    logic [4:0]         shift_d1;
+
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            s2_valid  <= 1'b0;
+            mult_res  <= '0;
+            bias_d1   <= '0;
+            shift_d1  <= '0;
+        end else begin
+            s2_valid  <= s1_valid;
+            mult_res  <= data_in_d * gain_d;
+            bias_d1   <= bias_d;
+            shift_d1  <= shift_d;
+        end
+    end
+
+    // Stage 3: shift + bias and present output
+    always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
             data_out  <= 32'sd0;
         end else begin
-            valid_out <= valid_in;
-            data_out  <= shifted[31:0] + bias;
+            valid_out <= s2_valid;
+            data_out  <= (mult_res >>> shift_d1)[31:0] + bias_d1;
         end
     end
 
 endmodule
-

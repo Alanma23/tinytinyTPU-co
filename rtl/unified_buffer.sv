@@ -31,13 +31,13 @@ module unified_buffer #(
     logic [ADDR_W-1:0] wr_ptr;
     logic [ADDR_W-1:0] rd_ptr;
 
-    assign full  = (count == (ADDR_W+1)'(DEPTH));
+    assign full  = (count == DEPTH[ADDR_W:0]);
     assign empty = (count == '0);
     assign wr_ready = ~full;
 
-    // Combinational read output (zero latency)
+    // Expose data whenever the FIFO is non-empty; consumer asserts rd_ready to pop
     assign rd_data  = mem[rd_ptr];
-    assign rd_valid = ~empty & rd_ready;
+    assign rd_valid = ~empty;
 
     // Track simultaneous read and write for count update
     logic do_write;
@@ -46,7 +46,7 @@ module unified_buffer #(
     assign do_write = wr_valid && wr_ready;
     assign do_read  = rd_ready && ~empty;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             wr_ptr <= '0;
             rd_ptr <= '0;
@@ -64,13 +64,12 @@ module unified_buffer #(
             end
 
             // Update count based on read/write activity
-            if (do_write && !do_read)
-                count <= count + 1'd1;
-            else if (do_read && !do_write)
-                count <= count - 1'd1;
-            // else: simultaneous read/write or neither - count unchanged
+            unique case ({do_write, do_read})
+                2'b10: count <= count + 1'd1;   // write only
+                2'b01: count <= count - 1'd1;   // read only
+                default: /* simultaneous or idle */ count <= count;
+            endcase
         end
     end
 
 endmodule
-
