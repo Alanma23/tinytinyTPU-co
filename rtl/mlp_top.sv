@@ -328,6 +328,10 @@ module mlp_top (
 
                 COMPUTE: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
+                    // #region agent log
+                    if (cycle_cnt_reg == 5'd0)
+                        $display("[MLP] COMPUTE started. mmu_valid will be high when cycle_cnt>=2");
+                    // #endregion
                     if (cycle_cnt_reg == 5'd2) begin
                         state_reg <= DRAIN;
                         cycle_cnt_reg <= 5'd0;
@@ -336,6 +340,13 @@ module mlp_top (
 
                 DRAIN: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
+                    accum_en <= 1'b1;  // Enable accumulation during DRAIN to sum partial products
+                    // #region agent log
+                    if (cycle_cnt_reg == 5'd0)
+                        $display("[MLP] DRAIN started. mmu_valid=1 throughout DRAIN. mmu_acc0=%04X, mmu_acc1=%04X", mmu_acc0_out, mmu_acc1_out);
+                    if (cycle_cnt_reg == 5'd6)
+                        $display("[MLP] DRAIN ending. acc0=0x%08X, acc1=0x%08X, acc_valid=%b", acc0, acc1, acc_valid);
+                    // #endregion
                     if (cycle_cnt_reg == 5'd6) begin
                         if (current_layer_reg < 3'(NUM_LAYERS - 1)) begin
                             state_reg <= TRANSFER;
@@ -373,6 +384,9 @@ module mlp_top (
 
                 DONE: begin
                     layer_complete <= 1'b1;
+                    // #region agent log
+                    $display("[MLP] DONE state reached. acc0=0x%08X, acc1=0x%08X, acc_valid=%b", acc0, acc1, acc_valid);
+                    // #endregion
                 end
 
                 default: state_reg <= IDLE;

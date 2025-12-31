@@ -1,0 +1,80 @@
+`timescale 1ns / 1ps
+
+// TPU Bridge - Connects UART Controller to MLP Top
+// Handles signal routing and provides default activation pipeline configuration
+
+module tpu_bridge (
+    input  logic        clk,
+    input  logic        reset,
+
+    // UART Controller → MLP (pass-through)
+    input  logic        ctrl_wf_push_col0,
+    input  logic        ctrl_wf_push_col1,
+    input  logic [7:0]  ctrl_wf_data_in,
+    input  logic        ctrl_wf_reset,
+    input  logic        ctrl_init_act_valid,
+    input  logic [15:0] ctrl_init_act_data,
+    input  logic        ctrl_start_mlp,
+    input  logic        ctrl_weights_ready,
+
+    // MLP → UART Controller (pass-through)
+    output logic [3:0]  mlp_state,
+    output logic [4:0]  mlp_cycle_cnt,
+    output logic [2:0]  mlp_current_layer,
+    output logic        mlp_layer_complete,
+    output logic signed [31:0] mlp_acc0,
+    output logic signed [31:0] mlp_acc1,
+    output logic        mlp_acc_valid,
+
+    // MLP Top interface
+    output logic        mlp_wf_push_col0,
+    output logic        mlp_wf_push_col1,
+    output logic [7:0]  mlp_wf_data_in,
+    output logic        mlp_wf_reset,
+    output logic        mlp_init_act_valid,
+    output logic [15:0] mlp_init_act_data,
+    output logic        mlp_start_mlp,
+    output logic        mlp_weights_ready,
+    output logic signed [15:0] mlp_norm_gain,
+    output logic signed [31:0] mlp_norm_bias,
+    output logic [4:0]  mlp_norm_shift,
+    output logic signed [15:0] mlp_q_inv_scale,
+    output logic signed [7:0]  mlp_q_zero_point,
+
+    input  logic [3:0]  mlp_state_in,
+    input  logic [4:0]  mlp_cycle_cnt_in,
+    input  logic [2:0]  mlp_current_layer_in,
+    input  logic        mlp_layer_complete_in,
+    input  logic signed [31:0] mlp_acc0_in,
+    input  logic signed [31:0] mlp_acc1_in,
+    input  logic        mlp_acc_valid_in
+);
+
+    // Pass-through: UART Controller → MLP
+    assign mlp_wf_push_col0 = ctrl_wf_push_col0;
+    assign mlp_wf_push_col1 = ctrl_wf_push_col1;
+    assign mlp_wf_data_in = ctrl_wf_data_in;
+    assign mlp_wf_reset = ctrl_wf_reset;
+    assign mlp_init_act_valid = ctrl_init_act_valid;
+    assign mlp_init_act_data = ctrl_init_act_data;
+    assign mlp_start_mlp = ctrl_start_mlp;
+    assign mlp_weights_ready = ctrl_weights_ready;
+
+    // Default activation pipeline configuration
+    // These values provide identity/pass-through behavior for ReLU
+    assign mlp_norm_gain = 16'sd256;      // 1.0 in Q8 format
+    assign mlp_norm_bias = 32'sd0;        // No bias
+    assign mlp_norm_shift = 5'd8;         // Shift back by 8 to undo Q8
+    assign mlp_q_inv_scale = 16'sd256;    // 1.0 scale
+    assign mlp_q_zero_point = 8'sd0;      // No zero point
+
+    // Pass-through: MLP → UART Controller
+    assign mlp_state = mlp_state_in;
+    assign mlp_cycle_cnt = mlp_cycle_cnt_in;
+    assign mlp_current_layer = mlp_current_layer_in;
+    assign mlp_layer_complete = mlp_layer_complete_in;
+    assign mlp_acc0 = mlp_acc0_in;
+    assign mlp_acc1 = mlp_acc1_in;
+    assign mlp_acc_valid = mlp_acc_valid_in;
+
+endmodule

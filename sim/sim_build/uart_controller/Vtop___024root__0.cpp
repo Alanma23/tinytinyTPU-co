@@ -465,20 +465,34 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
             if ((2U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
                 if ((1U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
                     __Vdly__uart_controller__DOT__state = 0U;
-                } else if ((0U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))) {
+                } else if (VL_UNLIKELY(((0U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))))) {
                     vlSelfRef.uart_controller__DOT__init_act_data_reg 
                         = ((vlSelfRef.uart_controller__DOT__data_buffer
                             [1U] << 8U) | vlSelfRef.uart_controller__DOT__data_buffer
                            [0U]);
                     vlSelfRef.uart_controller__DOT__init_act_valid_reg = 1U;
                     __Vdly__uart_controller__DOT__act_seq_idx = 1U;
-                } else if ((1U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))) {
+                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing row0=0x%04x (A01=%02x, A00=%02x), init_act_valid=1\n",0,
+                                 16,((vlSelfRef.uart_controller__DOT__data_buffer
+                                      [1U] << 8U) | 
+                                     vlSelfRef.uart_controller__DOT__data_buffer
+                                     [0U]),8,vlSelfRef.uart_controller__DOT__data_buffer
+                                 [1U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                 [0U]);
+                } else if (VL_UNLIKELY(((1U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))))) {
                     vlSelfRef.uart_controller__DOT__init_act_data_reg 
                         = ((vlSelfRef.uart_controller__DOT__data_buffer
                             [3U] << 8U) | vlSelfRef.uart_controller__DOT__data_buffer
                            [2U]);
                     vlSelfRef.uart_controller__DOT__init_act_valid_reg = 1U;
                     __Vdly__uart_controller__DOT__state = 0U;
+                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing row1=0x%04x (A11=%02x, A10=%02x), init_act_valid=1, going to IDLE\n",0,
+                                 16,((vlSelfRef.uart_controller__DOT__data_buffer
+                                      [3U] << 8U) | 
+                                     vlSelfRef.uart_controller__DOT__data_buffer
+                                     [2U]),8,vlSelfRef.uart_controller__DOT__data_buffer
+                                 [3U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                 [2U]);
                 } else {
                     __Vdly__uart_controller__DOT__state = 0U;
                 }
@@ -647,10 +661,20 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                     = (3U & (IData)(vlSelfRef.uart_controller__DOT__byte_count));
                 vlSelfRef.__VdlyCommitQueueuart_controller__DOT__data_buffer.enqueue(__VdlyVal__uart_controller__DOT__data_buffer__v1, (IData)(__VdlyDim0__uart_controller__DOT__data_buffer__v1));
                 if ((3U == (IData)(vlSelfRef.uart_controller__DOT__byte_count))) {
-                    if ((1U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))) {
+                    if (VL_UNLIKELY(((1U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
+                        VL_WRITEF_NX("[UART_CTRL] RECV_DATA: Got 4 bytes for CMD_WRITE_WEIGHT, going to WRITE_WEIGHT_SEQ. Data=[%02x,%02x,%02x,%02x]\n",0,
+                                     8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [0U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [1U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [2U],8,vlSelfRef.uart_controller__DOT__rx_data);
                         __Vdly__uart_controller__DOT__weight_seq_idx = 0U;
                         __Vdly__uart_controller__DOT__state = 5U;
-                    } else if ((2U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))) {
+                    } else if (VL_UNLIKELY(((2U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
+                        VL_WRITEF_NX("[UART_CTRL] RECV_DATA: Got 4 bytes for CMD_WRITE_ACT, going to WRITE_ACT_SEQ. Data=[%02x,%02x,%02x,%02x]\n",0,
+                                     8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [0U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [1U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [2U],8,vlSelfRef.uart_controller__DOT__rx_data);
                         __Vdly__uart_controller__DOT__act_seq_idx = 0U;
                         __Vdly__uart_controller__DOT__state = 6U;
                     } else {

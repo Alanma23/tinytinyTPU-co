@@ -42,7 +42,7 @@ SHELL := /bin/bash
 
 .PHONY: test test_pe test_mmu test_weight_fifo test_dual_fifo test_accumulator \
         test_activation_func test_normalizer test_activation_pipeline test_mlp \
-        test_uart test_uart_ctrl lint waves clean clean_waves help
+        test_uart test_uart_ctrl test_tpu lint waves clean clean_waves help
 
 help:
 	@echo "TinyTinyTPU Simulation"
@@ -54,6 +54,8 @@ help:
 	@echo "  make test_pe           Run PE tests"
 	@echo "  make test_mmu          Run MMU tests"
 	@echo "  make test_mlp          Run MLP integration tests"
+	@echo "  make test_uart_ctrl    Run UART controller tests"
+	@echo "  make test_tpu          Run TPU system end-to-end tests"
 	@echo ""
 	@echo "Waveform Commands:"
 	@echo "  make waves             Select and open a waveform file"
@@ -104,6 +106,9 @@ test_uart:
 
 test_uart_ctrl:
 	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_uart_controller.py -v
+
+test_tpu:
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_tpu_system.py -v
 
 # Lint
 lint:

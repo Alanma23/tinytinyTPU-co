@@ -198,9 +198,17 @@ module uart_controller #(
                             if (cmd_reg == CMD_WRITE_WEIGHT) begin
                                 weight_seq_idx <= 2'd0;
                                 state <= WRITE_WEIGHT_SEQ;
+                                // #region agent log
+                                $display("[UART_CTRL] RECV_DATA: Got 4 bytes for CMD_WRITE_WEIGHT, going to WRITE_WEIGHT_SEQ. Data=[%02X,%02X,%02X,%02X]",
+                                         data_buffer[0], data_buffer[1], data_buffer[2], rx_data);
+                                // #endregion
                             end else if (cmd_reg == CMD_WRITE_ACT) begin
                                 act_seq_idx <= 2'd0;
                                 state <= WRITE_ACT_SEQ;
+                                // #region agent log
+                                $display("[UART_CTRL] RECV_DATA: Got 4 bytes for CMD_WRITE_ACT, going to WRITE_ACT_SEQ. Data=[%02X,%02X,%02X,%02X]",
+                                         data_buffer[0], data_buffer[1], data_buffer[2], rx_data);
+                                // #endregion
                             end else begin
                                 state <= EXEC_CMD;
                             end
@@ -247,11 +255,19 @@ module uart_controller #(
                             init_act_data_reg <= {data_buffer[1], data_buffer[0]};
                             init_act_valid_reg <= 1'b1;
                             act_seq_idx <= 2'd1;
+                            // #region agent log
+                            $display("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing row0=0x%04X (A01=%02X, A00=%02X), init_act_valid=1",
+                                     {data_buffer[1], data_buffer[0]}, data_buffer[1], data_buffer[0]);
+                            // #endregion
                         end
                         2'd1: begin  // Row 1: A10 (LSB), A11 (MSB)
                             init_act_data_reg <= {data_buffer[3], data_buffer[2]};
                             init_act_valid_reg <= 1'b1;
                             state <= IDLE;
+                            // #region agent log
+                            $display("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing row1=0x%04X (A11=%02X, A10=%02X), init_act_valid=1, going to IDLE",
+                                     {data_buffer[3], data_buffer[2]}, data_buffer[3], data_buffer[2]);
+                            // #endregion
                         end
                         default: begin
                             state <= IDLE;
