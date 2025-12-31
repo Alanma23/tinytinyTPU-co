@@ -36,9 +36,13 @@ RTL_SOURCES := \
 # Default WAVES to 0 if not set
 WAVES ?= 0
 
+# Environment variables for cocotb/verilator
+export CXXFLAGS := -std=c++17
+SHELL := /bin/bash
+
 .PHONY: test test_pe test_mmu test_weight_fifo test_dual_fifo test_accumulator \
         test_activation_func test_normalizer test_activation_pipeline test_mlp \
-        test_uart lint waves clean clean_waves help
+        test_uart test_uart_ctrl lint waves clean clean_waves help
 
 help:
 	@echo "TinyTinyTPU Simulation"
@@ -66,37 +70,40 @@ help:
 
 # Test targets
 test:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR) -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR) -v
 
 test_pe:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_pe.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_pe.py -v
 
 test_mmu:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_mmu.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_mmu.py -v
 
 test_weight_fifo:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_weight_fifo.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_weight_fifo.py -v
 
 test_dual_fifo:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_dual_weight_fifo.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_dual_weight_fifo.py -v
 
 test_accumulator:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_accumulator.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_accumulator.py -v
 
 test_activation_func:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_activation_func.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_activation_func.py -v
 
 test_normalizer:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_normalizer.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_normalizer.py -v
 
 test_activation_pipeline:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_activation_pipeline.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_activation_pipeline.py -v
 
 test_mlp:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_mlp_integration.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_mlp_integration.py -v
 
 test_uart:
-	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_uart.py -v
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_uart.py -v
+
+test_uart_ctrl:
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_uart_controller.py -v
 
 # Lint
 lint:

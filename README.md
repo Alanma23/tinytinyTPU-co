@@ -64,8 +64,21 @@ sources. The rtl/ folder contains the migrated SystemVerilog versions.
 
 - Verilator 5.022 or later
 - Python 3.8+
-- cocotb and cocotb-test: `pip3 install cocotb cocotb-test pytest`
 - Surfer or GTKWave for waveform viewing
+
+### Environment Setup
+
+```bash
+# Navigate to simulation directory
+cd sim
+
+# Create virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+python3 -m pip install -r requirements.txt
+```
 
 ### Running Tests
 
@@ -74,7 +87,7 @@ All simulation commands must be run from the `sim/` directory:
 ```bash
 cd sim
 
-# Run all tests
+# Run all tests (virtual environment is activated automatically)
 make test
 
 # Run all tests with waveform generation
@@ -84,6 +97,7 @@ make test WAVES=1
 make test_pe
 make test_mmu
 make test_mlp
+make test_uart
 
 # Run with waveforms
 make test_pe WAVES=1

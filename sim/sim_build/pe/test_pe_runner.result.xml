@@ -1,10 +1,10 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1766301256" />
-    <testcase name="test_pe_reset" classname="tests.test_pe" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_pe.py" lineno="12" time="0.0013930797576904297" sim_time_ns="10.0" ratio_time="7178.339893890125" />
-    <testcase name="test_pe_weight_passthrough" classname="tests.test_pe" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_pe.py" lineno="34" time="0.0002779960632324219" sim_time_ns="50.0" ratio_time="179858.66209262435" />
-    <testcase name="test_pe_weight_capture" classname="tests.test_pe" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_pe.py" lineno="65" time="0.0002918243408203125" sim_time_ns="70.0" ratio_time="239870.3267973856" />
-    <testcase name="test_pe_mac_operation" classname="tests.test_pe" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_pe.py" lineno="98" time="0.00026607513427734375" sim_time_ns="90.0" ratio_time="338250.32258064515" />
-    <testcase name="test_pe_activation_propagation" classname="tests.test_pe" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_pe.py" lineno="135" time="0.0003981590270996094" sim_time_ns="90.00000000000003" ratio_time="226040.33532934138" />
+    <property name="random_seed" value="1767147686" />
+    <testcase name="test_pe_reset" classname="tests.test_pe" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_pe.py" lineno="12" time="0.0006437301635742188" sim_time_ns="10.0" ratio_time="15534.45925925926" />
+    <testcase name="test_pe_weight_passthrough" classname="tests.test_pe" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_pe.py" lineno="34" time="0.00021696090698242188" sim_time_ns="50.0" ratio_time="230456.26373626373" />
+    <testcase name="test_pe_weight_capture" classname="tests.test_pe" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_pe.py" lineno="65" time="0.00019407272338867188" sim_time_ns="70.0" ratio_time="360689.5331695332" />
+    <testcase name="test_pe_mac_operation" classname="tests.test_pe" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_pe.py" lineno="98" time="0.00020503997802734375" sim_time_ns="90.0" ratio_time="438938.79069767444" />
+    <testcase name="test_pe_activation_propagation" classname="tests.test_pe" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_pe.py" lineno="135" time="0.00020122528076171875" sim_time_ns="90.00000000000003" ratio_time="447259.9052132703" />
   </testsuite>
 </testsuites>

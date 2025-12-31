@@ -1,18 +1,18 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1767147302" />
-    <testcase name="test_uart_tx_reset" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="133" time="0.0003788471221923828" sim_time_ns="50.0" ratio_time="131979.35808684706" />
-    <testcase name="test_uart_tx_single_byte" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="143" time="0.02609729766845703" sim_time_ns="82540.0" ratio_time="3162779.573908277" />
-    <testcase name="test_uart_tx_multiple_bytes" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="154" time="0.11504697799682617" sim_time_ns="364690.0" ratio_time="3169922.464282902" />
-    <testcase name="test_uart_tx_edge_cases" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="172" time="0.059326887130737305" sim_time_ns="169360.0" ratio_time="2854692.167259429" />
-    <testcase name="test_uart_tx_timing" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="184" time="0.0372319221496582" sim_time_ns="86880.0" ratio_time="2333481.458485419" />
-    <testcase name="test_uart_rx_reset" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="201" time="8.511543273925781e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_rx_single_byte" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="211" time="3.504753112792969e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_rx_multiple_bytes" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="226" time="3.0994415283203125e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_rx_edge_cases" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="242" time="3.1948089599609375e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_rx_false_start" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="256" time="3.075599670410156e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_rx_framing_error" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="272" time="3.0994415283203125e-05" sim_time_ns="0.0" ratio_time="0.0" />
-    <testcase name="test_uart_loopback_single" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="288" time="0.026352882385253906" sim_time_ns="82530.0" ratio_time="3131725.7366192597" />
-    <testcase name="test_uart_loopback_multiple" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="307" time="0.0922708511352539" sim_time_ns="256170.0" ratio_time="2776283.0498279124" />
+    <property name="random_seed" value="1767147780" />
+    <testcase name="test_uart_tx_reset" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="133" time="0.00036907196044921875" sim_time_ns="50.0" ratio_time="135474.93540051678" />
+    <testcase name="test_uart_tx_single_byte" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="143" time="0.022368907928466797" sim_time_ns="82540.0" ratio_time="3689943.213318838" />
+    <testcase name="test_uart_tx_multiple_bytes" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="154" time="0.09882211685180664" sim_time_ns="364690.0" ratio_time="3690368.2254336653" />
+    <testcase name="test_uart_tx_edge_cases" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="172" time="0.048249006271362305" sim_time_ns="169360.0" ratio_time="3510124.105924268" />
+    <testcase name="test_uart_tx_timing" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="184" time="0.029544830322265625" sim_time_ns="86880.0" ratio_time="2940615.9741768884" />
+    <testcase name="test_uart_rx_reset" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="201" time="7.009506225585938e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_single_byte" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="211" time="2.4080276489257812e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_multiple_bytes" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="226" time="2.193450927734375e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_edge_cases" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="242" time="2.193450927734375e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_false_start" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="256" time="2.193450927734375e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_framing_error" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="272" time="2.0265579223632812e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_loopback_single" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="288" time="0.021898269653320312" sim_time_ns="82530.0" ratio_time="3768790.9276195453" />
+    <testcase name="test_uart_loopback_multiple" classname="tests.test_uart" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_uart.py" lineno="307" time="0.07314419746398926" sim_time_ns="256170.0" ratio_time="3502260.0408749986" />
   </testsuite>
 </testsuites>
