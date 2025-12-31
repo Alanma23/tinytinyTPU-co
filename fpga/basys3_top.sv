@@ -64,15 +64,6 @@ module basys3_top (
     logic signed [31:0] tpu_acc0;
     logic signed [31:0] tpu_acc1;
     logic        tpu_acc_valid;
-
-    // TPU debug/status buses
-    logic [3:0]  mlp_state_dbg;
-    logic [4:0]  mlp_cycle_cnt_dbg;
-    logic [2:0]  mlp_layer_dbg;
-    logic        mlp_layer_complete_dbg;
-    logic signed [31:0] mlp_acc0_dbg;
-    logic signed [31:0] mlp_acc1_dbg;
-    logic        mlp_acc_valid_dbg;
     logic [3:0]  uart_state_dbg;
     logic [7:0]  uart_cmd_dbg;
     logic [2:0]  uart_byte_count_dbg;
@@ -92,10 +83,10 @@ module basys3_top (
         .rst(rst),
         .uart_rx(uart_rx),
         .uart_tx(uart_tx),
-        .mlp_state_dbg(mlp_state_dbg),
-        .mlp_cycle_cnt_dbg(mlp_cycle_cnt_dbg),
-        .mlp_layer_dbg(mlp_layer_dbg),
-        .mlp_layer_complete_dbg(mlp_layer_complete_dbg),
+        .mlp_state_dbg(tpu_mlp_state),
+        .mlp_cycle_cnt_dbg(tpu_mlp_cycle_cnt),
+        .mlp_layer_dbg(tpu_mlp_layer),
+        .mlp_layer_complete_dbg(tpu_layer_complete),
         .mlp_acc0_dbg(tpu_acc0),
         .mlp_acc1_dbg(tpu_acc1),
         .mlp_acc_valid_dbg(tpu_acc_valid),
@@ -116,13 +107,7 @@ module basys3_top (
     // ========================================================================
 
     // Extract internal status signals for LED display
-    assign tpu_mlp_state      = mlp_state_dbg;
-    assign tpu_mlp_cycle_cnt  = mlp_cycle_cnt_dbg;
-    assign tpu_mlp_layer      = mlp_layer_dbg;
-    assign tpu_layer_complete = mlp_layer_complete_dbg;
-    assign tpu_acc0           = mlp_acc0_dbg;
-    assign tpu_acc1           = mlp_acc1_dbg;
-    assign tpu_acc_valid      = mlp_acc_valid_dbg;
+    // (Signals already driven by tpu_top connections above)
 
 
     // ========================================================================
