@@ -45,11 +45,7 @@ module tpu_top #(
 
     logic [3:0]  mlp_state;
     logic [4:0]  mlp_cycle_cnt;
-    logic [2:0]  mlp_current_layer;
-    logic        mlp_layer_complete;
     logic signed [31:0] mlp_acc0;
-    logic signed [31:0] mlp_acc1;
-    logic        mlp_acc_valid;
 
     // UART Controller instance
     logic [3:0]  uart_state_int;
@@ -80,11 +76,7 @@ module tpu_top #(
         .weights_ready(weights_ready),
         .mlp_state(mlp_state),
         .mlp_cycle_cnt(mlp_cycle_cnt),
-        .mlp_current_layer(mlp_current_layer),
-        .mlp_layer_complete(mlp_layer_complete),
         .mlp_acc0(mlp_acc0),
-        .mlp_acc1(mlp_acc1),
-        .mlp_acc_valid(mlp_acc_valid),
         .dbg_state(uart_state_int),
         .dbg_cmd_reg(uart_cmd_int),
         .dbg_byte_count(uart_byte_cnt_int),
@@ -121,8 +113,6 @@ module tpu_top #(
 
     // TPU Bridge instance
     tpu_bridge bridge_u (
-        .clk(clk),
-        .reset(rst),
         // UART Controller interface
         .ctrl_wf_push_col0(wf_push_col0),
         .ctrl_wf_push_col1(wf_push_col1),
@@ -134,11 +124,7 @@ module tpu_top #(
         .ctrl_weights_ready(weights_ready),
         .mlp_state(mlp_state),
         .mlp_cycle_cnt(mlp_cycle_cnt),
-        .mlp_current_layer(mlp_current_layer),
-        .mlp_layer_complete(mlp_layer_complete),
         .mlp_acc0(mlp_acc0),
-        .mlp_acc1(mlp_acc1),
-        .mlp_acc_valid(mlp_acc_valid),
         // MLP Top interface
         .mlp_wf_push_col0(mlp_wf_push_col0),
         .mlp_wf_push_col1(mlp_wf_push_col1),
@@ -155,11 +141,7 @@ module tpu_top #(
         .mlp_q_zero_point(mlp_q_zero_point),
         .mlp_state_in(mlp_state_out),
         .mlp_cycle_cnt_in(mlp_cycle_cnt_out),
-        .mlp_current_layer_in(mlp_current_layer_out),
-        .mlp_layer_complete_in(mlp_layer_complete_out),
-        .mlp_acc0_in(mlp_acc0_out),
-        .mlp_acc1_in(mlp_acc1_out),
-        .mlp_acc_valid_in(mlp_acc_valid_out)
+        .mlp_acc0_in(mlp_acc0_out)
     );
 
     // MLP Top instance

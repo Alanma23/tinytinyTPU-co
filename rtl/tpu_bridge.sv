@@ -4,8 +4,6 @@
 // Handles signal routing and provides default activation pipeline configuration
 
 module tpu_bridge (
-    input  logic        clk,
-    input  logic        reset,
 
     // UART Controller → MLP (pass-through)
     input  logic        ctrl_wf_push_col0,
@@ -20,11 +18,7 @@ module tpu_bridge (
     // MLP → UART Controller (pass-through)
     output logic [3:0]  mlp_state,
     output logic [4:0]  mlp_cycle_cnt,
-    output logic [2:0]  mlp_current_layer,
-    output logic        mlp_layer_complete,
     output logic signed [31:0] mlp_acc0,
-    output logic signed [31:0] mlp_acc1,
-    output logic        mlp_acc_valid,
 
     // MLP Top interface
     output logic        mlp_wf_push_col0,
@@ -43,11 +37,7 @@ module tpu_bridge (
 
     input  logic [3:0]  mlp_state_in,
     input  logic [4:0]  mlp_cycle_cnt_in,
-    input  logic [2:0]  mlp_current_layer_in,
-    input  logic        mlp_layer_complete_in,
-    input  logic signed [31:0] mlp_acc0_in,
-    input  logic signed [31:0] mlp_acc1_in,
-    input  logic        mlp_acc_valid_in
+    input  logic signed [31:0] mlp_acc0_in
 );
 
     // Pass-through: UART Controller → MLP
@@ -71,10 +61,6 @@ module tpu_bridge (
     // Pass-through: MLP → UART Controller
     assign mlp_state = mlp_state_in;
     assign mlp_cycle_cnt = mlp_cycle_cnt_in;
-    assign mlp_current_layer = mlp_current_layer_in;
-    assign mlp_layer_complete = mlp_layer_complete_in;
     assign mlp_acc0 = mlp_acc0_in;
-    assign mlp_acc1 = mlp_acc1_in;
-    assign mlp_acc_valid = mlp_acc_valid_in;
 
 endmodule

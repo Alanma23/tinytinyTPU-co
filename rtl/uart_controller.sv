@@ -27,11 +27,7 @@ module uart_controller #(
     // MLP status interface
     input  logic [3:0]  mlp_state,
     input  logic [4:0]  mlp_cycle_cnt,
-    input  logic [2:0]  mlp_current_layer,
-    input  logic        mlp_layer_complete,
     input  logic signed [31:0] mlp_acc0,
-    input  logic signed [31:0] mlp_acc1,
-    input  logic        mlp_acc_valid,
 
     // Debug taps
     output logic [3:0]  dbg_state,
