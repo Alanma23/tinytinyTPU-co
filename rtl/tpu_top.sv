@@ -12,7 +12,25 @@ module tpu_top #(
 
     // UART interface
     input  logic uart_rx,
-    output logic uart_tx
+    output logic uart_tx,
+
+    // Debug/status taps
+    output logic [3:0]  mlp_state_dbg,
+    output logic [4:0]  mlp_cycle_cnt_dbg,
+    output logic [2:0]  mlp_layer_dbg,
+    output logic        mlp_layer_complete_dbg,
+    output logic signed [31:0] mlp_acc0_dbg,
+    output logic signed [31:0] mlp_acc1_dbg,
+    output logic        mlp_acc_valid_dbg,
+    output logic [3:0]  uart_state_dbg,
+    output logic [7:0]  uart_cmd_dbg,
+    output logic [2:0]  uart_byte_count_dbg,
+    output logic [1:0]  uart_resp_idx_dbg,
+    output logic        uart_tx_valid_dbg,
+    output logic        uart_tx_ready_dbg,
+    output logic        uart_rx_valid_dbg,
+    output logic        uart_weights_ready_dbg,
+    output logic        uart_start_mlp_dbg
 );
 
     // UART Controller signals
@@ -34,6 +52,16 @@ module tpu_top #(
     logic        mlp_acc_valid;
 
     // UART Controller instance
+    logic [3:0]  uart_state_int;
+    logic [7:0]  uart_cmd_int;
+    logic [2:0]  uart_byte_cnt_int;
+    logic [1:0]  uart_resp_idx_int;
+    logic        uart_tx_valid_int;
+    logic        uart_tx_ready_int;
+    logic        uart_rx_valid_int;
+    logic        uart_weights_ready_int;
+    logic        uart_start_mlp_int;
+
     uart_controller #(
         .CLOCK_FREQ(CLOCK_FREQ),
         .BAUD_RATE(BAUD_RATE)
@@ -56,7 +84,16 @@ module tpu_top #(
         .mlp_layer_complete(mlp_layer_complete),
         .mlp_acc0(mlp_acc0),
         .mlp_acc1(mlp_acc1),
-        .mlp_acc_valid(mlp_acc_valid)
+        .mlp_acc_valid(mlp_acc_valid),
+        .dbg_state(uart_state_int),
+        .dbg_cmd_reg(uart_cmd_int),
+        .dbg_byte_count(uart_byte_cnt_int),
+        .dbg_resp_byte_idx(uart_resp_idx_int),
+        .dbg_tx_valid(uart_tx_valid_int),
+        .dbg_tx_ready(uart_tx_ready_int),
+        .dbg_rx_valid(uart_rx_valid_int),
+        .dbg_weights_ready(uart_weights_ready_int),
+        .dbg_start_mlp(uart_start_mlp_int)
     );
 
     // Bridge signals to MLP
@@ -158,5 +195,23 @@ module tpu_top #(
         .acc1(mlp_acc1_out),
         .acc_valid(mlp_acc_valid_out)
     );
+
+    // Debug exports
+    assign mlp_state_dbg = mlp_state_out;
+    assign mlp_cycle_cnt_dbg = mlp_cycle_cnt_out;
+    assign mlp_layer_dbg = mlp_current_layer_out;
+    assign mlp_layer_complete_dbg = mlp_layer_complete_out;
+    assign mlp_acc0_dbg = mlp_acc0_out;
+    assign mlp_acc1_dbg = mlp_acc1_out;
+    assign mlp_acc_valid_dbg = mlp_acc_valid_out;
+    assign uart_state_dbg = uart_state_int;
+    assign uart_cmd_dbg = uart_cmd_int;
+    assign uart_byte_count_dbg = uart_byte_cnt_int;
+    assign uart_resp_idx_dbg = uart_resp_idx_int;
+    assign uart_tx_valid_dbg = uart_tx_valid_int;
+    assign uart_tx_ready_dbg = uart_tx_ready_int;
+    assign uart_rx_valid_dbg = uart_rx_valid_int;
+    assign uart_weights_ready_dbg = uart_weights_ready_int;
+    assign uart_start_mlp_dbg = uart_start_mlp_int;
 
 endmodule

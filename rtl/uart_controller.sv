@@ -31,7 +31,18 @@ module uart_controller #(
     input  logic        mlp_layer_complete,
     input  logic signed [31:0] mlp_acc0,
     input  logic signed [31:0] mlp_acc1,
-    input  logic        mlp_acc_valid
+    input  logic        mlp_acc_valid,
+
+    // Debug taps
+    output logic [3:0]  dbg_state,
+    output logic [7:0]  dbg_cmd_reg,
+    output logic [2:0]  dbg_byte_count,
+    output logic [1:0]  dbg_resp_byte_idx,
+    output logic        dbg_tx_valid,
+    output logic        dbg_tx_ready,
+    output logic        dbg_rx_valid,
+    output logic        dbg_weights_ready,
+    output logic        dbg_start_mlp
 );
 
     // Command definitions
@@ -121,6 +132,15 @@ module uart_controller #(
     assign start_mlp = start_mlp_reg;
     assign tx_valid = tx_valid_reg;
     assign tx_data = tx_data_reg;
+    assign dbg_state = state;
+    assign dbg_cmd_reg = cmd_reg;
+    assign dbg_byte_count = byte_count;
+    assign dbg_resp_byte_idx = resp_byte_idx;
+    assign dbg_tx_valid = tx_valid_reg;
+    assign dbg_tx_ready = tx_ready;
+    assign dbg_rx_valid = rx_valid;
+    assign dbg_weights_ready = weights_ready_reg;
+    assign dbg_start_mlp = start_mlp_reg;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -408,4 +428,3 @@ module uart_controller #(
     end
 
 endmodule
-

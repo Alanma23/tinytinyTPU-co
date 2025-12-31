@@ -20,10 +20,10 @@ set_property -dict { PACKAGE_PIN U18  IOSTANDARD LVCMOS33 } [get_ports btnC]
 ## UART (USB-UART Bridge)
 ## ========================================================================
 ## UART RX (from PC to FPGA)
-set_property -dict { PACKAGE_PIN B18  IOSTANDARD LVCMOS33 } [get_ports uart_rxd_out]
+set_property -dict { PACKAGE_PIN B18  IOSTANDARD LVCMOS33 } [get_ports uart_rx]
 
 ## UART TX (from FPGA to PC)
-set_property -dict { PACKAGE_PIN A18  IOSTANDARD LVCMOS33 } [get_ports uart_txd_in]
+set_property -dict { PACKAGE_PIN A18  IOSTANDARD LVCMOS33 } [get_ports uart_tx]
 
 
 ## ========================================================================

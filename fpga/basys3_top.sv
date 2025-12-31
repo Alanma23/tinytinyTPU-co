@@ -18,8 +18,8 @@ module basys3_top (
     input  logic        btnC,
 
     // UART (USB-UART bridge)
-    input  logic        uart_rxd_out,  // From PC to FPGA (RX)
-    output logic        uart_txd_in,   // From FPGA to PC (TX)
+    input  logic        uart_rx,   // From PC to FPGA (RX)
+    output logic        uart_tx,   // From FPGA to PC (TX)
 
     // LEDs for status indication
     output logic [15:0] led,
@@ -39,14 +39,18 @@ module basys3_top (
         .O(clk_100mhz)
     );
 
-    // Synchronize reset button (active high) - double synchronizer
-    logic rst_sync1, rst_sync2, rst;
-    always_ff @(posedge clk_100mhz) begin
-        rst_sync1 <= btnC;
-        rst_sync2 <= rst_sync1;
-        rst <= rst_sync2;
+    // Synchronize reset button, provide deterministic POR hold
+    logic [2:0] rst_sync = 3'b111;
+    always_ff @(posedge clk_100mhz or posedge btnC) begin
+        if (btnC) begin
+            rst_sync <= 3'b111;
+        end else begin
+            rst_sync <= {rst_sync[1:0], 1'b0};
+        end
     end
 
+    logic rst;
+    assign rst = rst_sync[2];
 
     // ========================================================================
     // TPU Instantiation
@@ -61,6 +65,24 @@ module basys3_top (
     logic signed [31:0] tpu_acc1;
     logic        tpu_acc_valid;
 
+    // TPU debug/status buses
+    logic [3:0]  mlp_state_dbg;
+    logic [4:0]  mlp_cycle_cnt_dbg;
+    logic [2:0]  mlp_layer_dbg;
+    logic        mlp_layer_complete_dbg;
+    logic signed [31:0] mlp_acc0_dbg;
+    logic signed [31:0] mlp_acc1_dbg;
+    logic        mlp_acc_valid_dbg;
+    logic [3:0]  uart_state_dbg;
+    logic [7:0]  uart_cmd_dbg;
+    logic [2:0]  uart_byte_count_dbg;
+    logic [1:0]  uart_resp_idx_dbg;
+    logic        uart_tx_valid_dbg;
+    logic        uart_tx_ready_dbg;
+    logic        uart_rx_valid_dbg;
+    logic        uart_weights_ready_dbg;
+    logic        uart_start_mlp_dbg;
+
     // Instantiate TPU
     tpu_top #(
         .CLOCK_FREQ(100_000_000),  // 100 MHz
@@ -68,8 +90,24 @@ module basys3_top (
     ) tpu_inst (
         .clk(clk_100mhz),
         .rst(rst),
-        .uart_rx(uart_rxd_out),     // From PC (buffers inferred)
-        .uart_tx(uart_txd_in)       // To PC (buffers inferred)
+        .uart_rx(uart_rx),
+        .uart_tx(uart_tx),
+        .mlp_state_dbg(mlp_state_dbg),
+        .mlp_cycle_cnt_dbg(mlp_cycle_cnt_dbg),
+        .mlp_layer_dbg(mlp_layer_dbg),
+        .mlp_layer_complete_dbg(mlp_layer_complete_dbg),
+        .mlp_acc0_dbg(tpu_acc0),
+        .mlp_acc1_dbg(tpu_acc1),
+        .mlp_acc_valid_dbg(tpu_acc_valid),
+        .uart_state_dbg(uart_state_dbg),
+        .uart_cmd_dbg(uart_cmd_dbg),
+        .uart_byte_count_dbg(uart_byte_count_dbg),
+        .uart_resp_idx_dbg(uart_resp_idx_dbg),
+        .uart_tx_valid_dbg(uart_tx_valid_dbg),
+        .uart_tx_ready_dbg(uart_tx_ready_dbg),
+        .uart_rx_valid_dbg(uart_rx_valid_dbg),
+        .uart_weights_ready_dbg(uart_weights_ready_dbg),
+        .uart_start_mlp_dbg(uart_start_mlp_dbg)
     );
 
 
@@ -78,13 +116,13 @@ module basys3_top (
     // ========================================================================
 
     // Extract internal status signals for LED display
-    assign tpu_mlp_state      = tpu_inst.mlp_u.state;
-    assign tpu_mlp_cycle_cnt  = tpu_inst.mlp_u.cycle_cnt;
-    assign tpu_mlp_layer      = tpu_inst.mlp_u.current_layer;
-    assign tpu_layer_complete = tpu_inst.mlp_u.layer_complete;
-    assign tpu_acc0           = tpu_inst.mlp_u.acc0;
-    assign tpu_acc1           = tpu_inst.mlp_u.acc1;
-    assign tpu_acc_valid      = tpu_inst.mlp_u.acc_valid;
+    assign tpu_mlp_state      = mlp_state_dbg;
+    assign tpu_mlp_cycle_cnt  = mlp_cycle_cnt_dbg;
+    assign tpu_mlp_layer      = mlp_layer_dbg;
+    assign tpu_layer_complete = mlp_layer_complete_dbg;
+    assign tpu_acc0           = mlp_acc0_dbg;
+    assign tpu_acc1           = mlp_acc1_dbg;
+    assign tpu_acc_valid      = mlp_acc_valid_dbg;
 
 
     // ========================================================================
@@ -107,16 +145,17 @@ module basys3_top (
     logic [15:0] led_next;
 
     always_comb begin
+        led_next = 16'h0000;
         case (sw_sync2[15:14])
             2'b00: begin  // MLP State and Status
                 led_next[3:0]   = tpu_mlp_state;           // MLP FSM state
                 led_next[6:4]   = tpu_mlp_layer;           // Current layer
                 led_next[7]     = tpu_layer_complete;      // Layer complete flag
                 led_next[8]     = tpu_acc_valid;           // Accumulator valid
-                led_next[9]     = ~uart_rxd_out;           // UART RX line state (inverted for visibility)
-                led_next[10]    = ~uart_txd_in;            // UART TX line state (inverted for visibility)
+                led_next[9]     = ~uart_rx;                // UART RX line state (inverted for visibility)
+                led_next[10]    = ~uart_tx;                // UART TX line state (inverted for visibility)
                 led_next[11]    = rst;                     // Reset indicator
-                led_next[15:12] = tpu_inst.uart_ctrl_u.state;  // UART controller state
+                led_next[15:12] = uart_state_dbg;          // UART controller state
             end
 
             2'b01: begin  // Accumulator Result (lower 16 bits of acc0)
@@ -124,25 +163,27 @@ module basys3_top (
             end
 
             2'b10: begin  // UART Controller Detail
-                led_next[3:0]  = tpu_inst.uart_ctrl_u.state;
-                led_next[7:4]  = {tpu_inst.uart_ctrl_u.cmd_reg[3:0]};
-                led_next[10:8] = tpu_inst.uart_ctrl_u.byte_count;
-                led_next[12:11] = tpu_inst.uart_ctrl_u.resp_byte_idx;
-                led_next[13]   = tpu_inst.uart_ctrl_u.tx_valid_reg;
-                led_next[14]   = tpu_inst.uart_ctrl_u.rx_valid;
-                led_next[15]   = tpu_inst.uart_ctrl_u.weights_ready_reg;
+                led_next[3:0]   = uart_state_dbg;
+                led_next[7:4]   = uart_cmd_dbg[3:0];
+                led_next[10:8]  = uart_byte_count_dbg;
+                led_next[12:11] = uart_resp_idx_dbg;
+                led_next[13]    = uart_tx_valid_dbg;
+                led_next[14]    = uart_rx_valid_dbg;
+                led_next[15]    = uart_weights_ready_dbg;
             end
 
             2'b11: begin  // Debug: UART Controller Internal State
-                led_next[3:0]  = tpu_inst.uart_ctrl_u.state;    // UART controller state
-                led_next[7:4]  = {tpu_inst.uart_ctrl_u.cmd_reg[3:0]}; // Current command
-                led_next[10:8] = tpu_inst.uart_ctrl_u.byte_count; // Byte counter
-                led_next[11]   = tpu_inst.uart_ctrl_u.rx_valid;   // RX valid
-                led_next[12]   = tpu_inst.uart_ctrl_u.tx_ready;   // TX ready
-                led_next[13]   = tpu_inst.uart_ctrl_u.weights_ready_reg; // Weights ready
-                led_next[14]   = tpu_inst.uart_ctrl_u.start_mlp_reg; // Start MLP signal
+                led_next[3:0]   = uart_state_dbg;
+                led_next[7:4]   = uart_cmd_dbg[7:4];
+                led_next[10:8]  = uart_byte_count_dbg;
+                led_next[11]    = uart_rx_valid_dbg;
+                led_next[12]    = uart_tx_ready_dbg;
+                led_next[13]    = uart_weights_ready_dbg;
+                led_next[14]    = uart_start_mlp_dbg;
                 led_next[15]   = rst;                            // Reset
             end
+
+            default: led_next = 16'h0000;
         endcase
     end
 
