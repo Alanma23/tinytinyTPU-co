@@ -38,7 +38,7 @@ WAVES ?= 0
 
 .PHONY: test test_pe test_mmu test_weight_fifo test_dual_fifo test_accumulator \
         test_activation_func test_normalizer test_activation_pipeline test_mlp \
-        lint waves clean clean_waves help
+        test_uart lint waves clean clean_waves help
 
 help:
 	@echo "TinyTinyTPU Simulation"
@@ -94,6 +94,9 @@ test_activation_pipeline:
 
 test_mlp:
 	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_mlp_integration.py -v
+
+test_uart:
+	WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_uart.py -v
 
 # Lint
 lint:

@@ -88,11 +88,9 @@ logic rx_valid;
 logic rx_ready;
 logic rx_framing_error;
 
-// CRITICAL FIX: Drive rx_ready high to allow UART RX to accept bytes continuously
-// Without this, the UART RX module hangs after the first byte, waiting for acknowledgment
 assign rx_ready = 1'b1;
 
-uart_rx_improved #(
+uart_rx #(
     .CLOCK_FREQ(CLOCK_FREQ),
     .BAUD_RATE(BAUD_RATE)
 ) uart_rx_inst (
