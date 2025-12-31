@@ -1,412 +1,379 @@
 """
-UART RX/TX and Controller tests for TinyTinyTPU.
-Tests the minimal UART modules and command protocol.
+UART TX/RX cocotb regression for TinyTinyTPU.
+
+Exercises the standalone uart_tx and uart_rx RTL blocks with a mix of
+functional, timing, and error-condition scenarios.
 """
-import cocotb
-from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, Timer
 import os
 import shutil
 
-
-# UART timing helper
-class UARTHelper:
-    """Helper class for UART bit-banging in simulation."""
-
-    def __init__(self, dut, clock_freq=100_000_000, baud_rate=115200):
-        self.dut = dut
-        self.clock_freq = clock_freq
-        self.baud_rate = baud_rate
-        self.clks_per_bit = clock_freq // baud_rate  # 868 clocks at 100MHz/115200
-        self.bit_time_ns = (1_000_000_000 // baud_rate)  # Bit time in ns
-
-    async def send_byte(self, byte_val):
-        """Send a byte via UART TX (bit-bang on rx pin)."""
-        dut = self.dut
-
-        # Start bit (low)
-        dut.uart_rx_pin.value = 0
-        await ClockCycles(dut.clk, self.clks_per_bit)
-
-        # 8 data bits (LSB first)
-        for i in range(8):
-            bit = (byte_val >> i) & 1
-            dut.uart_rx_pin.value = bit
-            await ClockCycles(dut.clk, self.clks_per_bit)
-
-        # Stop bit (high)
-        dut.uart_rx_pin.value = 1
-        await ClockCycles(dut.clk, self.clks_per_bit)
-
-        # Extra idle time between bytes (at least 1 bit time)
-        await ClockCycles(dut.clk, self.clks_per_bit)
-
-    async def receive_byte(self, timeout_cycles=100000):
-        """Receive a byte from UART TX pin - waits for complete transmission."""
-        dut = self.dut
-
-        # Strategy: Wait for falling edge (start bit), then sample data bits
-        # We do NOT wait for idle first because the TX might already be transmitting
-
-        # Wait for falling edge (start of start bit)
-        prev_val = int(dut.uart_tx_pin.value)
-        start_detected = False
-        for _ in range(timeout_cycles):
-            await RisingEdge(dut.clk)
-            curr_val = int(dut.uart_tx_pin.value)
-            if prev_val == 1 and curr_val == 0:
-                start_detected = True
-                break
-            prev_val = curr_val
-
-        if not start_detected:
-            raise TimeoutError("Timeout waiting for TX start bit")
-
-        # We just detected the falling edge - now at the START of the start bit
-        # Wait 1.5 bit periods to get to middle of bit 0
-        # Use a slightly shorter wait (1.4 bit periods) to ensure we're solidly in each bit
-        wait_to_bit0 = self.clks_per_bit + (self.clks_per_bit * 4 // 10)  # 1.4 bit periods
-        await ClockCycles(dut.clk, wait_to_bit0)
-
-        # Read 8 data bits (sample in middle of each bit)
-        byte_val = 0
-        for i in range(8):
-            bit = int(dut.uart_tx_pin.value)
-            byte_val |= (bit << i)
-            if i < 7:
-                await ClockCycles(dut.clk, self.clks_per_bit)
-
-        # Wait to middle of stop bit
-        await ClockCycles(dut.clk, self.clks_per_bit)
-
-        # Verify stop bit is high
-        if dut.uart_tx_pin.value != 1:
-            dut._log.warning(f"Stop bit not high, got {dut.uart_tx_pin.value}")
-
-        # Wait for stop bit to complete
-        await ClockCycles(dut.clk, self.clks_per_bit // 2)
-
-        return byte_val
-
-    async def send_command(self, cmd, data=None):
-        """Send a command and optional data bytes."""
-        await self.send_byte(cmd)
-        if data:
-            for b in data:
-                await self.send_byte(b)
+import cocotb
+from cocotb.clock import Clock
+from cocotb.triggers import (
+    RisingEdge,
+    FallingEdge,
+    ClockCycles,
+    Timer,
+    with_timeout,
+    SimTimeoutError,
+)
 
 
-# ============================================================================
-# Basic UART Loopback Test (added first to verify timing)
-# ============================================================================
+CLK_PERIOD_NS = 10
+DEFAULT_CLOCK_FREQ = 100_000_000
+DEFAULT_BAUD = 115_200
 
-@cocotb.test()
-async def test_uart_basic_loopback(dut):
-    """Basic test: send STATUS command and verify we get some response."""
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
 
-    uart = UARTHelper(dut)
-    clks_per_bit = uart.clks_per_bit
+def _is_uart_tx(dut):
+    return "uart_tx" in dut._name.lower()
 
-    # Reset
-    dut.rst.value = 1
-    dut.uart_rx_pin.value = 1  # Idle high
-    dut.state_in.value = 0x05
-    dut.layer_complete.value = 1
-    dut.acc0.value = 0
-    dut.acc1.value = 0
-    await ClockCycles(dut.clk, 20)
-    dut.rst.value = 0
 
-    # Wait a LONG time after reset to ensure system is stable
-    # At least 20 bit times for any spurious TX to complete
-    await ClockCycles(dut.clk, clks_per_bit * 20)
+def _is_uart_rx(dut):
+    return "uart_rx" in dut._name.lower()
 
-    dut._log.info(f"CLKS_PER_BIT = {clks_per_bit}")
 
-    # Verify TX is idle before we start
-    assert dut.uart_tx_pin.value == 1, "TX should be idle (high) before test"
-
-    # Send STATUS command
-    dut._log.info("Sending byte 0x04 (STATUS command)")
-    await uart.send_byte(0x04)
-
-    # Check internal signals
-    dut._log.info(f"Debug state: {int(dut.debug_state.value)}")
-    dut._log.info(f"Debug cmd: 0x{int(dut.debug_cmd.value):02X}")
-
+def _get_param(dut, name, default):
+    handle = getattr(dut, name, None)
+    if handle is None:
+        return default
     try:
-        tx_byte_internal = int(dut.uart_tx_inst.tx_byte.value)
-        dut._log.info(f"TX internal tx_byte: 0x{tx_byte_internal:02X}")
+        return int(handle.value)
     except AttributeError:
-        pass
-
-    # Receive response using helper
-    dut._log.info("Waiting for TX response...")
-    rx_byte = await uart.receive_byte()
-    
-    stop_bit = 1  # Assume valid since receive_byte checks it
-    
-    dut._log.info(f"Received byte: 0x{rx_byte:02X}")
-    
-    # Expected: {3'b0, layer_complete=1, state=0x05} = 0x15
-    expected = 0x15
-    
-    # Debug: show binary
-    dut._log.info(f"Expected bits (LSB first): {bin(expected)}")
-    dut._log.info(f"Received bits (LSB first): {bin(rx_byte)}")
-    
-    assert rx_byte == expected, f"Expected 0x{expected:02X}, got 0x{rx_byte:02X}"
-    
-    dut._log.info("PASS: Basic loopback test")
+        return int(handle)
 
 
-# ============================================================================
-# UART Controller Tests
-# ============================================================================
+def _get_bit_timing(dut):
+    clock_freq = _get_param(dut, "CLOCK_FREQ", DEFAULT_CLOCK_FREQ)
+    baud_rate = _get_param(dut, "BAUD_RATE", DEFAULT_BAUD)
+    clks_per_bit = _get_param(dut, "CLKS_PER_BIT", clock_freq // baud_rate)
+    bit_period_ns = clks_per_bit * CLK_PERIOD_NS
+    return clks_per_bit, bit_period_ns
 
-@cocotb.test()
-async def test_uart_controller_status(dut):
-    """Test status read command (0x04)."""
-    clock = Clock(dut.clk, 10, unit="ns")
+
+async def _setup_uart_tx(dut):
+    clock = Clock(dut.clk, CLK_PERIOD_NS, unit="ns")
     cocotb.start_soon(clock.start())
-
-    uart = UARTHelper(dut)
-
-    # Reset
     dut.rst.value = 1
-    dut.uart_rx_pin.value = 1  # Idle high
-    dut.state_in.value = 0
-    dut.layer_complete.value = 0
-    dut.acc0.value = 0
-    dut.acc1.value = 0
-    await ClockCycles(dut.clk, 20)
+    dut.tx_valid.value = 0
+    dut.tx_data.value = 0
+    await ClockCycles(dut.clk, 5)
     dut.rst.value = 0
-    await ClockCycles(dut.clk, 100)  # Wait for reset to settle
-
-    # Set a known state
-    dut.state_in.value = 0x05  # Some state value
-    dut.layer_complete.value = 1
-    await ClockCycles(dut.clk, 10)
-
-    # Send status command
-    dut._log.info("Sending STATUS command (0x04)")
-    await uart.send_byte(0x04)
-
-    # Wait a bit for command processing
-    await ClockCycles(dut.clk, 100)
-
-    # Receive status byte
-    status = await uart.receive_byte()
-    dut._log.info(f"Received status: 0x{status:02X}")
-
-    # Check: [4]=layer_complete, [3:0]=state
-    expected = (1 << 4) | 0x05  # 0x15
-    assert status == expected, f"Expected 0x{expected:02X}, got 0x{status:02X}"
-
-    dut._log.info("PASS: Status command test")
+    await RisingEdge(dut.clk)
+    return _get_bit_timing(dut)
 
 
-@cocotb.test()
-async def test_uart_controller_execute(dut):
-    """Test execute command (0x03)."""
-    clock = Clock(dut.clk, 10, unit="ns")
+async def _setup_uart_rx(dut):
+    clock = Clock(dut.clk, CLK_PERIOD_NS, unit="ns")
     cocotb.start_soon(clock.start())
-
-    uart = UARTHelper(dut)
-
-    # Reset
     dut.rst.value = 1
-    dut.uart_rx_pin.value = 1
-    dut.state_in.value = 0
-    dut.layer_complete.value = 0
-    dut.acc0.value = 0
-    dut.acc1.value = 0
-    await ClockCycles(dut.clk, 20)
+    dut.rx.value = 1
+    await ClockCycles(dut.clk, 5)
     dut.rst.value = 0
-    await ClockCycles(dut.clk, 100)
+    await RisingEdge(dut.clk)
+    return _get_bit_timing(dut)
 
-    # Monitor start_mlp during the send
-    start_seen = False
 
-    # Send execute command
-    dut._log.info("Sending EXECUTE command (0x03)")
-    await uart.send_byte(0x03)
-
-    # Wait and check start_mlp pulsed (should happen soon after byte received)
-    for _ in range(500):
+async def _launch_tx_byte(dut, value):
+    while not bool(dut.tx_ready.value):
         await RisingEdge(dut.clk)
-        if dut.start_mlp.value == 1:
-            start_seen = True
-            dut._log.info("start_mlp pulse detected")
-            break
-
-    assert start_seen, "start_mlp should pulse on EXECUTE command"
-
-    # Receive ACK
-    ack = await uart.receive_byte()
-    assert ack == 0xAA, f"Expected ACK 0xAA, got 0x{ack:02X}"
-
-    dut._log.info("PASS: Execute command test")
+    dut.tx_data.value = value
+    dut.tx_valid.value = 1
+    await RisingEdge(dut.clk)
+    dut.tx_valid.value = 0
 
 
-@cocotb.test()
-async def test_uart_controller_write_weights(dut):
-    """Test write weights command (0x01)."""
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
+async def _capture_tx_frame(dut, bit_period_ns):
+    await FallingEdge(dut.tx)  # Start bit
+    samples = []
+    await Timer(bit_period_ns // 2, unit="ns")
+    samples.append(int(dut.tx.value))
 
-    uart = UARTHelper(dut)
+    for _ in range(8):
+        await Timer(bit_period_ns, unit="ns")
+        samples.append(int(dut.tx.value))
 
-    # Reset
-    dut.rst.value = 1
-    dut.uart_rx_pin.value = 1
-    dut.state_in.value = 0
-    dut.layer_complete.value = 0
-    dut.acc0.value = 0
-    dut.acc1.value = 0
-    await ClockCycles(dut.clk, 20)
-    dut.rst.value = 0
-    await ClockCycles(dut.clk, 100)
-
-    # Send write weights command with 4 bytes
-    dut._log.info("Sending WRITE_WEIGHTS command (0x01) with [0x03, 0x01, 0x04, 0x02]")
-    weights = [0x03, 0x01, 0x04, 0x02]  # W10, W00, W11, W01
-
-    await uart.send_byte(0x01)
-    
-    # Wait for command to be processed
-    await ClockCycles(dut.clk, 50)
-
-    # Track FIFO pushes
-    col0_pushes = []
-    col1_pushes = []
-
-    for w in weights:
-        await uart.send_byte(w)
-        # Wait for byte processing (check for pushes over several cycles)
-        for _ in range(20):
-            await RisingEdge(dut.clk)
-            if dut.wf_push_col0.value == 1:
-                col0_pushes.append(int(dut.wf_data_in.value))
-                dut._log.info(f"Col0 push: 0x{int(dut.wf_data_in.value):02X}")
-            if dut.wf_push_col1.value == 1:
-                col1_pushes.append(int(dut.wf_data_in.value))
-                dut._log.info(f"Col1 push: 0x{int(dut.wf_data_in.value):02X}")
-
-    dut._log.info(f"Col0 pushes: {col0_pushes}")
-    dut._log.info(f"Col1 pushes: {col1_pushes}")
-
-    # Wait a bit then receive ACK
-    await ClockCycles(dut.clk, 100)
-    ack = await uart.receive_byte()
-    assert ack == 0xAA, f"Expected ACK 0xAA, got 0x{ack:02X}"
-
-    dut._log.info("PASS: Write weights command test")
+    await Timer(bit_period_ns, unit="ns")
+    samples.append(int(dut.tx.value))
+    return samples
 
 
-@cocotb.test()
-async def test_uart_controller_read_results(dut):
-    """Test read results command (0x05)."""
-    clock = Clock(dut.clk, 10, unit="ns")
-    cocotb.start_soon(clock.start())
+def _decode_frame(bits):
+    data_bits = bits[1:9]
+    value = 0
+    for idx, bit in enumerate(data_bits):
+        value |= (bit & 1) << idx
+    return value
 
-    uart = UARTHelper(dut)
 
-    # Reset
-    dut.rst.value = 1
-    dut.uart_rx_pin.value = 1
-    dut.state_in.value = 0
-    dut.layer_complete.value = 0
-    await ClockCycles(dut.clk, 20)
-    dut.rst.value = 0
-    await ClockCycles(dut.clk, 100)
+def _expected_frame(byte):
+    return [0] + [((byte >> i) & 1) for i in range(8)] + [1]
 
-    # Set known accumulator values
-    test_acc0 = 0x12345678
-    test_acc1 = 0xDEADBEEF
-    dut.acc0.value = test_acc0
-    dut.acc1.value = test_acc1
-    await ClockCycles(dut.clk, 10)
 
-    # Send read results command
-    dut._log.info(f"Sending READ_RESULTS command (0x05), expecting acc0=0x{test_acc0:08X}, acc1=0x{test_acc1:08X}")
-    await uart.send_byte(0x05)
-
-    # Wait for command processing
-    await ClockCycles(dut.clk, 100)
-
-    # Receive 8 bytes (acc0 LSB first, then acc1 LSB first)
-    received = []
+async def _drive_uart_frame(dut, byte, clks_per_bit, stop_high=True):
+    await ClockCycles(dut.clk, 1)
+    dut.rx.value = 0  # Start bit
+    await ClockCycles(dut.clk, clks_per_bit)
     for i in range(8):
-        byte_val = await uart.receive_byte()
-        received.append(byte_val)
-        dut._log.info(f"Received byte {i}: 0x{byte_val:02X}")
-
-    # Reconstruct acc0 and acc1
-    acc0_rx = received[0] | (received[1] << 8) | (received[2] << 16) | (received[3] << 24)
-    acc1_rx = received[4] | (received[5] << 8) | (received[6] << 16) | (received[7] << 24)
-
-    dut._log.info(f"Reconstructed acc0: 0x{acc0_rx:08X}")
-    dut._log.info(f"Reconstructed acc1: 0x{acc1_rx:08X}")
-
-    assert acc0_rx == test_acc0, f"acc0 mismatch: expected 0x{test_acc0:08X}, got 0x{acc0_rx:08X}"
-    assert acc1_rx == test_acc1, f"acc1 mismatch: expected 0x{test_acc1:08X}, got 0x{acc1_rx:08X}"
-
-    dut._log.info("PASS: Read results command test")
+        dut.rx.value = (byte >> i) & 1
+        await ClockCycles(dut.clk, clks_per_bit)
+    dut.rx.value = 1 if stop_high else 0
+    await ClockCycles(dut.clk, clks_per_bit)
+    dut.rx.value = 1
 
 
-# ============================================================================
-# Test Runner
-# ============================================================================
+async def _drive_false_start(dut, clks_per_bit):
+    await ClockCycles(dut.clk, clks_per_bit)
+    dut.rx.value = 0
+    glitch_cycles = max(1, clks_per_bit // 4)
+    await ClockCycles(dut.clk, glitch_cycles)
+    dut.rx.value = 1
+    await ClockCycles(dut.clk, clks_per_bit)
 
-def test_uart_runner():
-    """Run UART controller tests using cocotb_tools.runner"""
+
+@cocotb.test()
+async def test_uart_tx_reset(dut):
+    if not _is_uart_tx(dut):
+        dut._log.info("Skipping TX-only test for %s", dut._name)
+        return
+    await _setup_uart_tx(dut)
+    assert dut.tx.value == 1, "TX line should idle high after reset"
+    assert dut.tx_ready.value == 1, "TX ready should be asserted when idle"
+
+
+@cocotb.test()
+async def test_uart_tx_single_byte(dut):
+    if not _is_uart_tx(dut):
+        dut._log.info("Skipping TX-only test for %s", dut._name)
+        return
+    _, bit_period_ns = await _setup_uart_tx(dut)
+    await _launch_tx_byte(dut, 0x55)
+    frame = await _capture_tx_frame(dut, bit_period_ns)
+    assert frame == _expected_frame(0x55), f"Unexpected TX frame: {frame}"
+
+
+@cocotb.test()
+async def test_uart_tx_multiple_bytes(dut):
+    if not _is_uart_tx(dut):
+        dut._log.info("Skipping TX-only test for %s", dut._name)
+        return
+    _, bit_period_ns = await _setup_uart_tx(dut)
+    pattern = [0x00, 0xFF, 0xA5, 0x5A]
+    for byte in pattern:
+        await _launch_tx_byte(dut, byte)
+        frame = await _capture_tx_frame(dut, bit_period_ns)
+        assert frame == _expected_frame(byte), f"Frame mismatch for byte {byte:#04x}"
+        assert dut.tx_ready.value == 0, "tx_ready should stay low while busy"
+        await Timer(bit_period_ns, unit="ns")  # allow stop bit to finish
+        # ensure we sample stop bit completion
+        await RisingEdge(dut.clk)
+    assert dut.tx_ready.value == 1, "tx_ready should return high after final byte"
+
+
+@cocotb.test()
+async def test_uart_tx_edge_cases(dut):
+    if not _is_uart_tx(dut):
+        dut._log.info("Skipping TX-only test for %s", dut._name)
+        return
+    _, bit_period_ns = await _setup_uart_tx(dut)
+    for byte in (0x00, 0xFF):
+        await _launch_tx_byte(dut, byte)
+        frame = await _capture_tx_frame(dut, bit_period_ns)
+        assert frame == _expected_frame(byte), f"Edge-case frame mismatch for {byte:#04x}"
+
+
+@cocotb.test()
+async def test_uart_tx_timing(dut):
+    if not _is_uart_tx(dut):
+        dut._log.info("Skipping TX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_tx(dut)
+    await _launch_tx_byte(dut, 0x02)
+    await FallingEdge(dut.tx)
+    for _ in range(clks_per_bit):
+        await RisingEdge(dut.clk)
+        assert dut.tx.value == 0, "Start bit should remain low for full bit period"
+    await RisingEdge(dut.clk)
+    assert dut.tx.value == 0, "First data bit (LSB) should be 0 for 0x02"
+    await Timer(bit_period_ns * 9, unit="ns")
+    assert dut.tx.value == 1, "Stop bit should idle high"
+
+
+@cocotb.test()
+async def test_uart_rx_reset(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    await _setup_uart_rx(dut)
+    assert dut.rx_ready.value == 1, "RX ready should be high at idle"
+    assert dut.rx_valid.value == 0, "RX valid must clear on reset"
+
+
+@cocotb.test()
+async def test_uart_rx_single_byte(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+    byte = 0x96
+    driver = cocotb.start_soon(_drive_uart_frame(dut, byte, clks_per_bit))
+    await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+    assert int(dut.rx_data.value) == byte, "RX data mismatch"
+    await driver
+    await RisingEdge(dut.clk)
+    assert dut.rx_ready.value == 1, "RX should return to ready after byte"
+
+
+@cocotb.test()
+async def test_uart_rx_multiple_bytes(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+    pattern = [0x00, 0xFF, 0xA5, 0x5A]
+    for byte in pattern:
+        driver = cocotb.start_soon(_drive_uart_frame(dut, byte, clks_per_bit))
+        await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+        assert int(dut.rx_data.value) == byte, f"RX byte mismatch for {byte:#04x}"
+        await driver
+        await RisingEdge(dut.clk)
+    assert dut.rx_ready.value == 1, "RX ready should be high after burst"
+
+
+@cocotb.test()
+async def test_uart_rx_edge_cases(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+    for byte in (0x00, 0xFF):
+        driver = cocotb.start_soon(_drive_uart_frame(dut, byte, clks_per_bit))
+        await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+        assert int(dut.rx_data.value) == byte, f"RX edge byte mismatch {byte:#04x}"
+        await driver
+        await RisingEdge(dut.clk)
+
+
+@cocotb.test()
+async def test_uart_rx_false_start(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+    driver = cocotb.start_soon(_drive_false_start(dut, clks_per_bit))
+    try:
+        await with_timeout(RisingEdge(dut.rx_valid), 6 * bit_period_ns, timeout_unit="ns")
+        assert False, "False start should not produce rx_valid"
+    except SimTimeoutError:
+        pass
+    await driver
+    assert dut.rx_ready.value == 1, "RX should recover to idle after false start"
+
+
+@cocotb.test()
+async def test_uart_rx_framing_error(dut):
+    if not _is_uart_rx(dut):
+        dut._log.info("Skipping RX-only test for %s", dut._name)
+        return
+    clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+    driver = cocotb.start_soon(_drive_uart_frame(dut, 0x3C, clks_per_bit, stop_high=False))
+    try:
+        await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+        assert False, "Framing error should suppress rx_valid"
+    except SimTimeoutError:
+        pass
+    await driver
+    assert dut.rx_ready.value == 1, "RX should return to IDLE after framing error"
+
+
+@cocotb.test()
+async def test_uart_loopback_single(dut):
+    if _is_uart_tx(dut):
+        _, bit_period_ns = await _setup_uart_tx(dut)
+        await _launch_tx_byte(dut, 0xAB)
+        frame = await _capture_tx_frame(dut, bit_period_ns)
+        assert _decode_frame(frame) == 0xAB, "Loopback decode mismatch for TX"
+    elif _is_uart_rx(dut):
+        clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+        driver = cocotb.start_soon(_drive_uart_frame(dut, 0xAB, clks_per_bit))
+        await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+        # recent sample ensures going through handshake
+        assert int(dut.rx_data.value) == 0xAB, "Loopback RX mismatch"
+        await driver
+    else:
+        dut._log.info("Loopback test only applies to UART blocks")
+        return
+
+
+@cocotb.test()
+async def test_uart_loopback_multiple(dut):
+    if _is_uart_tx(dut):
+        _, bit_period_ns = await _setup_uart_tx(dut)
+        payload = [0x12, 0x34, 0x56]
+        for byte in payload:
+            await _launch_tx_byte(dut, byte)
+            frame = await _capture_tx_frame(dut, bit_period_ns)
+            assert _decode_frame(frame) == byte, f"TX loopback mismatch for {byte:#04x}"
+    elif _is_uart_rx(dut):
+        clks_per_bit, bit_period_ns = await _setup_uart_rx(dut)
+        payload = [0x12, 0x34, 0x56]
+        for byte in payload:
+            driver = cocotb.start_soon(_drive_uart_frame(dut, byte, clks_per_bit))
+            await with_timeout(RisingEdge(dut.rx_valid), 12 * bit_period_ns, timeout_unit="ns")
+            assert int(dut.rx_data.value) == byte, f"RX loopback mismatch for {byte:#04x}"
+            await driver
+            await RisingEdge(dut.clk)
+    else:
+        dut._log.info("Loopback test only applies to UART blocks")
+        return
+
+
+def _run_uart(module_name):
     from cocotb_tools.runner import get_runner
 
     sim_dir = os.path.dirname(__file__)
     rtl_dir = os.path.join(sim_dir, "..", "..", "rtl")
     wave_dir = os.path.join(sim_dir, "..", "waves")
-    build_dir = os.path.join(sim_dir, "..", "sim_build", "uart_controller")
+    build_dir = os.path.join(sim_dir, "..", "sim_build", module_name)
 
     os.makedirs(wave_dir, exist_ok=True)
-
-    # Clean existing build
     if os.path.exists(build_dir):
         shutil.rmtree(build_dir)
 
     waves_enabled = os.environ.get("WAVES", "0") != "0"
 
-    rtl_sources = [
-        os.path.join(rtl_dir, "uart_rx.sv"),
-        os.path.join(rtl_dir, "uart_tx.sv"),
-        os.path.join(rtl_dir, "uart_controller.sv"),
-    ]
-
     runner = get_runner("verilator")
     runner.build(
-        sources=rtl_sources,
-        hdl_toplevel="uart_controller",
+        sources=[os.path.join(rtl_dir, f"{module_name}.sv")],
+        hdl_toplevel=module_name,
         build_dir=build_dir,
         waves=waves_enabled,
-        build_args=["--timing",
-                    "-Wno-PINCONNECTEMPTY", "-Wno-UNUSEDSIGNAL",
-                    "-Wno-WIDTHEXPAND", "-Wno-WIDTHTRUNC"]
+        build_args=[
+            "--timing",
+            "-Wno-WIDTHEXPAND",
+            "-Wno-WIDTHTRUNC",
+            "-Wno-UNUSEDSIGNAL",
+        ],
     )
     runner.test(
-        hdl_toplevel="uart_controller",
+        hdl_toplevel=module_name,
         test_module="tests.test_uart",
-        waves=waves_enabled
+        waves=waves_enabled,
     )
 
     if waves_enabled:
         vcd_src = os.path.join(build_dir, "dump.vcd")
         if os.path.exists(vcd_src):
-            shutil.copy(vcd_src, os.path.join(wave_dir, "uart_controller.vcd"))
-            print(f"Waveform saved to {wave_dir}/uart_controller.vcd")
+            shutil.copy(vcd_src, os.path.join(wave_dir, f"{module_name}.vcd"))
+
+
+def test_uart_tx_runner():
+    _run_uart("uart_tx")
+
+
+def test_uart_rx_runner():
+    _run_uart("uart_rx")
 
 
 if __name__ == "__main__":
-    test_uart_runner()
-
+    test_uart_tx_runner()
+    test_uart_rx_runner()

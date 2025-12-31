@@ -1,0 +1,18 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1767147229" />
+    <testcase name="test_uart_tx_reset" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="133" time="0.00035500526428222656" sim_time_ns="50.0" ratio_time="140842.98186702485" />
+    <testcase name="test_uart_tx_single_byte" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="143" time="0.023663043975830078" sim_time_ns="82540.0" ratio_time="3488139.5683627203" />
+    <testcase name="test_uart_tx_multiple_bytes" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="154" time="0.103179931640625" sim_time_ns="364690.0" ratio_time="3534505.1523217983" />
+    <testcase name="test_uart_tx_edge_cases" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="172" time="0.05358695983886719" sim_time_ns="169360.0" ratio_time="3160470.3925965475" />
+    <testcase name="test_uart_tx_timing" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="184" time="0.03519892692565918" sim_time_ns="86880.0" ratio_time="2468257.0631625294" />
+    <testcase name="test_uart_rx_reset" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="201" time="8.702278137207031e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_single_byte" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="211" time="3.2901763916015625e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_multiple_bytes" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="226" time="3.314018249511719e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_edge_cases" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="242" time="3.218650817871094e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_false_start" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="256" time="3.1948089599609375e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_rx_framing_error" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="272" time="3.0994415283203125e-05" sim_time_ns="0.0" ratio_time="0.0" />
+    <testcase name="test_uart_loopback_single" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="288" time="0.02371692657470703" sim_time_ns="82530.0" ratio_time="3479793.2076078653" />
+    <testcase name="test_uart_loopback_multiple" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="307" time="0.08257484436035156" sim_time_ns="256170.0" ratio_time="3102276.510290347" />
+  </testsuite>
+</testsuites>
