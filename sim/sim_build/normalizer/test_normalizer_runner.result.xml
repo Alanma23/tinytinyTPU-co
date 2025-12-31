@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1766301253" />
+    <testcase name="test_normalizer_passthrough" classname="tests.test_normalizer" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_normalizer.py" lineno="11" time="0.0013458728790283203" sim_time_ns="40.0" ratio_time="29720.488928255094" />
+    <testcase name="test_normalizer_with_bias" classname="tests.test_normalizer" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_normalizer.py" lineno="39" time="0.00028395652770996094" sim_time_ns="50.00000000000001" ratio_time="176083.29135180524" />
+    <testcase name="test_normalizer_scaling" classname="tests.test_normalizer" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_normalizer.py" lineno="68" time="0.0002410411834716797" sim_time_ns="50.000000000000014" ratio_time="207433.43224530175" />
+  </testsuite>
+</testsuites>

@@ -1,0 +1,50 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Fri Dec  5 23:04:08 2025
+# Process ID: 2786732
+# Current directory: /home/users/alanpma/Desktop/TPU/tinytinyTPU
+# Command line: vivado
+# Log file: /home/users/alanpma/Desktop/TPU/tinytinyTPU/vivado.log
+# Journal file: /home/users/alanpma/Desktop/TPU/tinytinyTPU/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.xpr
+update_compile_order -fileset sources_1
+close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v w ]
+add_files /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v
+update_compile_order -fileset sources_1
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v w ]
+add_files -fileset sim_1 /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v
+update_compile_order -fileset sim_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top weight_fifo_tb [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sim_1
+launch_simulation
+source weight_fifo_tb.tcl
+close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v w ]
+add_files /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v
+update_compile_order -fileset sources_1
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v w ]
+add_files -fileset sim_1 /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v
+update_compile_order -fileset sim_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top dual_weight_fifo_tb [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sim_1
+launch_simulation
+source dual_weight_fifo_tb.tcl

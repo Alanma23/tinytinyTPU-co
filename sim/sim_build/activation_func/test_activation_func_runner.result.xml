@@ -1,0 +1,9 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1766303374" />
+    <testcase name="test_activation_relu_positive" classname="tests.test_activation_func" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_func.py" lineno="19" time="0.001367807388305664" sim_time_ns="40.0" ratio_time="29243.88356283772" />
+    <testcase name="test_activation_relu_negative" classname="tests.test_activation_func" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_func.py" lineno="45" time="0.00021767616271972656" sim_time_ns="50.00000000000001" ratio_time="229699.01423877332" />
+    <testcase name="test_activation_relu_zero" classname="tests.test_activation_func" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_func.py" lineno="68" time="0.00018596649169921875" sim_time_ns="50.000000000000014" ratio_time="268865.6410256411" />
+    <testcase name="test_activation_valid_propagation" classname="tests.test_activation_func" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_func.py" lineno="91" time="0.0002009868621826172" sim_time_ns="70.0" ratio_time="348281.4709371293" />
+  </testsuite>
+</testsuites>

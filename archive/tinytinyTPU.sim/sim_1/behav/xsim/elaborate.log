@@ -1,0 +1,14 @@
+Vivado Simulator 2019.2
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: /cad/xilinx/vivado/2019.2/Vivado/2019.2/bin/unwrapped/lnx64.o/xelab -wto 4543fd3c92a64e3580def2dfa30e86a2 --incr --debug typical --relax --mt 8 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot dual_weight_fifo_tb_behav xil_defaultlib.dual_weight_fifo_tb xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.dual_weight_fifo
+Compiling module xil_defaultlib.dual_weight_fifo_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot dual_weight_fifo_tb_behav

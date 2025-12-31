@@ -1,0 +1,4 @@
+Running: xsim.dir/dual_weight_fifo_tb_behav/xsimk -simmode gui -wdb dual_weight_fifo_tb_behav.wdb -simrunnum 0 -socket 36353
+Design successfully loaded
+Design Loading Memory Usage: 43748 KB (Peak: 43868 KB)
+Design Loading CPU Usage: 30 ms

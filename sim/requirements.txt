@@ -1,0 +1,4 @@
+cocotb>=1.8.0
+cocotb-test>=0.2.0
+pytest>=7.0.0
+

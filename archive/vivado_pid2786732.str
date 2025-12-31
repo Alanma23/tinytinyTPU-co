@@ -1,0 +1,584 @@
+/*
+
+Xilinx Vivado v2019.2 (64-bit) [Major: 2019, Minor: 2]
+SW Build: 2708876 on Wed Nov  6 21:39:14 MST 2019
+IP Build: 2700528 on Thu Nov  7 00:09:20 MST 2019
+
+Process ID (PID): 2786732
+License: Customer
+
+Current time: 	Sat Dec 06 07:04:36 GMT 2025
+Time zone: 	Greenwich Mean Time (GMT)
+
+OS: Rocky Linux release 8.10 (Green Obsidian)
+OS Version: 6.14.0-32-generic
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: :7.0
+Screen size: 1781x1269
+Screen resolution (DPI): 100
+Available screens: 1
+Available disk space: 0 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	9.0.4 64-bit
+Java home: 	/cad/xilinx/vivado/2019.2/Vivado/2019.2/tps/lnx64/jre9.0.4
+Java executable location: 	/cad/xilinx/vivado/2019.2/Vivado/2019.2/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	alanpma
+User home directory: /home/users/alanpma
+User working directory: /home/users/alanpma/Desktop/TPU/tinytinyTPU
+User country: 	null
+User language: 	en
+User locale: 	en
+
+RDI_BASEROOT: /cad/xilinx/vivado/2019.2/Vivado
+HDI_APPROOT: /cad/xilinx/vivado/2019.2/Vivado/2019.2
+RDI_DATADIR: /cad/xilinx/vivado/2019.2/Vivado/2019.2/data
+RDI_BINDIR: /cad/xilinx/vivado/2019.2/Vivado/2019.2/bin
+
+Vivado preferences file location: /home/users/alanpma/.Xilinx/Vivado/2019.2/vivado.xml
+Vivado preferences directory: /home/users/alanpma/.Xilinx/Vivado/2019.2/
+Vivado layouts directory: /home/users/alanpma/.Xilinx/Vivado/2019.2/layouts
+PlanAhead jar file location: 	/cad/xilinx/vivado/2019.2/Vivado/2019.2/lib/classes/planAhead.jar
+Vivado log file location: 	/home/users/alanpma/Desktop/TPU/tinytinyTPU/vivado.log
+Vivado journal file location: 	/home/users/alanpma/Desktop/TPU/tinytinyTPU/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-2786732-iron-12
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /cad/xilinx/vivado/2019.2/Vivado/2019.2/ids_lite/ISE
+XILINXD_LICENSE_FILE: 7193@cadlic0.stanford.edu
+XILINX_DSP: /cad/xilinx/vivado/2019.2/Vivado/2019.2/ids_lite/ISE
+XILINX_HOME: /cad/xilinx/vivado
+XILINX_PLANAHEAD: /cad/xilinx/vivado/2019.2/Vivado/2019.2
+XILINX_VITIS: 
+XILINX_VIVADO: /cad/xilinx/vivado/2019.2/Vivado/2019.2
+XILINX_VIVADO_HLS: /cad/xilinx/vivado/2019.2/Vivado/2019.2
+
+
+GUI allocated memory:	209 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 900 MB
+
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+selectButton(PAResourceEtoH.GettingStartedView_OPEN_PROJECT, "Open Project"); // y (x, cr)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_PROJECT
+// HMemoryUtils.trashcanNow. Engine heap size: 890 MB. GUI used memory: 56 MB. Current time: 12/6/25, 7:04:38 AM GMT
+dismissFileChooser();
+// 'i' command handler elapsed time: 6 seconds
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.xpr", 2); // r (O, cr)
+// [GUI Memory]: 90 MB (+92308kb) [00:00:17]
+// [Engine Memory]: 892 MB (+783829kb) [00:00:17]
+// bB (cr):  Open Project : addNotify
+// Opening Vivado Project: /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.xpr. Version: Vivado v2019.2 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: open_project /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.xpr 
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: open_project /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified 
+// TclEventType: PROJECT_NEW
+// [Engine Memory]: 1,035 MB (+103130kb) [00:00:26]
+// [GUI Memory]: 97 MB (+1657kb) [00:00:26]
+// [GUI Memory]: 119 MB (+17982kb) [00:00:27]
+// WARNING: HEventQueue.dispatchEvent() is taking  1978 ms.
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/cad/xilinx/vivado/2019.2/Vivado/2019.2/data/ip'. 
+// Project name: tinytinyTPU; location: /home/users/alanpma/Desktop/TPU/tinytinyTPU; part: xc7z020clg400-1
+// [Engine Memory]: 1,101 MB (+15323kb) [00:00:28]
+// Tcl Message: open_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 6617.285 ; gain = 158.738 ; free physical = 125066 ; free virtual = 181036 
+// Elapsed time: 10 seconds
+dismissDialog("Open Project"); // bB (cr)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 0); // B (F, cr)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,090 MB. GUI used memory: 58 MB. Current time: 12/6/25, 7:04:58 AM GMT
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 2, true); // B (F, cr) - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 2); // B (F, cr)
+// Tcl Message: update_compile_order -fileset sources_1 
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, mmu (mmu.v)]", 1); // B (F, cr)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, mmu (mmu.v)]", 1); // B (F, cr)
+selectButton(PAResourceCommand.PACommandNames_ADD_SOURCES, "Sources_add_sources"); // E (f, cr)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+// c (cr): Add Sources: addNotify
+selectButton("NEXT", "Next >"); // JButton (j, c)
+selectButton(PAResourceQtoS.SrcChooserPanel_CREATE_FILE, "Create File"); // a (E, c)
+// F (c): Create Source File: addNotify
+setText(PAResourceAtoD.CreateSrcFileDialog_FILE_NAME, "weight_fifo"); // ac (Q, F)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (F)
+dismissDialog("Create Source File"); // F (c)
+selectButton("FINISH", "Finish"); // JButton (j, c)
+// 'h' command handler elapsed time: 8 seconds
+dismissDialog("Add Sources"); // c (cr)
+// Tcl Message: close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v w ] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v 
+// I (cr): Define Module: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (I)
+// TclEventType: FILE_SET_CHANGE
+selectButton("OptionPane.button", "Yes"); // JButton (A, H)
+dismissDialog("Define Module"); // I (cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset sources_1 
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, weight_fifo (weight_fifo.v)]", 2, false); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, weight_fifo (weight_fifo.v)]", 2, false, false, false, false, false, true); // B (F, cr) - Double Click
+// [Engine Memory]: 1,158 MB (+1566kb) [00:00:51]
+// HMemoryUtils.trashcanNow. Engine heap size: 1,159 MB. GUI used memory: 61 MB. Current time: 12/6/25, 7:05:23 AM GMT
+// Elapsed time: 19 seconds
+selectCodeEditor("weight_fifo.v", 207, 380); // ch (w, cr)
+selectCodeEditor("weight_fifo.v", 205, 387); // ch (w, cr)
+typeControlKey((HResource) null, "weight_fifo.v", 'v'); // ch (w, cr)
+selectCodeEditor("weight_fifo.v", 188, 13); // ch (w, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectCodeEditor("weight_fifo.v", 286, 302); // ch (w, cr)
+selectCodeEditor("weight_fifo.v", 213, 535); // ch (w, cr)
+selectButton(PAResourceCommand.PACommandNames_ADD_SOURCES, "Sources_add_sources"); // E (f, cr)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+// c (cr): Add Sources: addNotify
+selectRadioButton(PAResourceAtoD.AddSrcWizard_SPECIFY_SIMULATION_SPECIFIC_HDL_FILES, "Add or create simulation sources"); // a (o, c)
+selectButton("NEXT", "Next >"); // JButton (j, c)
+selectButton(PAResourceQtoS.SrcChooserPanel_CREATE_FILE, "Create File"); // a (E, c)
+// F (c): Create Source File: addNotify
+// HMemoryUtils.trashcanNow. Engine heap size: 1,179 MB. GUI used memory: 64 MB. Current time: 12/6/25, 7:05:53 AM GMT
+setText(PAResourceAtoD.CreateSrcFileDialog_FILE_NAME, "weight_fifo_tb"); // ac (Q, F)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (F)
+dismissDialog("Create Source File"); // F (c)
+selectButton("FINISH", "Finish"); // JButton (j, c)
+// 'h' command handler elapsed time: 7 seconds
+dismissDialog("Add Sources"); // c (cr)
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property SOURCE_SET sources_1 [get_filesets sim_1] 
+// Tcl Message: close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v w ] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files -fileset sim_1 /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v 
+// I (cr): Define Module: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (I)
+// TclEventType: FILE_SET_CHANGE
+selectButton("OptionPane.button", "Yes"); // JButton (A, H)
+dismissDialog("Define Module"); // I (cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset sim_1 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,199 MB. GUI used memory: 61 MB. Current time: 12/6/25, 7:06:08 AM GMT
+// Elapsed time: 14 seconds
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 5); // B (F, cr)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1]", 6); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, weight_fifo_tb (weight_fifo_tb.v)]", 10, false); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, weight_fifo_tb (weight_fifo_tb.v)]", 10, false, false, false, false, false, true); // B (F, cr) - Double Click
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, weight_fifo_tb (weight_fifo_tb.v)]", 10, false); // B (F, cr)
+selectCodeEditor("weight_fifo_tb.v", 189, 454); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 233, 367); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 216, 396); // ch (w, cr)
+typeControlKey((HResource) null, "weight_fifo_tb.v", 'v'); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 149, 221); // ch (w, cr)
+typeControlKey((HResource) null, "weight_fifo_tb.v", 'v'); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 170, 222); // ch (w, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, weight_fifo_tb (weight_fifo_tb.v)]", 10, false); // B (F, cr)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,219 MB. GUI used memory: 61 MB. Current time: 12/6/25, 7:06:33 AM GMT
+// [Engine Memory]: 1,219 MB (+3338kb) [00:02:05]
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, weight_fifo_tb (weight_fifo_tb.v)]", 10, false, false, false, false, true, false); // B (F, cr) - Popup Trigger
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // af (ao, cr)
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // af (ao, cr)
+selectMenuItem(PAResourceCommand.PACommandNames_SET_AS_TOP, "Set as Top"); // ai (ao, cr)
+// Run Command: PAResourceCommand.PACommandNames_SET_AS_TOP
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top weight_fifo_tb [get_filesets sim_1] 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top_lib xil_defaultlib [get_filesets sim_1] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Run Synthesis]", 14, false); // u (O, cr)
+// Tcl Message: update_compile_order -fileset sim_1 
+// Run Command: PAResourceCommand.PACommandNames_RUN_SYNTHESIS
+// f (cr): Launch Runs: addNotify
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel"); // a (f)
+dismissDialog("Launch Runs"); // f (cr)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation, Run Simulation]", 10, false); // u (O, cr)
+selectMenuItem(PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL, "Run Behavioral Simulation"); // ai (ao, cr)
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL
+// e (cr):  Run Simulation : addNotify
+// TclEventType: LAUNCH_SIM
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: launch_simulation 
+// Tcl Message: Command: launch_simulation  
+// Tcl Message: INFO: [Vivado 12-5682] Launching behavioral simulation in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' INFO: [SIM-utils-51] Simulation object is 'sim_1' INFO: [SIM-utils-54] Inspecting design source files for 'weight_fifo_tb' in fileset 'sim_1'... INFO: [USF-XSim-97] Finding global include files... INFO: [USF-XSim-98] Fetching design files from 'sim_1'... INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -prj weight_fifo_tb_vlog.prj 
+// TclEventType: LAUNCH_SIM_LOG
+// Tcl Message: INFO: [VRFC 10-2263] Analyzing Verilog file "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v" into library xil_defaultlib INFO: [VRFC 10-311] analyzing module weight_fifo INFO: [VRFC 10-2263] Analyzing Verilog file "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v" into library xil_defaultlib INFO: [VRFC 10-311] analyzing module weight_fifo_tb 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '2' seconds INFO: [USF-XSim-3] XSim::Elaborate design INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' 
+// Tcl Message:  ****** Webtalk v2019.2 (64-bit)   **** SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019   **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019     ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.  source /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim/xsim.dir/weight_fifo_tb_behav/webtalk/xsim_webtalk.tcl -notrace 
+// TclEventType: LAUNCH_SIM
+// TclEventType: LOAD_FEATURE
+// Tcl Message: INFO: [Common 17-206] Exiting Webtalk at Fri Dec  5 23:06:49 2025... 
+// Tcl Message: INFO: [USF-XSim-69] 'elaborate' step finished in '4' seconds INFO: [USF-XSim-4] XSim::Simulate design INFO: [USF-XSim-61] Executing 'SIMULATE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' INFO: [USF-XSim-98] *** Running xsim 
+// Tcl Message:    with args "weight_fifo_tb_behav -key {Behavioral:sim_1:Functional:weight_fifo_tb} -tclbatch {weight_fifo_tb.tcl} -log {simulate.log}" 
+// Tcl Message: INFO: [USF-XSim-8] Loading simulator feature 
+// Tcl Message: Vivado Simulator 2019.2 
+// TclEventType: SIMULATION_CREATE_SIMULATION_OBJECT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// [Engine Memory]: 1,284 MB (+4702kb) [00:02:23]
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// Tcl Message: Time resolution is 1 ps 
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// Elapsed time: 10 seconds
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// Waveform: addNotify
+// TclEventType: WAVEFORM_MODEL_EVENT
+// Tcl Message: source weight_fifo_tb.tcl 
+// Tcl Message: # set curr_wave [current_wave_config] # if { [string length $curr_wave] == 0 } { #   if { [llength [get_objects]] > 0} { #     add_wave / #     set_property needs_save false [current_wave_config] #   } else { #      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console." #   } # } 
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// [GUI Memory]: 126 MB (+2077kb) [00:02:24]
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// HMemoryUtils.trashcanNow. Engine heap size: 1,352 MB. GUI used memory: 77 MB. Current time: 12/6/25, 7:06:52 AM GMT
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// [Engine Memory]: 1,352 MB (+3645kb) [00:02:24]
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_STOPPED
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: # run 1000ns 
+// Tcl Message: --- Filling FIFO --- --- Emptying FIFO --- PASS: Got 10 PASS: Got 20 PASS: Got 30 $finish called at time : 90 ns : File "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v" Line 76 
+// Tcl Message: INFO: [USF-XSim-96] XSim completed. Design snapshot 'weight_fifo_tb_behav' loaded. INFO: [USF-XSim-97] XSim simulation ran for 1000ns 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 7222.398 ; gain = 449.949 ; free physical = 124866 ; free virtual = 180844 
+// 'd' command handler elapsed time: 11 seconds
+dismissDialog("Run Simulation"); // e (cr)
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Untitled 1", 2); // i (h, cr)
+selectButton(RDIResource.GraphicalView_ZOOM_OUT, "Waveform Viewer_zoom_out"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// HMemoryUtils.trashcanNow. Engine heap size: 1,352 MB. GUI used memory: 93 MB. Current time: 12/6/25, 7:07:02 AM GMT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+selectButton(RDIResource.GraphicalView_ZOOM_FIT, "Waveform Viewer_zoom_fit"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+selectButton(RDIResource.GraphicalView_ZOOM_OUT, "Waveform Viewer_zoom_out"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// HMemoryUtils.trashcanNow. Engine heap size: 1,352 MB. GUI used memory: 76 MB. Current time: 12/6/25, 7:07:04 AM GMT
+selectButton(RDIResource.GraphicalView_ZOOM_IN, "Waveform Viewer_zoom_in"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+selectButton(RDIResource.GraphicalView_ZOOM_IN, "Waveform Viewer_zoom_in"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+selectButton(RDIResource.GraphicalView_ZOOM_FIT, "Waveform Viewer_zoom_fit"); // E (f, cr)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 1,352 MB. GUI used memory: 84 MB. Current time: 12/6/25, 7:07:08 AM GMT
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "weight_fifo_tb.v", 1); // i (h, cr)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Untitled 1", 2); // i (h, cr)
+// Elapsed time: 36 seconds
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "weight_fifo_tb.v", 1); // i (h, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 202, 257); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 348, 159); // ch (w, cr)
+selectCodeEditor("weight_fifo_tb.v", 191, 26); // ch (w, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Untitled 1", 2); // i (h, cr)
+// Elapsed time: 35 seconds
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "weight_fifo_tb.v", 1); // i (h, cr)
+selectCodeEditor("weight_fifo_tb.v", 85, 90); // ch (w, cr)
+typeControlKey((HResource) null, "weight_fifo_tb.v", 'c'); // ch (w, cr)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "weight_fifo.v", 0); // i (h, cr)
+selectCodeEditor("weight_fifo.v", 101, 143); // ch (w, cr)
+typeControlKey((HResource) null, "weight_fifo.v", 'c'); // ch (w, cr)
+selectCodeEditor("weight_fifo.v", 102, 144); // ch (w, cr)
+// Elapsed time: 386 seconds
+selectCodeEditor("weight_fifo.v", 657, 164); // ch (w, cr)
+selectTab((HResource) null, (HResource) null, "Sources", 1); // aL (aI, cr)
+selectButton(PAResourceCommand.PACommandNames_ADD_SOURCES, "Sources_add_sources"); // E (f, cr)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+// c (cr): Add Sources: addNotify
+selectRadioButton(PAResourceAtoD.AddSrcWizard_SPECIFY_HDL_NETLIST_BLOCK_DESIGN, "Add or create design sources"); // a (o, c)
+selectButton("NEXT", "Next >"); // JButton (j, c)
+selectButton(PAResourceQtoS.SrcChooserPanel_CREATE_FILE, "Create File"); // a (E, c)
+// F (c): Create Source File: addNotify
+setText(PAResourceAtoD.CreateSrcFileDialog_FILE_NAME, "dual_weight_fifo"); // ac (Q, F)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (F)
+dismissDialog("Create Source File"); // F (c)
+selectButton("FINISH", "Finish"); // JButton (j, c)
+// 'h' command handler elapsed time: 13 seconds
+dismissDialog("Add Sources"); // c (cr)
+// Tcl Message: close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v w ] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v 
+// I (cr): Define Module: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (I)
+// TclEventType: FILE_SET_CHANGE
+selectButton("OptionPane.button", "Yes"); // JButton (A, H)
+dismissDialog("Define Module"); // I (cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed time: 10 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, dual_weight_fifo (dual_weight_fifo.v)]", 2, false); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, dual_weight_fifo (dual_weight_fifo.v)]", 2, false, false, false, false, false, true); // B (F, cr) - Double Click
+selectCodeEditor("dual_weight_fifo.v", 238, 291); // ch (w, cr)
+selectCodeEditor("dual_weight_fifo.v", 172, 460); // ch (w, cr)
+typeControlKey((HResource) null, "dual_weight_fifo.v", 'v'); // ch (w, cr)
+selectCodeEditor("dual_weight_fifo.v", 166, 31); // ch (w, cr)
+selectCodeEditor("dual_weight_fifo.v", 273, 235); // ch (w, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectButton(PAResourceCommand.PACommandNames_ADD_SOURCES, "Sources_add_sources"); // E (f, cr)
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+// c (cr): Add Sources: addNotify
+selectRadioButton(PAResourceAtoD.AddSrcWizard_SPECIFY_SIMULATION_SPECIFIC_HDL_FILES, "Add or create simulation sources"); // a (o, c)
+selectButton("NEXT", "Next >"); // JButton (j, c)
+selectButton(PAResourceQtoS.SrcChooserPanel_CREATE_FILE, "Create File"); // a (E, c)
+// F (c): Create Source File: addNotify
+// HMemoryUtils.trashcanNow. Engine heap size: 1,394 MB. GUI used memory: 73 MB. Current time: 12/6/25, 7:15:53 AM GMT
+setText(PAResourceAtoD.CreateSrcFileDialog_FILE_NAME, "dual_weight_fifo_tb"); // ac (Q, F)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (F)
+dismissDialog("Create Source File"); // F (c)
+selectButton("FINISH", "Finish"); // JButton (j, c)
+// 'h' command handler elapsed time: 10 seconds
+// TclEventType: FILE_SET_CHANGE
+dismissDialog("Add Sources"); // c (cr)
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property SOURCE_SET sources_1 [get_filesets sim_1] 
+// Tcl Message: close [ open /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v w ] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files -fileset sim_1 /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v 
+// I (cr): Define Module: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (I)
+// TclEventType: FILE_SET_CHANGE
+selectButton("OptionPane.button", "Yes"); // JButton (A, H)
+dismissDialog("Define Module"); // I (cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset sim_1 
+// Elapsed time: 19 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, dual_weight_fifo_tb (dual_weight_fifo_tb.v)]", 12, false); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, dual_weight_fifo_tb (dual_weight_fifo_tb.v)]", 12, false, false, false, false, false, true); // B (F, cr) - Double Click
+selectCodeEditor("dual_weight_fifo_tb.v", 290, 213); // ch (w, cr)
+selectCodeEditor("dual_weight_fifo_tb.v", 197, 412); // ch (w, cr)
+typeControlKey((HResource) null, "dual_weight_fifo_tb.v", 'v'); // ch (w, cr)
+selectCodeEditor("dual_weight_fifo_tb.v", 161, 93); // ch (w, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// [Engine Memory]: 1,420 MB (+17kb) [00:12:02]
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, dual_weight_fifo_tb (dual_weight_fifo_tb.v)]", 12, false); // B (F, cr)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 12, true, false, false, false, true, false); // B (F, cr) - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // af (ao, cr)
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // af (ao, cr)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,420 MB. GUI used memory: 71 MB. Current time: 12/6/25, 7:16:33 AM GMT
+selectMenuItem(PAResourceCommand.PACommandNames_SET_AS_TOP, "Set as Top"); // ai (ao, cr)
+// Run Command: PAResourceCommand.PACommandNames_SET_AS_TOP
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top dual_weight_fifo_tb [get_filesets sim_1] 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top_lib xil_defaultlib [get_filesets sim_1] 
+// TclEventType: DG_GRAPH_STALE
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, dual_weight_fifo_tb (dual_weight_fifo_tb.v)]", 9, true, false, false, false, true, false); // B (F, cr) - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // af (ao, cr)
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // af (ao, cr)
+selectMenuItem(PAResourceCommand.PACommandNames_SET_AS_TOP, "Set as Top"); // ai (ao, cr)
+// Run Command: PAResourceCommand.PACommandNames_SET_AS_TOP
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation, Run Simulation]", 10, false); // u (O, cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset sim_1 
+selectMenuItem(PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL, "Run Behavioral Simulation"); // ai (ao, cr)
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL
+// e (cr):  Run Simulation : addNotify
+// TclEventType: LAUNCH_SIM
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: launch_simulation 
+// Tcl Message: Command: launch_simulation  
+// Tcl Message: INFO: [Vivado 12-5682] Launching behavioral simulation in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' INFO: [SIM-utils-51] Simulation object is 'sim_1' INFO: [SIM-utils-54] Inspecting design source files for 'dual_weight_fifo_tb' in fileset 'sim_1'... INFO: [USF-XSim-97] Finding global include files... INFO: [USF-XSim-98] Fetching design files from 'sim_1'... INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -prj dual_weight_fifo_tb_vlog.prj 
+// TclEventType: LAUNCH_SIM_LOG
+// Tcl Message: INFO: [VRFC 10-2263] Analyzing Verilog file "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v" into library xil_defaultlib INFO: [VRFC 10-311] analyzing module dual_weight_fifo INFO: [VRFC 10-2263] Analyzing Verilog file "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v" into library xil_defaultlib INFO: [VRFC 10-311] analyzing module dual_weight_fifo_tb 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '2' seconds INFO: [USF-XSim-3] XSim::Elaborate design INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' 
+// Tcl Message:  ****** Webtalk v2019.2 (64-bit)   **** SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019   **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019     ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.  source /home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim/xsim.dir/dual_weight_fifo_tb_behav/webtalk/xsim_webtalk.tcl -notrace 
+// TclEventType: LAUNCH_SIM
+// Tcl Message: INFO: [Common 17-206] Exiting Webtalk at Fri Dec  5 23:16:48 2025... 
+// Tcl Message: INFO: [USF-XSim-69] 'elaborate' step finished in '5' seconds INFO: [USF-XSim-4] XSim::Simulate design INFO: [USF-XSim-61] Executing 'SIMULATE' step in '/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim' INFO: [USF-XSim-98] *** Running xsim 
+// Tcl Message:    with args "dual_weight_fifo_tb_behav -key {Behavioral:sim_1:Functional:dual_weight_fifo_tb} -tclbatch {dual_weight_fifo_tb.tcl} -log {simulate.log}" 
+// Tcl Message: INFO: [USF-XSim-8] Loading simulator feature 
+// Tcl Message: Vivado Simulator 2019.2 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,453 MB. GUI used memory: 71 MB. Current time: 12/6/25, 7:16:48 AM GMT
+// TclEventType: SIMULATION_CREATE_SIMULATION_OBJECT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// Waveform: addNotify
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,492 MB. GUI used memory: 77 MB. Current time: 12/6/25, 7:16:50 AM GMT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// Tcl Message: Time resolution is 1 ps 
+// Tcl Message: source dual_weight_fifo_tb.tcl 
+// Tcl Message: # set curr_wave [current_wave_config] # if { [string length $curr_wave] == 0 } { #   if { [llength [get_objects]] > 0} { #     add_wave / #     set_property needs_save false [current_wave_config] #   } else { #      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console." #   } # } 
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// [Engine Memory]: 1,492 MB (+1631kb) [00:12:21]
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_STOPPED
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: # run 1000ns 
+// Tcl Message: --- Loading FIFOs Interleaved --- --- Popping to MMU --- Pop 1: Left=  3 (Exp 3), Right=  4 (Exp 4) Pop 2: Left=  1 (Exp 1), Right=  2 (Exp 2) $finish called at time : 80 ns : File "/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v" Line 66 
+// Tcl Message: INFO: [USF-XSim-96] XSim completed. Design snapshot 'dual_weight_fifo_tb_behav' loaded. INFO: [USF-XSim-97] XSim simulation ran for 1000ns 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:07 ; elapsed = 00:00:09 . Memory (MB): peak = 7360.258 ; gain = 137.859 ; free physical = 124736 ; free virtual = 180785 
+// 'd' command handler elapsed time: 10 seconds
+// Elapsed time: 10 seconds
+dismissDialog("Run Simulation"); // e (cr)
+// [GUI Memory]: 135 MB (+2597kb) [00:12:23]
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+selectCodeEditor("dual_weight_fifo_tb.v", 213, 324); // ch (w, cr)
+// Elapsed time: 10 seconds
+selectCodeEditor("dual_weight_fifo_tb.v", 254, 360); // ch (w, cr)
+selectCodeEditor(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, 352, 350); // dT (af, cr)
+typeControlKey(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, "RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR", 'c'); // dT (af, cr)

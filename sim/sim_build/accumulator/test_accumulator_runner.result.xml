@@ -1,0 +1,10 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1766301237" />
+    <testcase name="test_accumulator_reset" classname="tests.test_accumulator" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_accumulator.py" lineno="12" time="0.0014121532440185547" sim_time_ns="10.0" ratio_time="7081.384433564072" />
+    <testcase name="test_accumulator_overwrite_mode" classname="tests.test_accumulator" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_accumulator.py" lineno="35" time="0.00039124488830566406" sim_time_ns="70.0" ratio_time="178916.07556368067" />
+    <testcase name="test_accumulator_accumulate_mode" classname="tests.test_accumulator" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_accumulator.py" lineno="80" time="0.000492095947265625" sim_time_ns="120.00000000000001" ratio_time="243854.88372093026" />
+    <testcase name="test_accumulator_double_buffer" classname="tests.test_accumulator" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_accumulator.py" lineno="142" time="0.00045418739318847656" sim_time_ns="120.0" ratio_time="264208.12598425196" />
+    <testcase name="test_accumulator_alignment" classname="tests.test_accumulator" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_accumulator.py" lineno="200" time="0.00031304359436035156" sim_time_ns="80.0" ratio_time="255555.4607768469" />
+  </testsuite>
+</testsuites>

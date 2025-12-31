@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1766301258" />
+    <testcase name="test_weight_fifo_reset" classname="tests.test_weight_fifo" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_weight_fifo.py" lineno="11" time="0.00101470947265625" sim_time_ns="10.0" ratio_time="9855.037593984962" />
+    <testcase name="test_weight_fifo_push_pop" classname="tests.test_weight_fifo" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_weight_fifo.py" lineno="29" time="0.0005156993865966797" sim_time_ns="130.0" ratio_time="252084.84512251502" />
+    <testcase name="test_weight_fifo_wraparound" classname="tests.test_weight_fifo" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_weight_fifo.py" lineno="79" time="0.0007662773132324219" sim_time_ns="230.0" ratio_time="300152.4331051649" />
+  </testsuite>
+</testsuites>

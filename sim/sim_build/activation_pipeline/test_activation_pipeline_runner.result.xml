@@ -1,0 +1,9 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1766301243" />
+    <testcase name="test_pipeline_reset" classname="tests.test_activation_pipeline" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_pipeline.py" lineno="12" time="0.0014393329620361328" sim_time_ns="10.0" ratio_time="6947.662746397217" />
+    <testcase name="test_pipeline_passthrough" classname="tests.test_activation_pipeline" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_pipeline.py" lineno="36" time="0.00035190582275390625" sim_time_ns="90.0" ratio_time="255750.24390243902" />
+    <testcase name="test_pipeline_relu_clipping" classname="tests.test_activation_pipeline" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_pipeline.py" lineno="71" time="0.0002751350402832031" sim_time_ns="90.00000000000001" ratio_time="327112.0970537262" />
+    <testcase name="test_pipeline_quantization_saturation" classname="tests.test_activation_pipeline" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_activation_pipeline.py" lineno="106" time="0.000270843505859375" sim_time_ns="90.0" ratio_time="332295.21126760566" />
+  </testsuite>
+</testsuites>

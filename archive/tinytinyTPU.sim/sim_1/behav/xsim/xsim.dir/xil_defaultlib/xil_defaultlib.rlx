@@ -1,0 +1,13 @@
+0.6
+2019.2
+Nov  6 2019
+21:42:20
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.sim/sim_1/behav/xsim/glbl.v,1573089660,verilog,,,,glbl,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v,1765005389,verilog,,,,dual_weight_fifo_tb,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/mmu_tb.v,1764910501,verilog,,,,mmu_tb,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/pe_tb.v,1764908160,verilog,,,,pe_tb,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v,1765004792,verilog,,,,weight_fifo_tb,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/dual_weight_fifo.v,1765005348,verilog,,/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/dual_weight_fifo_tb.v,,dual_weight_fifo,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/mmu.v,1764909916,verilog,,/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/pe.v,,mmu,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/pe.v,1764907917,verilog,,/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/mmu_tb.v,,pe,,,,,,,,
+/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sources_1/new/weight_fifo.v,1765004743,verilog,,/home/users/alanpma/Desktop/TPU/tinytinyTPU/tinytinyTPU.srcs/sim_1/new/weight_fifo_tb.v,,weight_fifo,,,,,,,,
