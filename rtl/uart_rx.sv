@@ -2,7 +2,7 @@
 
 // Minimal UART RX module
 // 8N1 format: 1 start bit, 8 data bits, 1 stop bit, no parity
-// Simple mid-bit sampling (no oversampling for simplicity)
+// Samples at middle of each bit for best noise immunity
 
 module uart_rx #(
     parameter CLOCK_FREQ = 100_000_000,
@@ -62,7 +62,8 @@ module uart_rx #(
                 end
 
                 START: begin
-                    // Wait until mid-bit to confirm start bit
+                    // Wait until mid-start-bit to confirm, then wait another half bit
+                    // to reach middle of first data bit
                     if (clk_count == HALF_BIT - 1) begin
                         if (rx_sync_2 == 1'b0) begin  // Confirm start bit is still low
                             clk_count <= 16'd0;
@@ -76,10 +77,11 @@ module uart_rx #(
                 end
 
                 DATA: begin
-                    // Sample at mid-bit of each data bit
+                    // After START, we're at mid-start-bit. Wait one full bit to
+                    // reach mid-data-bit, then sample.
                     if (clk_count == CLKS_PER_BIT - 1) begin
                         clk_count <= 16'd0;
-                        rx_byte[bit_index] <= rx_sync_2;  // LSB first
+                        rx_byte[bit_index] <= rx_sync_2;  // Sample at mid-bit, LSB first
 
                         if (bit_index == 3'd7) begin
                             bit_index <= 3'd0;
@@ -93,7 +95,7 @@ module uart_rx #(
                 end
 
                 STOP: begin
-                    // Wait for stop bit duration
+                    // Wait for mid-stop-bit to check, then complete
                     if (clk_count == CLKS_PER_BIT - 1) begin
                         clk_count <= 16'd0;
                         if (rx_sync_2 == 1'b1) begin  // Valid stop bit

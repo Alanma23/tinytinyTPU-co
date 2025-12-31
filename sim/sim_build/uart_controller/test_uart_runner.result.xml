@@ -1,0 +1,20 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1767145858" />
+    <testcase name="test_uart_basic_loopback" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="103" time="0.47482872009277344" sim_time_ns="359620.0" ratio_time="757367.835563393">
+      <failure error_type="AssertionError" error_msg="Expected 0x15, got 0xC5&#10;assert 197 == 21" />
+    </testcase>
+    <testcase name="test_uart_controller_status" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="169" time="0.22229290008544922" sim_time_ns="187130.00000000006" ratio_time="841817.2596968568">
+      <failure error_type="AssertionError" error_msg="Expected 0x15, got 0xC5&#10;assert 197 == 21" />
+    </testcase>
+    <testcase name="test_uart_controller_execute" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="211" time="0.12159109115600586" sim_time_ns="101680.0" ratio_time="836245.4768132708">
+      <failure error_type="AssertionError" error_msg="start_mlp should pulse on EXECUTE command&#10;assert False" />
+    </testcase>
+    <testcase name="test_uart_controller_write_weights" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="254" time="0.6834847927093506" sim_time_ns="578720.0" ratio_time="846719.6434699588">
+      <failure error_type="AssertionError" error_msg="Expected ACK 0xAA, got 0xF5&#10;assert 245 == 170" />
+    </testcase>
+    <testcase name="test_uart_controller_read_results" classname="tests.test_uart" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_uart.py" lineno="309" time="2.391986846923828" sim_time_ns="1777510.0000000002" ratio_time="743110.2734891436">
+      <failure error_type="TimeoutError" error_msg="Timeout waiting for TX start bit" />
+    </testcase>
+  </testsuite>
+</testsuites>
