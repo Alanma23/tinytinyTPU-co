@@ -12,26 +12,17 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk
 ## ========================================================================
 ## I/O Timing Constraints
 ## ========================================================================
-## Input delays (relative to sys_clk_pin)
-set_input_delay -clock sys_clk_pin -max 3.0 [get_ports btnC]
-set_input_delay -clock sys_clk_pin -min 0.5 [get_ports btnC]
+## All external I/Os on Basys3 are asynchronous (user inputs, UART, LEDs)
+## Use false_path to exclude them from timing analysis
 
-set_input_delay -clock sys_clk_pin -max 3.0 [get_ports uart_rx]
-set_input_delay -clock sys_clk_pin -min 0.5 [get_ports uart_rx]
-
-set_input_delay -clock sys_clk_pin -max 3.0 [get_ports {sw[*]}]
-set_input_delay -clock sys_clk_pin -min 0.5 [get_ports {sw[*]}]
-
-## Output delays (relative to sys_clk_pin)
-set_output_delay -clock sys_clk_pin -max 3.0 [get_ports uart_tx]
-set_output_delay -clock sys_clk_pin -min 0.5 [get_ports uart_tx]
-
-set_output_delay -clock sys_clk_pin -max 3.0 [get_ports {led[*]}]
-set_output_delay -clock sys_clk_pin -min 0.5 [get_ports {led[*]}]
-
-## False paths for asynchronous inputs (synchronized in RTL)
+## Asynchronous inputs - synchronized in RTL
 set_false_path -from [get_ports btnC]
+set_false_path -from [get_ports uart_rx]
 set_false_path -from [get_ports {sw[*]}]
+
+## Asynchronous outputs - no timing requirement
+set_false_path -to [get_ports uart_tx]
+set_false_path -to [get_ports {led[*]}]
 
 
 ## ========================================================================
