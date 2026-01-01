@@ -126,45 +126,25 @@ void Vtop___024root___eval_triggers__act(Vtop___024root* vlSelf) {
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__VactTriggered[0U] = (QData)((IData)(
-                                                    (((((((IData)(vlSelfRef.mmu__DOT__pe11__DOT__reset) 
-                                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__reset__0))) 
-                                                         << 3U) 
-                                                        | (((IData)(vlSelfRef.mmu__DOT__pe11__DOT__clk) 
-                                                            & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0))) 
-                                                           << 2U)) 
-                                                       | ((((IData)(vlSelfRef.mmu__DOT__pe10__DOT__reset) 
-                                                            & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__reset__0))) 
-                                                           << 1U) 
-                                                          | ((IData)(vlSelfRef.mmu__DOT__pe10__DOT__clk) 
-                                                             & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0))))) 
-                                                      << 4U) 
-                                                     | (((((IData)(vlSelfRef.mmu__DOT__pe01__DOT__reset) 
-                                                           & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__reset__0))) 
-                                                          << 3U) 
-                                                         | (((IData)(vlSelfRef.mmu__DOT__pe01__DOT__clk) 
-                                                             & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0))) 
-                                                            << 2U)) 
-                                                        | ((((IData)(vlSelfRef.mmu__DOT__pe00__DOT__reset) 
-                                                             & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__reset__0))) 
-                                                            << 1U) 
-                                                           | ((IData)(vlSelfRef.mmu__DOT__pe00__DOT__clk) 
-                                                              & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0))))))));
+                                                    (((((IData)(vlSelfRef.mmu__DOT__pe11__DOT__clk) 
+                                                        & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0))) 
+                                                       << 3U) 
+                                                      | (((IData)(vlSelfRef.mmu__DOT__pe10__DOT__clk) 
+                                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0))) 
+                                                         << 2U)) 
+                                                     | ((((IData)(vlSelfRef.mmu__DOT__pe01__DOT__clk) 
+                                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0))) 
+                                                         << 1U) 
+                                                        | ((IData)(vlSelfRef.mmu__DOT__pe00__DOT__clk) 
+                                                           & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0)))))));
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe00__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe00__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe01__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe01__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe10__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe10__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe11__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe11__DOT__reset;
 #ifdef VL_DEBUG
     if (VL_UNLIKELY(vlSymsp->_vm_contextp__->debug())) {
         Vtop___024root___dump_triggers__act(vlSelfRef.__VactTriggered, "act"s);
@@ -322,26 +302,22 @@ void Vtop___024root___eval_nba(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    if ((0x000000000000000cULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((2ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__0(vlSelf);
     }
-    if ((0x00000000000000c0ULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((8ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__1(vlSelf);
     }
-    if ((3ULL & vlSelfRef.__VnbaTriggered[0U])) {
+    if ((1ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__2(vlSelf);
     }
-    if ((0x0000000000000030ULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((4ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__3(vlSelf);
     }
-    if ((0x000000000000000cULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((2ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__4(vlSelf);
     }
-    if ((3ULL & vlSelfRef.__VnbaTriggered[0U])) {
+    if ((1ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__5(vlSelf);
     }
 }
@@ -410,7 +386,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
             Vtop___024root___dump_triggers__ico(vlSelfRef.__VicoTriggered, "ico"s);
 #endif
-            VL_FATAL_MT("/Users/alanma/Downloads/tinytinyTPU/rtl/mmu.sv", 3, "", "Input combinational region did not converge after 100 tries");
+            VL_FATAL_MT("/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/rtl/mmu.sv", 3, "", "Input combinational region did not converge after 100 tries");
         }
         __VicoIterCount = ((IData)(1U) + __VicoIterCount);
     } while (Vtop___024root___eval_phase__ico(vlSelf));
@@ -420,7 +396,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
             Vtop___024root___dump_triggers__act(vlSelfRef.__VnbaTriggered, "nba"s);
 #endif
-            VL_FATAL_MT("/Users/alanma/Downloads/tinytinyTPU/rtl/mmu.sv", 3, "", "NBA region did not converge after 100 tries");
+            VL_FATAL_MT("/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/rtl/mmu.sv", 3, "", "NBA region did not converge after 100 tries");
         }
         __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
         vlSelfRef.__VactIterCount = 0U;
@@ -429,7 +405,7 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
                 Vtop___024root___dump_triggers__act(vlSelfRef.__VactTriggered, "act"s);
 #endif
-                VL_FATAL_MT("/Users/alanma/Downloads/tinytinyTPU/rtl/mmu.sv", 3, "", "Active region did not converge after 100 tries");
+                VL_FATAL_MT("/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/rtl/mmu.sv", 3, "", "Active region did not converge after 100 tries");
             }
             vlSelfRef.__VactIterCount = ((IData)(1U) 
                                          + vlSelfRef.__VactIterCount);

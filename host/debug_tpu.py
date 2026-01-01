@@ -83,23 +83,37 @@ def debug_tpu(port: str):
         result = tpu.read_result()
         print(f"  Result: {result}")
         print(f"  Result (hex): 0x{result:08X}")
-        print(f"  Expected: 140 (0x8C) for identity with [10,20,10,20]\n")
+        expected = 20  # C = [[10,20],[10,20]], acc0 reads column sum = 10+10=20
+        if result == expected:
+            print(f"  ✓ Correct! Expected {expected} for identity matrix\n")
+        else:
+            print(f"  ✗ Expected {expected}, got {result}\n")
 
         # Test 3: Different inputs to check if result changes
         print("Test 3: Different Inputs Test")
         print("-" * 60)
 
+        # Each test case: (weights, activations, name, expected_result)
+        # Expected values based on C = W × A, acc0 = sum of first column of C
         test_cases = [
-            ([[2, 0], [0, 2]], [[5, 10], [5, 10]], "2x scale"),
-            ([[0, 0], [0, 0]], [[5, 10], [5, 10]], "zero weights"),
-            ([[1, 1], [1, 1]], [[1, 1], [1, 1]], "all ones"),
+            # W=[[2,0],[0,2]], A=[[5,10],[5,10]] → C=[[10,20],[10,20]], acc0=10+10=20
+            ([[2, 0], [0, 2]], [[5, 10], [5, 10]], "2x scale", 20),
+            # W=[[0,0],[0,0]], A=[[5,10],[5,10]] → C=[[0,0],[0,0]], acc0=0
+            ([[0, 0], [0, 0]], [[5, 10], [5, 10]], "zero weights", 0),
+            # W=[[1,1],[1,1]], A=[[1,1],[1,1]] → C=[[2,2],[2,2]], acc0=2+2=4
+            ([[1, 1], [1, 1]], [[1, 1], [1, 1]], "all ones", 4),
         ]
 
         results = []
-        for weights, activations, name in test_cases:
+        all_passed = True
+        for weights, activations, name, expected in test_cases:
             result = tpu.inference(weights, activations, timeout=5.0)
             results.append(result)
-            print(f"{name:15s}: result={result:3d} (0x{result:08X})")
+            passed = result == expected
+            if not passed:
+                all_passed = False
+            status = "✓" if passed else "✗"
+            print(f"{status} {name:15s}: result={result:3d}, expected={expected:3d}")
 
         print()
         if len(set(results)) == 1:
@@ -109,8 +123,10 @@ def debug_tpu(port: str):
             print("    1. Weights/activations not being loaded")
             print("    2. MLP stuck in a state")
             print("    3. Result register not updating")
+        elif all_passed:
+            print("✓ All tests passed!\n")
         else:
-            print("✓ Results are different - TPU is computing!\n")
+            print("⚠ Some tests failed - check computation logic\n")
 
         # Test 4: Raw result register read
         print("Test 4: Raw Result Register Read")
@@ -137,22 +153,32 @@ def debug_tpu(port: str):
         print("=" * 60)
         print("DIAGNOSTIC SUMMARY")
         print("=" * 60)
+
+        # Check all test results
+        if all_passed:
+            print("✓ All matrix multiply tests PASSED!")
+            print()
+            print("The TPU is computing correctly. Expected values:")
+            print("  - Identity [[1,0],[0,1]] × [[10,20],[10,20]] → acc0 = 20")
+            print("  - 2x scale [[2,0],[0,2]] × [[5,10],[5,10]]   → acc0 = 20")
+            print("  - Zero weights → acc0 = 0")
+            print("  - All ones → acc0 = 4")
+        else:
+            print("⚠ Some tests FAILED - check computation logic")
+            print()
+            print("Expected values (acc0 = sum of column 0 of result matrix):")
+            print("  C = W × A, where acc0 = C[0,0] + C[1,0]")
+            print()
+            print("Debug checklist:")
+            print("  1. Verify weight loading order (bottom row first, staggered columns)")
+            print("  2. Verify activation packing (column-major for systolic timing)")
+            print("  3. Check accumulator clear logic (acc_clear on start_mlp)")
+            print("  4. Run simulation tests to compare expected behavior")
+
+        print()
         print("MLP FSM States:")
         print("  0=IDLE, 1=LOAD_WEIGHT, 2=LOAD_ACT, 3=COMPUTE")
         print("  4=DRAIN, 5=TRANSFER, 6=NEXT_LAYER, 7=WAIT_WEIGHTS, 8=DONE")
-        print()
-        print("Check the Basys3 LEDs:")
-        print("  1. Set SW[15:14] = 00: LED[3:0] shows MLP state")
-        print("     → Should cycle 0→1→2→3→4→8→0 during single-layer compute")
-        print("  2. Set SW[15:14] = 11: LED[14] shows start_mlp pulse")
-        print("     → Should flash briefly when EXECUTE sent")
-        print("  3. LED[9:10] should flicker during UART communication")
-        print()
-        print("Next steps:")
-        print("  1. Press CENTER button (BTNC) to reset TPU")
-        print("  2. Watch LEDs during next inference")
-        print("  3. If state never changes from 0, check start_mlp (LED[14] in mode 11)")
-        print("  4. If LED[14] never lights, UART RX or command parsing issue")
         print("=" * 60)
 
 if __name__ == "__main__":

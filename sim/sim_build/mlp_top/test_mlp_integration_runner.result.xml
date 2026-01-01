@@ -1,9 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1767235163" />
-    <testcase name="test_mlp_weight_loading" classname="test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="87" time="0.001348733901977539" sim_time_ns="120.0" ratio_time="88972.33162453597" />
-    <testcase name="test_mlp_single_layer_compute" classname="test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="117" time="0.0012748241424560547" sim_time_ns="320.0" ratio_time="251015.01402655695" />
-    <testcase name="test_mlp_two_layer_network" classname="test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="203" time="0.0010540485382080078" sim_time_ns="419.99999999999994" ratio_time="398463.6236145668" />
-    <testcase name="test_mlp_state_machine" classname="test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="312" time="0.0007779598236083984" sim_time_ns="289.9999999999999" ratio_time="372769.8927367452" />
-  </testsuite>
-</testsuites>

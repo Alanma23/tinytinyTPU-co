@@ -67,25 +67,21 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ __VstlFirstIteration;
         CData/*0:0*/ __VicoFirstIteration;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__reset__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__reset__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__reset__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__reset__0;
         VL_OUT16(acc0_out,15,0);
         VL_OUT16(acc1_out,15,0);
         SData/*15:0*/ mmu__DOT__acc0_out;
         SData/*15:0*/ mmu__DOT__acc1_out;
         SData/*15:0*/ mmu__DOT__pe00_10_psum;
         SData/*15:0*/ mmu__DOT__pe01_11_psum;
-    };
-    struct {
         SData/*15:0*/ mmu__DOT__pe00__DOT__in_psum;
         SData/*15:0*/ mmu__DOT__pe00__DOT__out_psum;
         SData/*15:0*/ mmu__DOT__pe01__DOT__in_psum;
         SData/*15:0*/ mmu__DOT__pe01__DOT__out_psum;
+    };
+    struct {
         SData/*15:0*/ mmu__DOT__pe10__DOT__in_psum;
         SData/*15:0*/ mmu__DOT__pe10__DOT__out_psum;
         SData/*15:0*/ mmu__DOT__pe11__DOT__in_psum;

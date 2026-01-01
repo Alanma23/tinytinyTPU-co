@@ -11,20 +11,12 @@ VL_ATTR_COLD void Vtop___024root___eval_static(Vtop___024root* vlSelf) {
     // Body
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe00__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe00__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe01__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe01__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe10__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe10__DOT__reset;
     vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0 
         = vlSelfRef.mmu__DOT__pe11__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__reset__0 
-        = vlSelfRef.mmu__DOT__pe11__DOT__reset;
 }
 
 VL_ATTR_COLD void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
@@ -58,7 +50,7 @@ VL_ATTR_COLD void Vtop___024root___eval_settle(Vtop___024root* vlSelf) {
 #ifdef VL_DEBUG
             Vtop___024root___dump_triggers__stl(vlSelfRef.__VstlTriggered, "stl"s);
 #endif
-            VL_FATAL_MT("/Users/alanma/Downloads/tinytinyTPU/rtl/mmu.sv", 3, "", "Settle region did not converge after 100 tries");
+            VL_FATAL_MT("/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/rtl/mmu.sv", 3, "", "Settle region did not converge after 100 tries");
         }
         __VstlIterCount = ((IData)(1U) + __VstlIterCount);
     } while (Vtop___024root___eval_phase__stl(vlSelf));
@@ -165,25 +157,13 @@ VL_ATTR_COLD void Vtop___024root___dump_triggers__act(const VlUnpacked<QData/*63
         VL_DBG_MSGS("         '" + tag + "' region trigger index 0 is active: @(posedge mmu.pe00.clk)\n");
     }
     if ((1U & (IData)((triggers[0U] >> 1U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 1 is active: @(posedge mmu.pe00.reset)\n");
+        VL_DBG_MSGS("         '" + tag + "' region trigger index 1 is active: @(posedge mmu.pe01.clk)\n");
     }
     if ((1U & (IData)((triggers[0U] >> 2U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 2 is active: @(posedge mmu.pe01.clk)\n");
+        VL_DBG_MSGS("         '" + tag + "' region trigger index 2 is active: @(posedge mmu.pe10.clk)\n");
     }
     if ((1U & (IData)((triggers[0U] >> 3U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 3 is active: @(posedge mmu.pe01.reset)\n");
-    }
-    if ((1U & (IData)((triggers[0U] >> 4U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 4 is active: @(posedge mmu.pe10.clk)\n");
-    }
-    if ((1U & (IData)((triggers[0U] >> 5U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 5 is active: @(posedge mmu.pe10.reset)\n");
-    }
-    if ((1U & (IData)((triggers[0U] >> 6U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 6 is active: @(posedge mmu.pe11.clk)\n");
-    }
-    if ((1U & (IData)((triggers[0U] >> 7U)))) {
-        VL_DBG_MSGS("         '" + tag + "' region trigger index 7 is active: @(posedge mmu.pe11.reset)\n");
+        VL_DBG_MSGS("         '" + tag + "' region trigger index 3 is active: @(posedge mmu.pe11.clk)\n");
     }
 }
 #endif  // VL_DEBUG
@@ -266,13 +246,9 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
         vlSelf->__VactTriggered[__Vi0] = 0;
     }
     vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__clk__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 1657930251689640951ull);
-    vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe00__DOT__reset__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 2807767516655372517ull);
     vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__clk__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 17892344623498519598ull);
-    vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe01__DOT__reset__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 6480024467384458693ull);
     vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__clk__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 4650777484318689277ull);
-    vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe10__DOT__reset__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 12330237985345658876ull);
     vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__clk__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 12150863043649418022ull);
-    vlSelf->__Vtrigprevexpr___TOP__mmu__DOT__pe11__DOT__reset__0 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 16299268060402453218ull);
     for (int __Vi0 = 0; __Vi0 < 1; ++__Vi0) {
         vlSelf->__VnbaTriggered[__Vi0] = 0;
     }

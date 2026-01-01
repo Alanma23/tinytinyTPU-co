@@ -1,9 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1766301251" />
-    <testcase name="test_mmu_reset" classname="tests.test_mmu" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mmu.py" lineno="12" time="0.0013461112976074219" sim_time_ns="10.0" ratio_time="7428.806234502303" />
-    <testcase name="test_mmu_weight_loading" classname="tests.test_mmu" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mmu.py" lineno="36" time="0.0002853870391845703" sim_time_ns="60.00000000000001" ratio_time="210240.80200501255" />
-    <testcase name="test_mmu_matrix_multiply" classname="tests.test_mmu" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mmu.py" lineno="88" time="0.0004661083221435547" sim_time_ns="120.00000000000001" ratio_time="257450.88491048597" />
-    <testcase name="test_mmu_simple_multiply" classname="tests.test_mmu" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mmu.py" lineno="188" time="0.0003578662872314453" sim_time_ns="130.0" ratio_time="363264.1705529647" />
-  </testsuite>
-</testsuites>
