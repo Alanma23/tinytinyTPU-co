@@ -188,7 +188,7 @@ class GestureDemo:
         """Initialize pygame."""
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("TinyTPU Gesture Demo")
+        pygame.display.set_caption("tiny²TPU Gesture Demo")
 
         self.font_large = pygame.font.Font(None, 200)
         self.font_medium = pygame.font.Font(None, 48)
@@ -318,7 +318,7 @@ class GestureDemo:
         self.draw_stats()
 
         # Draw title
-        title = self.font_medium.render("TinyTPU Gesture Demo", True, (200, 200, 220))
+        title = self.font_medium.render("tiny²TPU Gesture Demo", True, (200, 200, 220))
         self.screen.blit(title, (20, 15))
 
         # Mode indicator
@@ -426,7 +426,7 @@ def find_serial_port():
 
 
 def main():
-    print("TinyTPU Gesture Demo")
+    print("tiny²TPU Gesture Demo")
     print("=" * 40)
 
     # Parse arguments
@@ -448,23 +448,33 @@ def main():
     if not sim_mode:
         if port is None:
             port = find_serial_port()
+            if port:
+                print(f"Auto-detected port: {port}")
 
         if port and TPUDriver:
             try:
                 print(f"Connecting to TPU on {port}...")
                 tpu = TPUDriver(port)
                 tpu.open()
+                print("Serial port opened, reading status...")
                 state, cycle = tpu.read_status()
                 print(f"TPU connected! State: {state}, Cycle: {cycle}")
+                if state != 0:
+                    print(f"  Warning: TPU not in IDLE state, press BTNC to reset")
             except Exception as e:
+                import traceback
                 print(f"Failed to connect: {e}")
-                print("Falling back to simulation mode")
+                print("Full error:")
+                traceback.print_exc()
+                print("\nFalling back to simulation mode")
                 tpu = None
         else:
             if not TPUDriver:
-                print("TPU driver not found")
+                print("ERROR: TPU driver module not loaded")
+                print(f"  Check that tpu_driver.py exists in {script_dir}")
             if not port:
-                print("No serial port found")
+                print("ERROR: No serial port specified or found")
+                print("  Usage: python3 gesture_demo.py /dev/tty.usbserial-XXXXX")
             print("Running in simulation mode")
 
     if sim_mode or tpu is None:
