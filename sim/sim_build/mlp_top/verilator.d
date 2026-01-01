@@ -1,5 +1,5 @@
 verilator.o: \
-  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/cocotb/share/lib/verilator/verilator.cpp \
+  /Users/alanma/Downloads/tinytinyTPU-co/sim/venv/lib/python3.9/site-packages/cocotb/share/lib/verilator/verilator.cpp \
   Vtop.h \
   /opt/homebrew/Cellar/verilator/5.042/share/verilator/include/verilated.h \
   /opt/homebrew/Cellar/verilator/5.042/share/verilator/include/verilated_config.h \

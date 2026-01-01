@@ -43,7 +43,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(370);
+    Verilated::stackCheck(372);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);
@@ -137,6 +137,8 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top.varInsert(__Vfinal,"WAIT_WEIGHTS", const_cast<void*>(static_cast<const void*>(&(TOP.mlp_top__DOT__WAIT_WEIGHTS))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"acc0", &(TOP.mlp_top__DOT__acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"acc1", &(TOP.mlp_top__DOT__acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_mlp_top.varInsert(__Vfinal,"acc_clear", &(TOP.mlp_top__DOT__acc_clear), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_mlp_top.varInsert(__Vfinal,"acc_reset", &(TOP.mlp_top__DOT__acc_reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"acc_valid", &(TOP.mlp_top__DOT__acc_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"accum_en", &(TOP.mlp_top__DOT__accum_en), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"act_row0_data", &(TOP.mlp_top__DOT__act_row0_data), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
@@ -181,6 +183,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top.varInsert(__Vfinal,"start_mlp", &(TOP.mlp_top__DOT__start_mlp), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"state", &(TOP.mlp_top__DOT__state), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"state_reg", &(TOP.mlp_top__DOT__state_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
+        __Vscope_mlp_top.varInsert(__Vfinal,"state_reg_prev", &(TOP.mlp_top__DOT__state_reg_prev), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"transfer_phase", &(TOP.mlp_top__DOT__transfer_phase), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"ub_a_empty", &(TOP.mlp_top__DOT__ub_a_empty), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top.varInsert(__Vfinal,"ub_a_rd_data", &(TOP.mlp_top__DOT__ub_a_rd_data), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
@@ -248,6 +251,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"clk", &(TOP.mlp_top__DOT__ap_col0__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"loss_out", &(TOP.mlp_top__DOT__ap_col0__DOT__loss_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"loss_valid", &(TOP.mlp_top__DOT__ap_col0__DOT__loss_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"mult_raw", &(TOP.mlp_top__DOT__ap_col0__DOT__mult_raw), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"mult_reg", &(TOP.mlp_top__DOT__ap_col0__DOT__mult_reg), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"norm_bias", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_bias), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0.varInsert(__Vfinal,"norm_gain", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_gain), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
@@ -295,16 +299,19 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"bias", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"bias_d", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"bias_d1", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"bias_d2", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d2), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"clk", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"data_in", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__data_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"data_in_d", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__data_in_d), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"data_out", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__data_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"gain", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__gain), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"gain_d", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__gain_d), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
+        __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"mult_raw", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__mult_raw), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"mult_res", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__mult_res), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"reset", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"s1_valid", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__s1_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"s2_valid", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__s2_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"s3_valid", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__s3_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"shift", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shift), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"shift_d", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shift_d), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_mlp_top__ap_col0__norm_u.varInsert(__Vfinal,"shift_d1", &(TOP.mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shift_d1), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
@@ -317,6 +324,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"clk", &(TOP.mlp_top__DOT__ap_col1__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"loss_out", &(TOP.mlp_top__DOT__ap_col1__DOT__loss_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"loss_valid", &(TOP.mlp_top__DOT__ap_col1__DOT__loss_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"mult_raw", &(TOP.mlp_top__DOT__ap_col1__DOT__mult_raw), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"mult_reg", &(TOP.mlp_top__DOT__ap_col1__DOT__mult_reg), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"norm_bias", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_bias), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1.varInsert(__Vfinal,"norm_gain", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_gain), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
@@ -364,16 +372,19 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"bias", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"bias_d", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"bias_d1", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"bias_d2", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d2), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"clk", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"data_in", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__data_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"data_in_d", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__data_in_d), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"data_out", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__data_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"gain", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__gain), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"gain_d", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__gain_d), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
+        __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"mult_raw", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__mult_raw), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"mult_res", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__mult_res), false, VLVT_UINT64,VLVD_NODIR|VLVF_PUB_RW,0,1 ,47,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"reset", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"s1_valid", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__s1_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"s2_valid", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__s2_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"s3_valid", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__s3_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"shift", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shift), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"shift_d", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shift_d), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_mlp_top__ap_col1__norm_u.varInsert(__Vfinal,"shift_d1", &(TOP.mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shift_d1), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);

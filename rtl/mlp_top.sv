@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNSIGNED */
+
 // Top-level MLP integration module for cocotb testing
 // Instantiates: Dual Weight FIFO, Unified Buffers, MMU, Accumulator, Activation Pipeline
 
@@ -197,12 +199,15 @@ module mlp_top (
     logic accum_en;
     logic addr_sel;
     logic mmu_valid;
+    logic acc_clear;
+    logic acc_reset;
 
     assign mmu_valid = (compute_phase && cycle_cnt_reg >= 5'd2) || drain_phase;
+    assign acc_reset = reset | acc_clear;  // Clear accumulator on reset OR new inference
 
     accumulator accum_u (
         .clk(clk),
-        .reset(reset),
+        .reset(acc_reset),
         .valid_in(mmu_valid),
         .accumulator_enable(accum_en),
         .addr_sel(addr_sel),
@@ -302,7 +307,9 @@ module mlp_top (
             layer_complete <= 1'b0;
             accum_en <= 1'b0;
             addr_sel <= 1'b0;
+            acc_clear <= 1'b0;
         end else begin
+            acc_clear <= 1'b0;  // Default: clear is a single-cycle pulse
             // #region agent log
             if (start_mlp && state_reg == IDLE)
                 $display("[MLP] start_mlp=1 detected in IDLE, weights_ready=%b", weights_ready);
@@ -322,6 +329,7 @@ module mlp_top (
                         current_layer_reg <= 3'd0;
                         buffer_select <= 1'b0;
                         weights_loaded <= 1'b0;  // Clear for fresh computation
+                        acc_clear <= 1'b1;       // Clear accumulators for new inference
                     end
                 end
 

@@ -1,0 +1,2 @@
+[console_scripts]
+cocotb-config = cocotb_tools.config:main

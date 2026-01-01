@@ -86,10 +86,13 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ mlp_top__DOT__accum_en;
         CData/*0:0*/ mlp_top__DOT__addr_sel;
         CData/*0:0*/ mlp_top__DOT__mmu_valid;
+        CData/*0:0*/ mlp_top__DOT__acc_clear;
+        CData/*0:0*/ mlp_top__DOT__acc_reset;
         CData/*0:0*/ mlp_top__DOT__ap_valid;
         CData/*7:0*/ mlp_top__DOT__ap_data_col0;
         CData/*7:0*/ mlp_top__DOT__ap_data_col1;
         CData/*0:0*/ mlp_top__DOT__refill_valid;
+        CData/*3:0*/ mlp_top__DOT__state_reg_prev;
         CData/*0:0*/ mlp_top__DOT__weight_fifo_u__DOT__clk;
         CData/*0:0*/ mlp_top__DOT__weight_fifo_u__DOT__reset;
         CData/*0:0*/ mlp_top__DOT__weight_fifo_u__DOT__push_col0;
@@ -143,11 +146,11 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*7:0*/ mlp_top__DOT__mmu_u__DOT__col0_in;
         CData/*7:0*/ mlp_top__DOT__mmu_u__DOT__col1_in;
         CData/*7:0*/ mlp_top__DOT__mmu_u__DOT__pe00_01_act;
+    };
+    struct {
         CData/*7:0*/ mlp_top__DOT__mmu_u__DOT__pe10_11_act;
         CData/*0:0*/ mlp_top__DOT__mmu_u__DOT__pe00__DOT__clk;
         CData/*0:0*/ mlp_top__DOT__mmu_u__DOT__pe00__DOT__reset;
-    };
-    struct {
         CData/*0:0*/ mlp_top__DOT__mmu_u__DOT__pe00__DOT__en_weight_pass;
         CData/*0:0*/ mlp_top__DOT__mmu_u__DOT__pe00__DOT__en_weight_capture;
         CData/*7:0*/ mlp_top__DOT__mmu_u__DOT__pe00__DOT__in_act;
@@ -209,11 +212,11 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__q_s2_valid;
         CData/*7:0*/ mlp_top__DOT__ap_col0__DOT__q_zero_point_d1;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__q_s3_valid;
+    };
+    struct {
         CData/*7:0*/ mlp_top__DOT__ap_col0__DOT__q_zero_point_d2;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__q_s4_valid;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__act_u__DOT__clk;
-    };
-    struct {
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__act_u__DOT__reset;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__act_u__DOT__valid_in;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__act_u__DOT__valid_out;
@@ -226,6 +229,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*4:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shift_d;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__s2_valid;
         CData/*4:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shift_d1;
+        CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__s3_valid;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__clk;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__reset;
         CData/*0:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__valid_in;
@@ -262,6 +266,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*4:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shift_d;
         CData/*0:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__s2_valid;
         CData/*4:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shift_d1;
+        CData/*0:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__s3_valid;
         CData/*0:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__clk;
         CData/*0:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__reset;
         CData/*0:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__valid_in;
@@ -273,13 +278,13 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__ub_a__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__ub_b__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__mmu_u__DOT__pe00__DOT__clk__0;
+    };
+    struct {
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__mmu_u__DOT__pe01__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__mmu_u__DOT__pe10__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__mmu_u__DOT__pe11__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__accum_u__DOT__u_align__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__accum_u__DOT__u_mem__DOT__clk__0;
-    };
-    struct {
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__ap_col0__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__ap_col0__DOT__act_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__mlp_top__DOT__ap_col0__DOT__norm_u__DOT__clk__0;
@@ -339,13 +344,13 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         SData/*15:0*/ mlp_top__DOT__ap_col0__DOT__q_inv_scale;
         SData/*15:0*/ mlp_top__DOT__ap_col0__DOT__q_inv_scale_d0;
         SData/*15:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__gain;
+    };
+    struct {
         SData/*15:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__gain_d;
         SData/*15:0*/ mlp_top__DOT__ap_col1__DOT__norm_gain;
         SData/*15:0*/ mlp_top__DOT__ap_col1__DOT__q_inv_scale;
         SData/*15:0*/ mlp_top__DOT__ap_col1__DOT__q_inv_scale_d0;
         SData/*15:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__gain;
-    };
-    struct {
         SData/*15:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__gain_d;
         VL_IN(norm_bias,31,0);
         VL_OUT(acc0,31,0);
@@ -379,6 +384,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__data_in_d;
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d;
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d1;
+        IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__bias_d2;
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__data_in;
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__target_in;
         IData/*31:0*/ mlp_top__DOT__ap_col0__DOT__loss_u__DOT__loss_out;
@@ -402,20 +408,25 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__data_in_d;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d1;
+        IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__bias_d2;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__data_in;
+    };
+    struct {
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__target_in;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__loss_out;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__diff;
         IData/*31:0*/ mlp_top__DOT__ap_col1__DOT__loss_u__DOT__abs_diff;
         IData/*31:0*/ __VactIterCount;
+        QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__mult_raw;
         QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__mult_reg;
         QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__unnamedblk1__DOT__mult_rounded;
-    };
-    struct {
+        QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__mult_raw;
         QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__mult_res;
         QData/*47:0*/ mlp_top__DOT__ap_col0__DOT__norm_u__DOT__shifted_res;
+        QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__mult_raw;
         QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__mult_reg;
         QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__unnamedblk1__DOT__mult_rounded;
+        QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__mult_raw;
         QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__mult_res;
         QData/*47:0*/ mlp_top__DOT__ap_col1__DOT__norm_u__DOT__shifted_res;
         VlUnpacked<CData/*7:0*/, 4> mlp_top__DOT__weight_fifo_u__DOT__queue0;
@@ -444,7 +455,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
     static constexpr CData/*0:0*/ mlp_top__DOT__accum_u__DOT__u_mem__DOT__BYPASS_READ_NEW = 1U;
     static constexpr CData/*1:0*/ mlp_top__DOT__ap_col0__DOT__act_u__DOT__DEFAULT_ACT = 1U;
     static constexpr CData/*1:0*/ mlp_top__DOT__ap_col1__DOT__act_u__DOT__DEFAULT_ACT = 1U;
-    static constexpr IData/*31:0*/ mlp_top__DOT__NUM_LAYERS = 2U;
+    static constexpr IData/*31:0*/ mlp_top__DOT__NUM_LAYERS = 1U;
     static constexpr IData/*31:0*/ mlp_top__DOT__ub_a__DOT__WIDTH = 0x00000010U;
     static constexpr IData/*31:0*/ mlp_top__DOT__ub_a__DOT__DEPTH = 0x00000010U;
     static constexpr IData/*31:0*/ mlp_top__DOT__ub_a__DOT__ADDR_W = 4U;

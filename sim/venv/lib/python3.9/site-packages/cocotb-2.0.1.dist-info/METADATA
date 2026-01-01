@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: cocotb
+Version: 2.0.1
+Summary: cocotb is a coroutine based cosimulation library for writing VHDL and Verilog testbenches in Python.
+Home-page: https://www.cocotb.org
+Author: Chris Higgs, Stuart Hodgson
+Maintainer: cocotb contributors
+Maintainer-email: cocotb@lists.librecores.org
+License: BSD-3-Clause
+Project-URL: Bug Tracker, https://github.com/cocotb/cocotb/issues
+Project-URL: Source Code, https://github.com/cocotb/cocotb
+Project-URL: Documentation, https://docs.cocotb.org
+Platform: any
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)
+Classifier: Framework :: cocotb
+Requires-Python: >=3.6.2
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: find_libpython
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: platform
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+**cocotb** is a framework empowering users to write VHDL and Verilog testbenches in Python.
+
+[![Documentation Status](https://readthedocs.org/projects/cocotb/badge/?version=development)](https://docs.cocotb.org/en/stable/)
+[![CI](https://github.com/cocotb/cocotb/actions/workflows/build-test-dev.yml/badge.svg?branch=master)](https://github.com/cocotb/cocotb/actions/workflows/build-test-dev.yml)
+[![PyPI](https://img.shields.io/pypi/dm/cocotb.svg?label=PyPI%20downloads)](https://pypi.org/project/cocotb/)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cocotb/cocotb)
+[![codecov](https://codecov.io/gh/cocotb/cocotb/branch/master/graph/badge.svg)](https://codecov.io/gh/cocotb/cocotb)
+
+* Check out the [tutorial](https://docs.cocotb.org/en/stable/quickstart.html)
+* Read the [docs](https://docs.cocotb.org/en/stable/)
+* Find more info in the [wiki](https://github.com/cocotb/cocotb/wiki)
+* Discover [useful extensions](https://github.com/cocotb/cocotb/wiki/Further-Resources#utility-libraries-and-frameworks)
+* Join the discussion in the [Gitter chat room](https://gitter.im/cocotb/Lobby)
+* [Ask a question](https://github.com/cocotb/cocotb/discussions)
+* [Raise a bug / request an enhancement](https://github.com/cocotb/cocotb/issues/new)
