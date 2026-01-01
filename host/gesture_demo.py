@@ -13,8 +13,14 @@ Requirements:
 """
 
 import sys
+import os
 import time
 import math
+
+# Add script directory to path for imports
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
 
 # Check for pygame
 try:
@@ -28,6 +34,7 @@ except ImportError:
 try:
     from tpu_driver import TPUDriver
 except ImportError:
+    print(f"Warning: tpu_driver.py not found in {script_dir}")
     TPUDriver = None
 
 
