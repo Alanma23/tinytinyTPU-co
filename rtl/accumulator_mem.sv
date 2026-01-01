@@ -10,8 +10,8 @@ module accumulator_mem #(
     input  logic        accumulator_mode, // 0/1 overwrite/add
     input  logic        buffer_select, // double buffer selection
 
-    input  logic [15:0] in_col0,
-    input  logic [15:0] in_col1,
+    input  logic signed [15:0] in_col0,
+    input  logic signed [15:0] in_col1,
 
     output logic        valid_out,
     output logic signed [31:0] out_col0,
@@ -23,6 +23,13 @@ module accumulator_mem #(
     logic signed [31:0] mem_buff0_col1;
     logic signed [31:0] mem_buff1_col0;
     logic signed [31:0] mem_buff1_col1;
+    
+    // Sign-extension for bypass path (combinational)
+    logic signed [31:0] sign_ext_col0;
+    logic signed [31:0] sign_ext_col1;
+    
+    assign sign_ext_col0 = {{16{in_col0[15]}}, in_col0};
+    assign sign_ext_col1 = {{16{in_col1[15]}}, in_col1};
 
     always_ff @(posedge clk) begin
         if (reset) begin
@@ -36,18 +43,21 @@ module accumulator_mem #(
         end
         else begin
             if (enable) begin
-                unique case (buffer_select)
+                    unique case (buffer_select)
                     1'b0: begin // --- BUFFER 0 ---
                         if (accumulator_mode) begin
-                            mem_buff0_col0 <= mem_buff0_col0 + $signed({16'b0, in_col0});
-                            mem_buff0_col1 <= mem_buff0_col1 + $signed({16'b0, in_col1});
+                            // Sign-extend 16-bit input to 32-bit for signed addition
+                            mem_buff0_col0 <= mem_buff0_col0 + {{16{in_col0[15]}}, in_col0};
+                            mem_buff0_col1 <= mem_buff0_col1 + {{16{in_col1[15]}}, in_col1};
                         end else begin
-                            mem_buff0_col0 <= $signed({16'b0, in_col0});
-                            mem_buff0_col1 <= $signed({16'b0, in_col1});
+                            // Sign-extend 16-bit input to 32-bit for signed assignment
+                            mem_buff0_col0 <= {{16{in_col0[15]}}, in_col0};
+                            mem_buff0_col1 <= {{16{in_col1[15]}}, in_col1};
                         end
                         if (BYPASS_READ_NEW) begin
-                            out_col0 <= accumulator_mode ? (mem_buff0_col0 + $signed({16'b0, in_col0})) : $signed({16'b0, in_col0});
-                            out_col1 <= accumulator_mode ? (mem_buff0_col1 + $signed({16'b0, in_col1})) : $signed({16'b0, in_col1});
+                            // Use combinational sign-extended values
+                            out_col0 <= accumulator_mode ? (mem_buff0_col0 + sign_ext_col0) : sign_ext_col0;
+                            out_col1 <= accumulator_mode ? (mem_buff0_col1 + sign_ext_col1) : sign_ext_col1;
                         end else begin
                             out_col0 <= mem_buff0_col0;
                             out_col1 <= mem_buff0_col1;
@@ -56,15 +66,18 @@ module accumulator_mem #(
 
                     1'b1: begin // --- BUFFER 1 ---
                         if (accumulator_mode) begin
-                            mem_buff1_col0 <= mem_buff1_col0 + $signed({16'b0, in_col0});
-                            mem_buff1_col1 <= mem_buff1_col1 + $signed({16'b0, in_col1});
+                            // Sign-extend 16-bit input to 32-bit for signed addition
+                            mem_buff1_col0 <= mem_buff1_col0 + {{16{in_col0[15]}}, in_col0};
+                            mem_buff1_col1 <= mem_buff1_col1 + {{16{in_col1[15]}}, in_col1};
                         end else begin
-                            mem_buff1_col0 <= $signed({16'b0, in_col0});
-                            mem_buff1_col1 <= $signed({16'b0, in_col1});
+                            // Sign-extend 16-bit input to 32-bit for signed assignment
+                            mem_buff1_col0 <= {{16{in_col0[15]}}, in_col0};
+                            mem_buff1_col1 <= {{16{in_col1[15]}}, in_col1};
                         end
                         if (BYPASS_READ_NEW) begin
-                            out_col0 <= accumulator_mode ? (mem_buff1_col0 + $signed({16'b0, in_col0})) : $signed({16'b0, in_col0});
-                            out_col1 <= accumulator_mode ? (mem_buff1_col1 + $signed({16'b0, in_col1})) : $signed({16'b0, in_col1});
+                            // Use combinational sign-extended values
+                            out_col0 <= accumulator_mode ? (mem_buff1_col0 + sign_ext_col0) : sign_ext_col0;
+                            out_col1 <= accumulator_mode ? (mem_buff1_col1 + sign_ext_col1) : sign_ext_col1;
                         end else begin
                             out_col0 <= mem_buff1_col0;
                             out_col1 <= mem_buff1_col1;

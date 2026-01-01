@@ -24,6 +24,7 @@ class TPUCommand(IntEnum):
     EXECUTE = 0x03
     READ_RESULT = 0x04
     STATUS = 0x05
+    READ_RESULT_COL1 = 0x06
 
 
 class TPUDriver:
@@ -175,6 +176,23 @@ class TPUDriver:
             32-bit signed result (acc0)
         """
         self._send_command(TPUCommand.READ_RESULT)
+
+        # Receive 4 bytes: [7:0], [15:8], [23:16], [31:24]
+        data = self._receive_bytes(4)
+
+        # Unpack as little-endian signed 32-bit integer
+        result = struct.unpack('<i', data)[0]
+
+        return result
+
+    def read_result_col1(self) -> int:
+        """
+        Read 32-bit computation result (column 1)
+
+        Returns:
+            32-bit signed result (acc1)
+        """
+        self._send_command(TPUCommand.READ_RESULT_COL1)
 
         # Receive 4 bytes: [7:0], [15:8], [23:16], [31:24]
         data = self._receive_bytes(4)

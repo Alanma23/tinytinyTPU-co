@@ -153,29 +153,29 @@ module mlp_top (
         end
     end
 
-    // Activation data extraction
-    logic [7:0] act_row0_data, act_row1_data;
-    assign act_row0_data = act_ub_rd_data[7:0];
-    assign act_row1_data = act_ub_rd_data[15:8];
+    // Activation data extraction (signed)
+    logic signed [7:0] act_row0_data, act_row1_data;
+    assign act_row0_data = $signed(act_ub_rd_data[7:0]);
+    assign act_row1_data = $signed(act_ub_rd_data[15:8]);
 
-    // Row1 skew register for systolic timing
-    logic [7:0] row1_skew_reg;
+    // Row1 skew register for systolic timing (signed)
+    logic signed [7:0] row1_skew_reg;
 
     always_ff @(posedge clk) begin
         if (reset)
-            row1_skew_reg <= 8'd0;
+            row1_skew_reg <= 8'sd0;
         else if (compute_phase && act_ub_rd_valid)
             row1_skew_reg <= act_row1_data;
     end
 
-    // MMU connections
-    logic [7:0] mmu_row0_in, mmu_row1_in;
-    logic [7:0] mmu_col0_in, mmu_col1_in;
+    // MMU connections (signed)
+    logic signed [7:0] mmu_row0_in, mmu_row1_in;
+    logic signed [7:0] mmu_col0_in, mmu_col1_in;
 
-    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'd0;
-    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'd0;
-    assign mmu_col0_in = en_load_weight ? wf_col0_out : 8'd0;
-    assign mmu_col1_in = en_load_weight ? wf_col1_out : 8'd0;
+    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'sd0;
+    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'sd0;
+    assign mmu_col0_in = en_load_weight ? $signed(wf_col0_out) : 8'sd0;
+    assign mmu_col1_in = en_load_weight ? $signed(wf_col1_out) : 8'sd0;
 
     logic en_capture_col0, en_capture_col1;
     assign en_capture_col0 = en_load_weight && (cycle_cnt_reg == 5'd1);

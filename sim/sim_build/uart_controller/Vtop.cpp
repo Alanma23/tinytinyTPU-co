@@ -23,9 +23,16 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , weights_ready{vlSymsp->TOP.weights_ready}
     , mlp_state{vlSymsp->TOP.mlp_state}
     , mlp_cycle_cnt{vlSymsp->TOP.mlp_cycle_cnt}
-    , mlp_current_layer{vlSymsp->TOP.mlp_current_layer}
-    , mlp_layer_complete{vlSymsp->TOP.mlp_layer_complete}
-    , mlp_acc_valid{vlSymsp->TOP.mlp_acc_valid}
+    , dbg_state{vlSymsp->TOP.dbg_state}
+    , dbg_cmd_reg{vlSymsp->TOP.dbg_cmd_reg}
+    , dbg_byte_count{vlSymsp->TOP.dbg_byte_count}
+    , dbg_resp_byte_idx{vlSymsp->TOP.dbg_resp_byte_idx}
+    , dbg_tx_valid{vlSymsp->TOP.dbg_tx_valid}
+    , dbg_tx_ready{vlSymsp->TOP.dbg_tx_ready}
+    , dbg_rx_valid{vlSymsp->TOP.dbg_rx_valid}
+    , dbg_rx_data{vlSymsp->TOP.dbg_rx_data}
+    , dbg_weights_ready{vlSymsp->TOP.dbg_weights_ready}
+    , dbg_start_mlp{vlSymsp->TOP.dbg_start_mlp}
     , init_act_data{vlSymsp->TOP.init_act_data}
     , mlp_acc0{vlSymsp->TOP.mlp_acc0}
     , mlp_acc1{vlSymsp->TOP.mlp_acc1}

@@ -10,6 +10,8 @@ constexpr CData/*7:0*/ Vtop___024root::uart_controller__DOT__CMD_WRITE_ACT;
 constexpr CData/*7:0*/ Vtop___024root::uart_controller__DOT__CMD_EXECUTE;
 constexpr CData/*7:0*/ Vtop___024root::uart_controller__DOT__CMD_READ_RESULT;
 constexpr CData/*7:0*/ Vtop___024root::uart_controller__DOT__CMD_STATUS;
+constexpr CData/*7:0*/ Vtop___024root::uart_controller__DOT__CMD_READ_RESULT_COL1;
+constexpr CData/*3:0*/ Vtop___024root::uart_controller__DOT__MLP_STATE_LOAD_WEIGHT;
 constexpr IData/*31:0*/ Vtop___024root::uart_controller__DOT__CLOCK_FREQ;
 constexpr IData/*31:0*/ Vtop___024root::uart_controller__DOT__BAUD_RATE;
 constexpr IData/*31:0*/ Vtop___024root::uart_controller__DOT__uart_rx_u__DOT__CLOCK_FREQ;

@@ -28,6 +28,7 @@ module uart_controller #(
     input  logic [3:0]  mlp_state,
     input  logic [4:0]  mlp_cycle_cnt,
     input  logic signed [31:0] mlp_acc0,
+    input  logic signed [31:0] mlp_acc1,
 
     // Debug taps
     output logic [3:0]  dbg_state,
@@ -48,6 +49,7 @@ module uart_controller #(
     localparam logic [7:0] CMD_EXECUTE      = 8'h03;
     localparam logic [7:0] CMD_READ_RESULT  = 8'h04;
     localparam logic [7:0] CMD_STATUS       = 8'h05;
+    localparam logic [7:0] CMD_READ_RESULT_COL1 = 8'h06;
 
     // Mirror MLP state encodings for clarity
     localparam logic [3:0] MLP_STATE_LOAD_WEIGHT = 4'd1;
@@ -253,6 +255,7 @@ module uart_controller #(
                             state <= RECV_DATA;
                         end else if (rx_data == CMD_EXECUTE || 
                                     rx_data == CMD_READ_RESULT || 
+                                    rx_data == CMD_READ_RESULT_COL1 ||
                                     rx_data == CMD_STATUS) begin
                             state <= EXEC_CMD;
                         end else begin
@@ -383,10 +386,27 @@ module uart_controller #(
                             resp_buffer[3] <= mlp_acc0[31:24];
                             resp_byte_idx <= 2'd0;
                             byte_sent <= 1'b0;  // Clear flag for new response
+                            resp_delay_count <= 8'd0;  // Reset delay counter for new response
                             // #region agent log
                             $display("[UART_CTRL] EXEC_CMD: CMD_READ_RESULT - acc0=0x%08X, packing bytes: [7:0]=0x%02X, [15:8]=0x%02X, [23:16]=0x%02X, [31:24]=0x%02X, resp_buffer current=[0x%02X,0x%02X,0x%02X,0x%02X]",
                                      mlp_acc0, mlp_acc0[7:0], mlp_acc0[15:8], mlp_acc0[23:16], mlp_acc0[31:24],
                                      resp_buffer[0], resp_buffer[1], resp_buffer[2], resp_buffer[3]);
+                            // #endregion
+                            state <= SEND_RESP;
+                        end
+
+                        CMD_READ_RESULT_COL1: begin
+                            // Return 4 bytes: acc1[7:0], acc1[15:8], acc1[23:16], acc1[31:24]
+                            resp_buffer[0] <= mlp_acc1[7:0];
+                            resp_buffer[1] <= mlp_acc1[15:8];
+                            resp_buffer[2] <= mlp_acc1[23:16];
+                            resp_buffer[3] <= mlp_acc1[31:24];
+                            resp_byte_idx <= 2'd0;
+                            byte_sent <= 1'b0;  // Clear flag for new response
+                            resp_delay_count <= 8'd0;  // Reset delay counter for new response
+                            // #region agent log
+                            $display("[UART_CTRL] EXEC_CMD: CMD_READ_RESULT_COL1 - acc1=0x%08X, packing bytes: [7:0]=0x%02X, [15:8]=0x%02X, [23:16]=0x%02X, [31:24]=0x%02X",
+                                     mlp_acc1, mlp_acc1[7:0], mlp_acc1[15:8], mlp_acc1[23:16], mlp_acc1[31:24]);
                             // #endregion
                             state <= SEND_RESP;
                         end
@@ -397,6 +417,7 @@ module uart_controller #(
                             resp_buffer[0] <= {mlp_state[3:0], mlp_cycle_cnt[3:0]};
                             resp_byte_idx <= 2'd0;
                             byte_sent <= 1'b0;  // Clear flag for new response
+                            resp_delay_count <= 8'd0;  // Reset delay counter for new response
                             // #region agent log
                             $display("[UART_CTRL] EXEC_CMD: CMD_STATUS - mlp_state=0x%X[3:0], mlp_cycle_cnt=0x%X[4:0], packed_value=0x%02X (packed: state[3:0]=0x%X, cycle[3:0]=0x%X), resp_buffer[0] current=0x%02X",
                                      mlp_state, mlp_cycle_cnt, {mlp_state[3:0], mlp_cycle_cnt[3:0]}, mlp_state[3:0], mlp_cycle_cnt[3:0], resp_buffer[0]);
@@ -424,7 +445,7 @@ module uart_controller #(
                         // #region agent log
                         $display("[UART_CTRL] SEND_RESP: Sending byte[%0d]=0x%02X (from resp_buffer[%0d]=0x%02X), cmd=0x%02X, tx_ready=%b, total_bytes=%0d",
                                  resp_byte_idx, resp_buffer[resp_byte_idx], resp_byte_idx, resp_buffer[resp_byte_idx], cmd_reg, tx_ready,
-                                 (cmd_reg == CMD_READ_RESULT) ? 4 : 1);
+                                 ((cmd_reg == CMD_READ_RESULT) || (cmd_reg == CMD_READ_RESULT_COL1)) ? 4 : 1);
                         // #endregion
                     end else if (tx_valid_reg && tx_ready) begin
                         // TX valid asserted, waiting for UART TX to accept (tx_ready will go low next cycle)
@@ -454,12 +475,12 @@ module uart_controller #(
                             $display("[UART_CTRL] SEND_RESP: STATUS done, going to IDLE");
                             // #endregion
                             state <= IDLE;
-                        end else if (cmd_reg == CMD_READ_RESULT) begin
+                        end else if (cmd_reg == CMD_READ_RESULT || cmd_reg == CMD_READ_RESULT_COL1) begin
                             // 4 byte response: bytes 0, 1, 2, 3
                             if (resp_byte_idx == 2'd3) begin
                                 // All 4 bytes sent - done
                                 // #region agent log
-                                $display("[UART_CTRL] SEND_RESP: All 4 bytes sent (0,1,2,3), going to IDLE");
+                                $display("[UART_CTRL] SEND_RESP: All 4 bytes sent (0,1,2,3), going to IDLE (cmd=0x%02X)", cmd_reg);
                                 // #endregion
                                 state <= IDLE;
                             end else begin
@@ -468,8 +489,8 @@ module uart_controller #(
                                 byte_sent <= 1'b0;  // Clear flag for next byte
                                 resp_delay_count <= 8'd10;  // Skip delay for subsequent bytes (already listening)
                                 // #region agent log
-                                $display("[UART_CTRL] SEND_RESP: Moving to next byte, resp_byte_idx=%0d->%0d",
-                                         resp_byte_idx, resp_byte_idx + 1);
+                                $display("[UART_CTRL] SEND_RESP: Moving to next byte, resp_byte_idx=%0d->%0d (cmd=0x%02X)",
+                                         resp_byte_idx, resp_byte_idx + 1, cmd_reg);
                                 // #endregion
                             end
                         end else begin
@@ -480,12 +501,30 @@ module uart_controller #(
                             state <= IDLE;
                         end
                     end else begin
-                        // Unexpected state: tx_valid_reg && tx_ready with byte already sent
-                        // This shouldn't happen with the new logic
+                        // Unexpected state: recover by clearing tx_valid and trying to complete
+                        // This handles cases like: tx_valid_reg && tx_ready && byte_sent
+                        tx_valid_reg <= 1'b0;
                         // #region agent log
-                        $display("[UART_CTRL] SEND_RESP: Unexpected state - tx_valid=%b, tx_ready=%b, byte_sent=%b",
+                        $display("[UART_CTRL] SEND_RESP: Unexpected state - recovering (tx_valid=%b, tx_ready=%b, byte_sent=%b)",
                                  tx_valid_reg, tx_ready, byte_sent);
                         // #endregion
+                        // If byte was sent and we're in an unexpected state, try to complete
+                        if (byte_sent && tx_ready) begin
+                            // Byte was sent and TX is ready - treat as completion
+                            if (cmd_reg == CMD_STATUS) begin
+                                state <= IDLE;
+                            end else if (cmd_reg == CMD_READ_RESULT && resp_byte_idx == 2'd3) begin
+                                state <= IDLE;
+                            end else if (cmd_reg == CMD_READ_RESULT) begin
+                                // Move to next byte
+                                resp_byte_idx <= resp_byte_idx + 1;
+                                byte_sent <= 1'b0;
+                                resp_delay_count <= 8'd10;
+                            end else begin
+                                // Unknown command - abort
+                                state <= IDLE;
+                            end
+                        end
                     end
                 end
 
