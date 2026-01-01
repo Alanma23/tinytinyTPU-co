@@ -18,12 +18,42 @@ from enum import IntEnum
 
 
 class TPUCommand(IntEnum):
-    """TPU UART command codes"""
+    """TPU UART command codes (legacy - backward compatibility)"""
     WRITE_WEIGHT = 0x01
     WRITE_ACT = 0x02
     EXECUTE = 0x03
     READ_RESULT = 0x04
     STATUS = 0x05
+
+
+class TPUInstruction(IntEnum):
+    """TPU 20-Instruction ISA opcodes"""
+    # Memory Operations
+    NOP = 0x00
+    RD_HOST_MEM = 0x01
+    WR_HOST_MEM = 0x02
+    RD_WEIGHT = 0x03
+    LD_UB = 0x04
+    ST_UB = 0x05
+    # Matrix Operations
+    MATMUL = 0x10
+    CONV2D = 0x11
+    MATMUL_ACC = 0x12
+    # Activation Operations
+    RELU = 0x18
+    RELU6 = 0x19
+    SIGMOID = 0x1A
+    TANH = 0x1B
+    # Pooling Operations
+    MAXPOOL = 0x20
+    AVGPOOL = 0x21
+    # Normalization Operations
+    ADD_BIAS = 0x22
+    BATCH_NORM = 0x23
+    # Control Operations
+    SYNC = 0x30
+    CFG_REG = 0x31
+    HALT = 0x3F
 
 
 class TPUDriver:
@@ -98,12 +128,13 @@ class TPUDriver:
         # Small delay for UART transmission
         time.sleep(0.01)
 
-    def _receive_bytes(self, num_bytes: int) -> bytes:
+    def _receive_bytes(self, num_bytes: int, timeout: float = None) -> bytes:
         """
         Receive bytes from TPU
 
         Args:
             num_bytes: Number of bytes to receive
+            timeout: Optional timeout override (default: uses serial timeout)
 
         Returns:
             Received bytes
@@ -111,9 +142,18 @@ class TPUDriver:
         if not self.serial or not self.serial.is_open:
             raise RuntimeError("Serial port not open")
 
-        data = self.serial.read(num_bytes)
-        if len(data) != num_bytes:
-            raise RuntimeError(f"Expected {num_bytes} bytes, received {len(data)}")
+        # Use provided timeout or default
+        old_timeout = self.serial.timeout
+        if timeout is not None:
+            self.serial.timeout = timeout
+
+        try:
+            data = self.serial.read(num_bytes)
+            if len(data) != num_bytes:
+                raise RuntimeError(f"Expected {num_bytes} bytes, received {len(data)} (timeout: {self.serial.timeout}s)")
+        finally:
+            if timeout is not None:
+                self.serial.timeout = old_timeout
 
         return data
 
@@ -167,26 +207,35 @@ class TPUDriver:
         """Start TPU computation"""
         self._send_command(TPUCommand.EXECUTE)
 
-    def read_result(self) -> int:
+    def read_result(self, timeout: float = 0.5) -> int:
         """
         Read 32-bit computation result
+
+        Args:
+            timeout: Timeout in seconds (default: 0.5s)
 
         Returns:
             32-bit signed result (acc0)
         """
         self._send_command(TPUCommand.READ_RESULT)
+        
+        # Small delay to allow FPGA to process
+        time.sleep(0.01)
 
         # Receive 4 bytes: [7:0], [15:8], [23:16], [31:24]
-        data = self._receive_bytes(4)
+        data = self._receive_bytes(4, timeout=timeout)
 
         # Unpack as little-endian signed 32-bit integer
         result = struct.unpack('<i', data)[0]
 
         return result
 
-    def read_status(self) -> Tuple[int, int]:
+    def read_status(self, timeout: float = 0.5) -> Tuple[int, int]:
         """
         Read TPU status
+
+        Args:
+            timeout: Timeout in seconds (default: 0.5s)
 
         Returns:
             Tuple of (state, cycle_count)
@@ -194,9 +243,12 @@ class TPUDriver:
             - cycle_count: Current cycle count (4 bits, 0-15)
         """
         self._send_command(TPUCommand.STATUS)
+        
+        # Small delay to allow FPGA to process
+        time.sleep(0.01)
 
         # Receive 1 byte: {state[3:0], cycle_cnt[3:0]}
-        data = self._receive_bytes(1)
+        data = self._receive_bytes(1, timeout=timeout)
         status_byte = data[0]
 
         state = (status_byte >> 4) & 0x0F
@@ -256,6 +308,134 @@ class TPUDriver:
             raise TimeoutError("TPU computation timeout")
 
         return self.read_result()
+    
+    # ========== New ISA Instruction Methods ==========
+    
+    def instruction_nop(self):
+        """NOP - No operation"""
+        self._send_command(TPUInstruction.NOP)
+    
+    def instruction_matmul(self, clear_acc: bool = True):
+        """
+        MATMUL - Matrix multiply
+        
+        Args:
+            clear_acc: If True, clear accumulator before multiply (default: True)
+        """
+        if clear_acc:
+            self._send_command(TPUInstruction.MATMUL)
+        else:
+            self._send_command(TPUInstruction.MATMUL_ACC)
+    
+    def instruction_matmul_acc(self):
+        """MATMUL_ACC - Matrix multiply with accumulate"""
+        self._send_command(TPUInstruction.MATMUL_ACC)
+    
+    def instruction_conv2d(self):
+        """CONV2D - 2D convolution (stub - same as MATMUL for now)"""
+        self._send_command(TPUInstruction.CONV2D)
+    
+    def instruction_relu(self):
+        """RELU - ReLU activation (configures VPU)"""
+        self._send_command(TPUInstruction.RELU)
+    
+    def instruction_relu6(self):
+        """RELU6 - ReLU6 activation (configures VPU)"""
+        self._send_command(TPUInstruction.RELU6)
+    
+    def instruction_sigmoid(self):
+        """SIGMOID - Sigmoid activation (configures VPU)"""
+        self._send_command(TPUInstruction.SIGMOID)
+    
+    def instruction_tanh(self):
+        """TANH - Tanh activation (configures VPU)"""
+        self._send_command(TPUInstruction.TANH)
+    
+    def instruction_maxpool(self):
+        """MAXPOOL - Max pooling (stub)"""
+        self._send_command(TPUInstruction.MAXPOOL)
+    
+    def instruction_avgpool(self):
+        """AVGPOOL - Average pooling (stub)"""
+        self._send_command(TPUInstruction.AVGPOOL)
+    
+    def instruction_add_bias(self):
+        """ADD_BIAS - Add bias (uses normalizer)"""
+        self._send_command(TPUInstruction.ADD_BIAS)
+    
+    def instruction_batch_norm(self):
+        """BATCH_NORM - Batch normalization (uses normalizer)"""
+        self._send_command(TPUInstruction.BATCH_NORM)
+    
+    def instruction_sync(self):
+        """SYNC - Synchronization barrier (wait for MLP completion)"""
+        self._send_command(TPUInstruction.SYNC)
+        # Wait for completion
+        while True:
+            state, _ = self.read_status()
+            if state == 0 or state == 8:  # IDLE or DONE
+                break
+            time.sleep(0.001)
+    
+    def instruction_cfg_reg(self, reg_addr: int, reg_value: int):
+        """
+        CFG_REG - Configure register
+        
+        Args:
+            reg_addr: Register address (1 byte)
+            reg_value: Register value (3 bytes)
+        """
+        # Pack: [opcode][reg_addr][reg_value_high][reg_value_mid][reg_value_low]
+        data = [
+            reg_addr & 0xFF,
+            (reg_value >> 16) & 0xFF,
+            (reg_value >> 8) & 0xFF,
+            reg_value & 0xFF
+        ]
+        self._send_command(TPUInstruction.CFG_REG, data)
+    
+    def instruction_halt(self):
+        """HALT - Halt execution"""
+        self._send_command(TPUInstruction.HALT)
+    
+    def instruction_rd_weight(self, addr: int):
+        """
+        RD_WEIGHT - Read weight from memory (stub)
+        
+        Args:
+            addr: Weight memory address
+        """
+        data = struct.pack('>I', addr & 0xFFFFFFFF)
+        self._send_command(TPUInstruction.RD_WEIGHT, list(data))
+    
+    def instruction_ld_ub(self, count: int):
+        """
+        LD_UB - Load from unified buffer (stub)
+        
+        Args:
+            count: Number of elements to load
+        """
+        data = struct.pack('>I', count & 0xFFFFFFFF)
+        self._send_command(TPUInstruction.LD_UB, list(data))
+    
+    def instruction_st_ub(self, count: int):
+        """
+        ST_UB - Store to unified buffer (stub)
+        
+        Args:
+            count: Number of elements to store
+        """
+        data = struct.pack('>I', count & 0xFFFFFFFF)
+        self._send_command(TPUInstruction.ST_UB, list(data))
+    
+    def configure_vpu_activation(self, activation_type: int):
+        """
+        Configure VPU activation function via CFG_REG
+        
+        Args:
+            activation_type: 0=passthrough, 1=ReLU, 2=ReLU6, 3=Sigmoid, 4=Tanh
+        """
+        self.instruction_cfg_reg(0x00, activation_type & 0x07)
 
 
 if __name__ == "__main__":

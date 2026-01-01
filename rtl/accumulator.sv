@@ -8,8 +8,8 @@ module accumulator (
     input  logic        accumulator_enable, // add to existing sum or overwrite (1/0)
     input  logic        addr_sel, // buffer selection (buffer 1, or buffer 2)
 
-    input  logic [15:0] mmu_col0_in,
-    input  logic [15:0] mmu_col1_in,
+    input  logic signed [15:0] mmu_col0_in,
+    input  logic signed [15:0] mmu_col1_in,
 
     output logic signed [31:0] acc_col0_out,
     output logic signed [31:0] acc_col1_out,

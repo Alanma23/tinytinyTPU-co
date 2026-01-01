@@ -100,6 +100,7 @@ module tpu_top #(
     logic [15:0] mlp_init_act_data;
     logic        mlp_start_mlp;
     logic        mlp_weights_ready;
+    logic [2:0]  mlp_vpu_activation_type;
     logic signed [15:0] mlp_norm_gain;
     logic signed [31:0] mlp_norm_bias;
     logic [4:0]  mlp_norm_shift;
@@ -138,6 +139,7 @@ module tpu_top #(
         .mlp_init_act_data(mlp_init_act_data),
         .mlp_start_mlp(mlp_start_mlp),
         .mlp_weights_ready(mlp_weights_ready),
+        .mlp_vpu_activation_type(mlp_vpu_activation_type),
         .mlp_norm_gain(mlp_norm_gain),
         .mlp_norm_bias(mlp_norm_bias),
         .mlp_norm_shift(mlp_norm_shift),
@@ -164,6 +166,7 @@ module tpu_top #(
         .start_mlp(mlp_start_mlp),
         .weights_ready(mlp_weights_ready),
         // Activation pipeline configuration
+        .vpu_activation_type(mlp_vpu_activation_type),
         .norm_gain(mlp_norm_gain),
         .norm_bias(mlp_norm_bias),
         .norm_shift(mlp_norm_shift),

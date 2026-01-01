@@ -24,6 +24,7 @@ module mlp_top (
     input  logic        weights_ready,
 
     // Activation pipeline configuration
+    input  logic [2:0]  vpu_activation_type, // VPU activation function (000=passthrough, 001=ReLU, 010=ReLU6, 011=Sigmoid, 100=Tanh)
     input  logic signed [15:0] norm_gain,
     input  logic signed [31:0] norm_bias,
     input  logic [4:0]  norm_shift,
@@ -37,8 +38,8 @@ module mlp_top (
     output logic        layer_complete,
 
     // Debug outputs
-    output logic [15:0] mmu_acc0_out,
-    output logic [15:0] mmu_acc1_out,
+    output logic signed [15:0] mmu_acc0_out,
+    output logic signed [15:0] mmu_acc1_out,
     output logic signed [31:0] acc0,
     output logic signed [31:0] acc1,
     output logic        acc_valid
@@ -153,29 +154,29 @@ module mlp_top (
         end
     end
 
-    // Activation data extraction
-    logic [7:0] act_row0_data, act_row1_data;
-    assign act_row0_data = act_ub_rd_data[7:0];
-    assign act_row1_data = act_ub_rd_data[15:8];
+    // Activation data extraction (signed)
+    logic signed [7:0] act_row0_data, act_row1_data;
+    assign act_row0_data = $signed(act_ub_rd_data[7:0]);
+    assign act_row1_data = $signed(act_ub_rd_data[15:8]);
 
     // Row1 skew register for systolic timing
-    logic [7:0] row1_skew_reg;
+    logic signed [7:0] row1_skew_reg;
 
     always_ff @(posedge clk) begin
         if (reset)
-            row1_skew_reg <= 8'd0;
+            row1_skew_reg <= 8'sd0;
         else if (compute_phase && act_ub_rd_valid)
             row1_skew_reg <= act_row1_data;
     end
 
-    // MMU connections
-    logic [7:0] mmu_row0_in, mmu_row1_in;
-    logic [7:0] mmu_col0_in, mmu_col1_in;
+    // MMU connections (signed)
+    logic signed [7:0] mmu_row0_in, mmu_row1_in;
+    logic signed [7:0] mmu_col0_in, mmu_col1_in;
 
-    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'd0;
-    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'd0;
-    assign mmu_col0_in = en_load_weight ? wf_col0_out : 8'd0;
-    assign mmu_col1_in = en_load_weight ? wf_col1_out : 8'd0;
+    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'sd0;
+    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'sd0;
+    assign mmu_col0_in = en_load_weight ? $signed(wf_col0_out) : 8'sd0;
+    assign mmu_col1_in = en_load_weight ? $signed(wf_col1_out) : 8'sd0;
 
     logic en_capture_col0, en_capture_col1;
     assign en_capture_col0 = en_load_weight && (cycle_cnt_reg == 5'd1);
@@ -236,6 +237,7 @@ module mlp_top (
         .valid_in(acc_valid),
         .acc_in(acc0),
         .target_in(32'sd0),
+        .vpu_activation_type(vpu_activation_type),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),
@@ -253,6 +255,7 @@ module mlp_top (
         .valid_in(acc_valid),
         .acc_in(acc1),
         .target_in(32'sd0),
+        .vpu_activation_type(vpu_activation_type),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),

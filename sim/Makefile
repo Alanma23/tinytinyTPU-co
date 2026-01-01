@@ -27,11 +27,20 @@ RTL_SOURCES := \
     $(RTL_DIR)/accumulator_align.sv \
     $(RTL_DIR)/accumulator_mem.sv \
     $(RTL_DIR)/activation_func.sv \
+    $(RTL_DIR)/vpu.sv \
     $(RTL_DIR)/activation_pipeline.sv \
     $(RTL_DIR)/normalizer.sv \
     $(RTL_DIR)/loss_block.sv \
     $(RTL_DIR)/unified_buffer.sv \
-    $(RTL_DIR)/mlp_top.sv
+    $(RTL_DIR)/config_regs.sv \
+    $(RTL_DIR)/instruction_decoder.sv \
+    $(RTL_DIR)/execution_unit.sv \
+    $(RTL_DIR)/mlp_top.sv \
+    $(RTL_DIR)/tpu_bridge.sv \
+    $(RTL_DIR)/uart_controller.sv \
+    $(RTL_DIR)/uart_rx.sv \
+    $(RTL_DIR)/uart_tx.sv \
+    $(RTL_DIR)/tpu_top.sv
 
 # Default WAVES to 0 if not set
 WAVES ?= 0
@@ -42,7 +51,8 @@ SHELL := /bin/bash
 
 .PHONY: test test_pe test_mmu test_weight_fifo test_dual_fifo test_accumulator \
         test_activation_func test_normalizer test_activation_pipeline test_mlp \
-        test_uart test_uart_ctrl test_tpu lint waves clean clean_waves help
+        test_uart test_uart_ctrl test_tpu test_signed test_vpu test_isa \
+        lint waves clean clean_waves help
 
 help:
 	@echo "TinyTinyTPU Simulation"
@@ -56,6 +66,9 @@ help:
 	@echo "  make test_mlp          Run MLP integration tests"
 	@echo "  make test_uart_ctrl    Run UART controller tests"
 	@echo "  make test_tpu          Run TPU system end-to-end tests"
+	@echo "  make test_signed       Run signed arithmetic tests"
+	@echo "  make test_vpu          Run VPU activation function tests"
+	@echo "  make test_isa          Run ISA instruction tests"
 	@echo ""
 	@echo "Waveform Commands:"
 	@echo "  make waves             Select and open a waveform file"
@@ -109,6 +122,15 @@ test_uart_ctrl:
 
 test_tpu:
 	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_tpu_system.py -v
+
+test_signed:
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_signed.py -v
+
+test_vpu:
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_vpu.py -v
+
+test_isa:
+	source venv/bin/activate && WAVES=$(WAVES) python3 -m pytest $(TEST_DIR)/test_isa.py -v
 
 # Lint
 lint:

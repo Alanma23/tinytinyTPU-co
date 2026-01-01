@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// Top-level activation pipeline: Accumulator -> Activation -> Normalization -> Loss -> Quantize -> Unified Buffer input
+// Top-level activation pipeline: Accumulator -> VPU -> Normalization -> Loss -> Quantize -> Unified Buffer input
 module activation_pipeline (
     input  logic        clk,
     input  logic        reset,
@@ -9,6 +9,7 @@ module activation_pipeline (
     input  logic signed [31:0] target_in,    // optional target for loss (set to 0 if unused)
 
     // Configuration
+    input  logic [2:0]  vpu_activation_type, // VPU activation function selection
     input  logic signed [15:0] norm_gain,
     input  logic signed [31:0] norm_bias,
     input  logic [4:0]  norm_shift,
@@ -22,18 +23,22 @@ module activation_pipeline (
     output logic signed [31:0] loss_out
 );
 
-    // Stage 1: Activation
+    // Stage 1: VPU (Vector Processing Unit) - configurable activation
+    // Note: VPU processes both columns, but we only use column 0 for single-column pipeline
     logic        s1_valid;
     logic signed [31:0] s1_data;
     logic signed [31:0] target_d1;
 
-    activation_func act_u (
+    vpu vpu_u (
         .clk(clk),
         .reset(reset),
         .valid_in(valid_in),
-        .data_in(acc_in),
+        .data_in0(acc_in),
+        .data_in1(32'sd0),  // Column 1 not used in single-column pipeline
+        .activation_type(vpu_activation_type),
         .valid_out(s1_valid),
-        .data_out(s1_data)
+        .data_out0(s1_data),
+        .data_out1()  // Unused
     );
 
     // Align target with pipeline (normalizer adds one cycle)

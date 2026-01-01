@@ -64,10 +64,14 @@ set rtl_files [list \
     "$rtl_dir/accumulator_mem.sv" \
     "$rtl_dir/accumulator.sv" \
     "$rtl_dir/activation_func.sv" \
+    "$rtl_dir/vpu.sv" \
     "$rtl_dir/normalizer.sv" \
     "$rtl_dir/loss_block.sv" \
     "$rtl_dir/activation_pipeline.sv" \
     "$rtl_dir/unified_buffer.sv" \
+    "$rtl_dir/config_regs.sv" \
+    "$rtl_dir/instruction_decoder.sv" \
+    "$rtl_dir/execution_unit.sv" \
     "$rtl_dir/mlp_top.sv" \
     "$rtl_dir/uart_rx.sv" \
     "$rtl_dir/uart_tx.sv" \

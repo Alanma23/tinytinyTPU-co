@@ -6,30 +6,30 @@ module accumulator_align (
     input  logic        clear,      // Clear pending state for new inference
 
     input  logic        valid_in,
-    input  logic [15:0] raw_col0,
-    input  logic [15:0] raw_col1,
+    input  logic signed [15:0] raw_col0,
+    input  logic signed [15:0] raw_col1,
 
     output logic        aligned_valid,
-    output logic [15:0] align_col0,
-    output logic [15:0] align_col1
+    output logic signed [15:0] align_col0,
+    output logic signed [15:0] align_col1
 );
 
     // Column 0 delay register to align with column 1 (which arrives 1 cycle later
     // for the same result row due to horizontal activation propagation in systolic array)
-    logic [15:0] col0_delay_reg;
+    logic signed [15:0] col0_delay_reg;
     logic pending;  // True after first capture, enables output on subsequent valids
 
     always_ff @(posedge clk) begin
         if (reset) begin
-            col0_delay_reg <= 16'd0;
+            col0_delay_reg <= 16'sd0;
             pending <= 1'b0;
             aligned_valid <= 1'b0;
-            align_col0 <= 16'd0;
-            align_col1 <= 16'd0;
+            align_col0 <= 16'sd0;
+            align_col1 <= 16'sd0;
         end
         else if (clear) begin
             // Clear pending state at start of new inference
-            col0_delay_reg <= 16'd0;
+            col0_delay_reg <= 16'sd0;
             pending <= 1'b0;
             aligned_valid <= 1'b0;
         end

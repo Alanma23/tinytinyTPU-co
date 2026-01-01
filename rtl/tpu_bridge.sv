@@ -30,6 +30,7 @@ module tpu_bridge (
     output logic [15:0] mlp_init_act_data,
     output logic        mlp_start_mlp,
     output logic        mlp_weights_ready,
+    output logic [2:0]  mlp_vpu_activation_type, // VPU activation function
     output logic signed [15:0] mlp_norm_gain,
     output logic signed [31:0] mlp_norm_bias,
     output logic [4:0]  mlp_norm_shift,
@@ -59,7 +60,8 @@ module tpu_bridge (
     // #endregion
 
     // Default activation pipeline configuration
-    // These values provide identity/pass-through behavior for ReLU
+    // Default to ReLU activation (001)
+    assign mlp_vpu_activation_type = 3'b001;  // ReLU by default
     assign mlp_norm_gain = 16'sd256;      // 1.0 in Q8 format
     assign mlp_norm_bias = 32'sd0;        // No bias
     assign mlp_norm_shift = 5'd8;         // Shift back by 8 to undo Q8
