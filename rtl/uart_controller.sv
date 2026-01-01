@@ -110,6 +110,7 @@ module uart_controller #(
     // MLP control signals
     logic wf_reset_reg;
     logic weights_ready_reg;
+    logic [3:0] mlp_state_prev;  // Track previous MLP state to detect transitions
     
     assign wf_reset = wf_reset_reg;
     assign weights_ready = weights_ready_reg;
@@ -195,17 +196,34 @@ module uart_controller #(
             tx_data_reg <= 8'd0;
             wf_reset_reg <= 1'b0;
             weights_ready_reg <= 1'b0;
+            mlp_state_prev <= 4'd0;
         end else begin
             // Default: clear control signals (pulse signals)
             wf_push_col0_reg <= 1'b0;
             wf_push_col1_reg <= 1'b0;
             wf_reset_reg <= 1'b0;  // Clear FIFO reset after one cycle
             init_act_valid_reg <= 1'b0;
-            // #region agent log
-            if (start_mlp_reg)
-                $display("[UART_CTRL] Clearing start_mlp_reg (was set, now clearing)");
-            // #endregion
-            start_mlp_reg <= 1'b0;
+            
+            // Track MLP state transitions
+            mlp_state_prev <= mlp_state;
+            
+            // Clear start_mlp_reg and weights_ready when MLP has acknowledged it (left IDLE)
+            // This ensures the pulse is visible long enough for MLP to see it
+            if (start_mlp_reg && mlp_state != 4'd0 && mlp_state_prev == 4'd0) begin
+                // MLP just left IDLE - clear start_mlp_reg and weights_ready
+                // #region agent log
+                $display("[UART_CTRL] MLP started! Clearing start_mlp_reg and weights_ready_reg (state %d -> %d)", mlp_state_prev, mlp_state);
+                // #endregion
+                start_mlp_reg <= 1'b0;
+                weights_ready_reg <= 1'b0;  // Weights consumed by MLP
+            end else if (start_mlp_reg && mlp_state == 4'd0) begin
+                // #region agent log
+                // Log every 100 cycles to avoid spam
+                if (resp_delay_count[6:0] == 7'd0)
+                    $display("[UART_CTRL] start_mlp_reg still set, MLP still in IDLE (state=%d)", mlp_state);
+                // #endregion
+                // Keep start_mlp_reg set until MLP responds
+            end
             // Don't clear tx_valid_reg here - it's managed by SEND_RESP state
             // tx_valid_reg <= 1'b0;
 
@@ -346,8 +364,9 @@ module uart_controller #(
                             $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, weights_ready_reg=%b, mlp_state=%d", weights_ready_reg, mlp_state);
                             // #endregion
                             start_mlp_reg <= 1'b1;
-                            // Clear weights_ready - they will be consumed by this execution
-                            weights_ready_reg <= 1'b0;
+                            // Keep weights_ready set - MLP may need it to start
+                            // weights_ready_reg will be cleared when MLP enters LOAD_WEIGHT
+                            // Don't clear weights_ready_reg here - let MLP consume it
                             // Clear start_mlp_reg next cycle and go to IDLE
                             // The default assignment will clear it, but we set it here so it's visible for one cycle
                             state <= IDLE;
