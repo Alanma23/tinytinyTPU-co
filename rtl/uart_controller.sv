@@ -25,7 +25,7 @@ module uart_controller #(
     output logic        weights_ready,
     
     // MLP status interface
-    input  logic [2:0]  mlp_state,
+    input  logic [3:0]  mlp_state,
     input  logic [4:0]  mlp_cycle_cnt,
     input  logic signed [31:0] mlp_acc0,
 
@@ -188,6 +188,10 @@ module uart_controller #(
             wf_push_col0_reg <= 1'b0;
             wf_push_col1_reg <= 1'b0;
             init_act_valid_reg <= 1'b0;
+            // #region agent log
+            if (start_mlp_reg)
+                $display("[UART_CTRL] Clearing start_mlp_reg (was set, now clearing)");
+            // #endregion
             start_mlp_reg <= 1'b0;
             // Don't clear tx_valid_reg here - it's managed by SEND_RESP state
             // tx_valid_reg <= 1'b0;
@@ -277,6 +281,10 @@ module uart_controller #(
                             wf_data_in_reg <= data_buffer[3];
                             wf_push_col1_reg <= 1'b1;
                             weights_ready_reg <= 1'b1;  // Mark weights as ready
+                            // #region agent log
+                            $display("[UART_CTRL] WRITE_WEIGHT_SEQ: Completed weight sequence, weights_ready_reg=1, data=[%02X,%02X,%02X,%02X]",
+                                     data_buffer[0], data_buffer[1], data_buffer[2], data_buffer[3]);
+                            // #endregion
                             state <= IDLE;
                         end
                         default: begin
@@ -316,7 +324,7 @@ module uart_controller #(
                     case (cmd_reg)
                         CMD_EXECUTE: begin
                             // #region agent log
-                            $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, state=%0d", state);
+                            $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, weights_ready_reg=%b, mlp_state=%d", weights_ready_reg, mlp_state);
                             // #endregion
                             start_mlp_reg <= 1'b1;
                             // Clear start_mlp_reg next cycle and go to IDLE
@@ -341,10 +349,9 @@ module uart_controller #(
                         end
 
                         CMD_STATUS: begin
-                            // Return 1 byte: [state(2:0) | cycle_cnt(4:0)] = 3+5=8 bits
-                            // Use lower 3 bits of state to fit in 8-bit response
-                            // Pack the value directly - non-blocking assignment will update resp_buffer[0] at end of time step
-                            resp_buffer[0] <= {mlp_state[2:0], mlp_cycle_cnt[4:0]};
+                            // Return 1 byte: [state(3:0) | cycle_cnt(3:0)] = 4+4=8 bits
+                            // Use full 4-bit state and lower 4 bits of cycle_cnt
+                            resp_buffer[0] <= {mlp_state[3:0], mlp_cycle_cnt[3:0]};
                             resp_byte_idx <= 2'd0;
                             byte_sent <= 1'b0;  // Clear flag for new response
                             // #region agent log
