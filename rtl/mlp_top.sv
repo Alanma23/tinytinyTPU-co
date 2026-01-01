@@ -54,10 +54,11 @@ module mlp_top (
     localparam logic [3:0] WAIT_WEIGHTS = 4'd7;
     localparam logic [3:0] DONE         = 4'd8;
 
-    localparam int NUM_LAYERS = 2;
+    // Set to 1 for single-layer testing, 2+ for multi-layer MLP
+    localparam int NUM_LAYERS = 1;
 
     // Internal state
-    (* fsm_encoding = "one_hot" *) logic [3:0]  state_reg;
+    logic [3:0]  state_reg;
     logic [4:0]  cycle_cnt_reg;
     logic [2:0]  current_layer_reg;
     logic        buffer_select;
@@ -303,10 +304,14 @@ module mlp_top (
             case (state_reg)
                 IDLE: begin
                     cycle_cnt_reg <= 5'd0;
+                    layer_complete <= 1'b0;  // Clear completion flag
+                    accum_en <= 1'b0;        // Reset accumulator enable
+                    addr_sel <= 1'b0;        // Reset address select
                     if (start_mlp) begin
                         state_reg <= LOAD_WEIGHT;
                         current_layer_reg <= 3'd0;
                         buffer_select <= 1'b0;
+                        weights_loaded <= 1'b0;  // Clear for fresh computation
                     end
                 end
 
@@ -388,6 +393,8 @@ module mlp_top (
                     // #region agent log
                     $display("[MLP] DONE state reached. acc0=0x%08X, acc1=0x%08X, acc_valid=%b", acc0, acc1, acc_valid);
                     // #endregion
+                    // Return to IDLE so we can accept new computations
+                    state_reg <= IDLE;
                 end
 
                 default: state_reg <= IDLE;

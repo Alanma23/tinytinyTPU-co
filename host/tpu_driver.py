@@ -190,60 +190,44 @@ class TPUDriver:
 
         Returns:
             Tuple of (state, cycle_count)
-            - state: MLP FSM state (3 bits)
-            - cycle_count: Current cycle count (5 bits)
+            - state: MLP FSM state (4 bits, 0-8)
+            - cycle_count: Current cycle count (4 bits, 0-15)
         """
         self._send_command(TPUCommand.STATUS)
 
-        # Receive 1 byte: {state[2:0], cycle_cnt[4:0]}
+        # Receive 1 byte: {state[3:0], cycle_cnt[3:0]}
         data = self._receive_bytes(1)
         status_byte = data[0]
 
-        state = (status_byte >> 5) & 0x07
-        cycle_count = status_byte & 0x1F
+        state = (status_byte >> 4) & 0x0F
+        cycle_count = status_byte & 0x0F
 
         return (state, cycle_count)
 
-    def wait_for_done(self, timeout: float = 5.0, poll_interval: float = 0.1) -> bool:
+    def wait_for_done(self, timeout: float = 5.0, poll_interval: float = 0.01) -> bool:
         """
         Poll status until computation is complete
 
-        Note: Status register only reports state[2:0] (3 bits), so DONE state (8)
-        appears as IDLE (0). We detect completion by waiting for state to transition
-        away from IDLE, then return to IDLE/DONE.
-
         Args:
             timeout: Maximum time to wait in seconds
-            poll_interval: Time between status checks
+            poll_interval: Time between status checks (default 10ms for fast polling)
 
         Returns:
             True if done, False if timeout
         """
-        # MLP FSM states (from mlp_top.sv) - only lower 3 bits transmitted
+        # MLP FSM states (from mlp_top.sv)
         # IDLE=0, LOAD_WEIGHT=1, LOAD_ACT=2, COMPUTE=3, DRAIN=4,
-        # TRANSFER=5, NEXT_LAYER=6, WAIT_WEIGHTS=7, DONE=8 (appears as 0)
+        # TRANSFER=5, NEXT_LAYER=6, WAIT_WEIGHTS=7, DONE=8
         IDLE_STATE = 0
+        DONE_STATE = 8
 
         start_time = time.time()
 
-        # First, wait for computation to start (leave IDLE)
-        started = False
         while (time.time() - start_time) < timeout:
             state, _ = self.read_status()
-            if state != IDLE_STATE:
-                started = True
-                break
-            time.sleep(poll_interval)
-
-        if not started:
-            # Still in IDLE, maybe already done or never started
-            return True
-
-        # Now wait for return to IDLE/DONE
-        while (time.time() - start_time) < timeout:
-            state, _ = self.read_status()
-            if state == IDLE_STATE:
-                return True  # Back to IDLE or reached DONE
+            # Computation complete when we reach DONE (8) or return to IDLE (0)
+            if state == DONE_STATE or state == IDLE_STATE:
+                return True
             time.sleep(poll_interval)
 
         return False

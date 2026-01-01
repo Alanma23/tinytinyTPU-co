@@ -43,7 +43,7 @@ module tpu_top #(
     logic        start_mlp;
     logic        weights_ready;
 
-    logic [2:0]  mlp_state_ctrl;
+    logic [3:0]  mlp_state_ctrl;
     logic [4:0]  mlp_cycle_cnt;
     logic signed [31:0] mlp_acc0;
 

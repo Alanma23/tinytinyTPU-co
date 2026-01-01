@@ -25,7 +25,7 @@ module uart_controller #(
     output logic        weights_ready,
     
     // MLP status interface
-    input  logic [2:0]  mlp_state,
+    input  logic [3:0]  mlp_state,
     input  logic [4:0]  mlp_cycle_cnt,
     input  logic signed [31:0] mlp_acc0,
 
@@ -48,8 +48,8 @@ module uart_controller #(
     localparam logic [7:0] CMD_READ_RESULT  = 8'h04;
     localparam logic [7:0] CMD_STATUS       = 8'h05;
 
-    // Mirror MLP encoding (truncated view)
-    localparam logic [2:0] MLP_STATE_LOAD_WEIGHT = 3'd1;
+    // Mirror MLP state encodings for clarity
+    localparam logic [3:0] MLP_STATE_LOAD_WEIGHT = 4'd1;
 
     // UART RX/TX instances
     logic [7:0] rx_data;
@@ -319,6 +319,8 @@ module uart_controller #(
                             $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, state=%0d", state);
                             // #endregion
                             start_mlp_reg <= 1'b1;
+                            // Clear weights_ready - they will be consumed by this execution
+                            weights_ready_reg <= 1'b0;
                             // Clear start_mlp_reg next cycle and go to IDLE
                             // The default assignment will clear it, but we set it here so it's visible for one cycle
                             state <= IDLE;
@@ -341,10 +343,10 @@ module uart_controller #(
                         end
 
                         CMD_STATUS: begin
-                            // Return 1 byte: [state(2:0) | cycle_cnt(4:0)] = 3+5=8 bits
-                            // Use lower 3 bits of state to fit in 8-bit response
+                            // Return 1 byte: [state(3:0) | cycle_cnt(3:0)] = 4+4=8 bits
+                            // Use full 4 bits of state to distinguish DONE(8) from IDLE(0)
                             // Pack the value directly - non-blocking assignment will update resp_buffer[0] at end of time step
-                            resp_buffer[0] <= {mlp_state[2:0], mlp_cycle_cnt[4:0]};
+                            resp_buffer[0] <= {mlp_state[3:0], mlp_cycle_cnt[3:0]};
                             resp_byte_idx <= 2'd0;
                             byte_sent <= 1'b0;  // Clear flag for new response
                             // #region agent log

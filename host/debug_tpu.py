@@ -48,15 +48,24 @@ def debug_tpu(port: str):
         state, cycle = tpu.read_status()
         print(f"  After activations: state={state}, cycle={cycle}")
 
-        print("Executing...")
+        print("Executing with fast polling...")
         tpu.execute()
-        time.sleep(0.1)
+
+        # Fast poll to catch state transitions (computation runs in ~20 cycles @ 100MHz = 200ns)
+        states_seen = []
+        for _ in range(20):
+            state, cycle = tpu.read_status()
+            states_seen.append(state)
+
+        unique_states = sorted(set(states_seen))
+        print(f"  States observed during fast poll: {unique_states}")
+        print(f"  (0=IDLE, 1=LOAD_W, 2=LOAD_A, 3=COMPUTE, 4=DRAIN, 5=XFER, 6=NEXT, 7=WAIT, 8=DONE)")
 
         state, cycle = tpu.read_status()
-        print(f"  After execute: state={state}, cycle={cycle}")
+        print(f"  Final state: {state}, cycle: {cycle}")
 
-        if state == 0:
-            print("  ⚠ WARNING: Still in IDLE - computation may not have started!")
+        if state == 0 and unique_states == [0]:
+            print("  ⚠ WARNING: Never left IDLE - start_mlp pulse may not be working!")
 
         print("Waiting for completion...")
         start = time.time()
@@ -128,18 +137,22 @@ def debug_tpu(port: str):
         print("=" * 60)
         print("DIAGNOSTIC SUMMARY")
         print("=" * 60)
+        print("MLP FSM States:")
+        print("  0=IDLE, 1=LOAD_WEIGHT, 2=LOAD_ACT, 3=COMPUTE")
+        print("  4=DRAIN, 5=TRANSFER, 6=NEXT_LAYER, 7=WAIT_WEIGHTS, 8=DONE")
+        print()
         print("Check the Basys3 LEDs:")
-        print("  1. Set SW[15:14] = 00 (down/down)")
-        print("  2. LED[3:0] should show MLP state")
-        print("     → Should be 0 when idle")
-        print("     → Should cycle 0→1→2→3→4→5→0 during compute")
+        print("  1. Set SW[15:14] = 00: LED[3:0] shows MLP state")
+        print("     → Should cycle 0→1→2→3→4→8→0 during single-layer compute")
+        print("  2. Set SW[15:14] = 11: LED[14] shows start_mlp pulse")
+        print("     → Should flash briefly when EXECUTE sent")
         print("  3. LED[9:10] should flicker during UART communication")
         print()
         print("Next steps:")
         print("  1. Press CENTER button (BTNC) to reset TPU")
         print("  2. Watch LEDs during next inference")
-        print("  3. If LED[3:0] stays at 0, MLP is not starting")
-        print("  4. If LED[9:10] don't flicker, UART issue")
+        print("  3. If state never changes from 0, check start_mlp (LED[14] in mode 11)")
+        print("  4. If LED[14] never lights, UART RX or command parsing issue")
         print("=" * 60)
 
 if __name__ == "__main__":
