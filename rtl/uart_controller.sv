@@ -25,7 +25,7 @@ module uart_controller #(
     output logic        weights_ready,
     
     // MLP status interface
-    input  logic [3:0]  mlp_state,
+    input  logic [2:0]  mlp_state,
     input  logic [4:0]  mlp_cycle_cnt,
     input  logic signed [31:0] mlp_acc0,
 
@@ -44,9 +44,12 @@ module uart_controller #(
     // Command definitions
     localparam logic [7:0] CMD_WRITE_WEIGHT = 8'h01;
     localparam logic [7:0] CMD_WRITE_ACT    = 8'h02;
-    localparam logic [7:0] CMD_EXECUTE     = 8'h03;
-    localparam logic [7:0] CMD_READ_RESULT = 8'h04;
+    localparam logic [7:0] CMD_EXECUTE      = 8'h03;
+    localparam logic [7:0] CMD_READ_RESULT  = 8'h04;
     localparam logic [7:0] CMD_STATUS       = 8'h05;
+
+    // Mirror MLP encoding (truncated view)
+    localparam logic [2:0] MLP_STATE_LOAD_WEIGHT = 3'd1;
 
     // UART RX/TX instances
     logic [7:0] rx_data;

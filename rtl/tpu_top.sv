@@ -43,7 +43,7 @@ module tpu_top #(
     logic        start_mlp;
     logic        weights_ready;
 
-    logic [3:0]  mlp_state;
+    logic [2:0]  mlp_state_ctrl;
     logic [4:0]  mlp_cycle_cnt;
     logic signed [31:0] mlp_acc0;
 
@@ -74,7 +74,7 @@ module tpu_top #(
         .init_act_data(init_act_data),
         .start_mlp(start_mlp),
         .weights_ready(weights_ready),
-        .mlp_state(mlp_state),
+        .mlp_state(mlp_state_ctrl),
         .mlp_cycle_cnt(mlp_cycle_cnt),
         .mlp_acc0(mlp_acc0),
         .dbg_state(uart_state_int),
@@ -122,7 +122,7 @@ module tpu_top #(
         .ctrl_init_act_data(init_act_data),
         .ctrl_start_mlp(start_mlp),
         .ctrl_weights_ready(weights_ready),
-        .mlp_state(mlp_state),
+        .mlp_state(mlp_state_ctrl),
         .mlp_cycle_cnt(mlp_cycle_cnt),
         .mlp_acc0(mlp_acc0),
         // MLP Top interface
@@ -179,7 +179,6 @@ module tpu_top #(
     );
 
     // Connect MLP state to UART controller
-    assign mlp_state = mlp_state_out;
     assign mlp_cycle_cnt = mlp_cycle_cnt_out;
     assign mlp_acc0 = mlp_acc0_out;
 
@@ -187,7 +186,7 @@ module tpu_top #(
     always_ff @(posedge clk) begin
         if (!rst) begin  // Only log when not in reset
             $display("[TPU_TOP] mlp_state_out=%d, mlp_cycle_cnt_out=%d, mlp_acc0_out=%d, connected to UART: mlp_state=%d, mlp_cycle_cnt=%d, mlp_acc0=%d",
-                     mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out, mlp_state, mlp_cycle_cnt, mlp_acc0);
+                     mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out, mlp_state_ctrl, mlp_cycle_cnt, mlp_acc0);
         end
     end
     // #endregion

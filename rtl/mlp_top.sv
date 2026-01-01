@@ -377,7 +377,7 @@ module mlp_top (
 
                 WAIT_WEIGHTS: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
-                    if (weights_ready) begin
+                    if (weights_ready && !weights_loaded) begin
                         state_reg <= LOAD_WEIGHT;
                         cycle_cnt_reg <= 5'd0;
                     end
@@ -396,4 +396,3 @@ module mlp_top (
     end
 
 endmodule
-

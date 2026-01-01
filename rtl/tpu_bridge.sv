@@ -15,8 +15,8 @@ module tpu_bridge (
     input  logic        ctrl_start_mlp,
     input  logic        ctrl_weights_ready,
 
-    // MLP → UART Controller (pass-through)
-    output logic [3:0]  mlp_state,
+    // MLP → UART Controller (pass-through, truncated to 3 bits)
+    output logic [2:0]  mlp_state,
     output logic [4:0]  mlp_cycle_cnt,
     output logic signed [31:0] mlp_acc0,
 
@@ -59,7 +59,7 @@ module tpu_bridge (
     assign mlp_q_zero_point = 8'sd0;      // No zero point
 
     // Pass-through: MLP → UART Controller
-    assign mlp_state = mlp_state_in;
+    assign mlp_state = mlp_state_in[2:0];
     assign mlp_cycle_cnt = mlp_cycle_cnt_in;
     assign mlp_acc0 = mlp_acc0_in;
 

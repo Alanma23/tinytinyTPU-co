@@ -63,15 +63,6 @@ module basys3_top (
     // Reset is active while counter is non-zero
     assign rst = (rst_counter != 8'h00);
 
-    // #region agent log
-    always_ff @(posedge clk_100mhz) begin
-        if (rst_counter == 8'hFE || rst_counter == 8'h01 || (rst_counter[3:0] == 4'h0 && rst_counter != 8'h00)) begin
-            $display("[BASYS3_TOP] rst=%d, rst_counter=0x%02X, tpu_mlp_state=%d, tpu_mlp_cycle_cnt=%d, tpu_mlp_acc0=%d, uart_state=%d",
-                     rst, rst_counter, tpu_mlp_state, tpu_mlp_cycle_cnt, tpu_acc0, uart_state_dbg);
-        end
-    end
-    // #endregion
-
     // ========================================================================
     // TPU Instantiation
     // ========================================================================
@@ -93,6 +84,15 @@ module basys3_top (
     logic        uart_rx_valid_dbg;
     logic        uart_weights_ready_dbg;
     logic        uart_start_mlp_dbg;
+
+    // #region agent log
+    always_ff @(posedge clk_100mhz) begin
+        if (rst_counter == 8'hFE || rst_counter == 8'h01 || (rst_counter[3:0] == 4'h0 && rst_counter != 8'h00)) begin
+            $display("[BASYS3_TOP] rst=%d, rst_counter=0x%02X, tpu_mlp_state=%d, tpu_mlp_cycle_cnt=%d, tpu_mlp_acc0=%d, uart_state=%d",
+                     rst, rst_counter, tpu_mlp_state, tpu_mlp_cycle_cnt, tpu_acc0, uart_state_dbg);
+        end
+    end
+    // #endregion
 
     // Instantiate TPU
     tpu_top #(
