@@ -40,7 +40,7 @@ module uart_rx #(
 
     assign rx_ready = (state == IDLE);
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             state     <= IDLE;
             clk_count <= 16'd0;

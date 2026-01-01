@@ -17,13 +17,13 @@ module dual_weight_fifo (
     output logic [7:0] col1_raw       // Pre-skew col1 value (for debugging)
 );
 
-    // Two 4-deep queues
-    logic [7:0] queue0 [4];
-    logic [7:0] queue1 [4];
+    // Two 4-deep queues (initialized for simulation and proper synthesis)
+    logic [7:0] queue0 [4] = '{8'd0, 8'd0, 8'd0, 8'd0};
+    logic [7:0] queue1 [4] = '{8'd0, 8'd0, 8'd0, 8'd0};
 
-    // Pointers for read/write
-    logic [1:0] wr_ptr0, rd_ptr0;
-    logic [1:0] wr_ptr1, rd_ptr1;
+    // Pointers for read/write (initialized for deterministic behavior)
+    logic [1:0] wr_ptr0 = 2'd0, rd_ptr0 = 2'd0;
+    logic [1:0] wr_ptr1 = 2'd0, rd_ptr1 = 2'd0;
 
     // Column 0: Combinational read (no skew, no latency)
     assign col0_out = queue0[rd_ptr0];
@@ -31,22 +31,13 @@ module dual_weight_fifo (
     // Column 1 raw value (pre-skew, for debugging)
     assign col1_raw = queue1[rd_ptr1];
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             wr_ptr0 <= 2'd0;
             rd_ptr0 <= 2'd0;
             wr_ptr1 <= 2'd0;
             rd_ptr1 <= 2'd0;
             col1_out <= 8'd0;
-            // Initialize queues
-            queue0[0] <= 8'd0;
-            queue0[1] <= 8'd0;
-            queue0[2] <= 8'd0;
-            queue0[3] <= 8'd0;
-            queue1[0] <= 8'd0;
-            queue1[1] <= 8'd0;
-            queue1[2] <= 8'd0;
-            queue1[3] <= 8'd0;
         end else begin
             // Column 0: Push and Pop (no skew)
             if (push_col0) begin

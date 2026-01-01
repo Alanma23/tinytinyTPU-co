@@ -1,9 +1,9 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1766301248" />
-    <testcase name="test_mlp_weight_loading" classname="tests.test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mlp_integration.py" lineno="87" time="0.0016231536865234375" sim_time_ns="120.0" ratio_time="73930.15276145711" />
-    <testcase name="test_mlp_single_layer_compute" classname="tests.test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mlp_integration.py" lineno="117" time="0.002421855926513672" sim_time_ns="1140.0" ratio_time="470713.3845245127" />
-    <testcase name="test_mlp_two_layer_network" classname="tests.test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mlp_integration.py" lineno="203" time="0.001497030258178711" sim_time_ns="680.0" ratio_time="454232.63577002706" />
-    <testcase name="test_mlp_state_machine" classname="tests.test_mlp_integration" file="/Users/alanma/Downloads/tinytinyTPU/sim/tests/test_mlp_integration.py" lineno="312" time="0.0020270347595214844" sim_time_ns="1110.0000000000002" ratio_time="547597.9110797461" />
+    <property name="random_seed" value="1767226065" />
+    <testcase name="test_mlp_weight_loading" classname="test_mlp_integration" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="87" time="0.0006492137908935547" sim_time_ns="120.0" ratio_time="184838.95703268453" />
+    <testcase name="test_mlp_single_layer_compute" classname="test_mlp_integration" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="117" time="0.0018489360809326172" sim_time_ns="1140.0" ratio_time="616570.8007736944" />
+    <testcase name="test_mlp_two_layer_network" classname="test_mlp_integration" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="203" time="0.0011279582977294922" sim_time_ns="680.0" ratio_time="602859.1671950961" />
+    <testcase name="test_mlp_state_machine" classname="test_mlp_integration" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_mlp_integration.py" lineno="312" time="0.0014033317565917969" sim_time_ns="1110.0000000000002" ratio_time="790974.760448522" />
   </testsuite>
 </testsuites>

@@ -416,11 +416,16 @@ def test_mlp_integration_runner():
         waves=waves_enabled,
         build_args=["--timing",
                    "-Wno-PINCONNECTEMPTY", "-Wno-UNUSEDSIGNAL",
-                   "-Wno-WIDTHEXPAND", "-Wno-WIDTHTRUNC"]
+                   "-Wno-WIDTHEXPAND", "-Wno-WIDTHTRUNC",
+                   "-CFLAGS", "-std=c++17"]
     )
+    # Add tests directory to Python path for module import
+    import sys
+    sys.path.insert(0, sim_dir)
+
     runner.test(
         hdl_toplevel="mlp_top",
-        test_module="tests.test_mlp_integration",
+        test_module="test_mlp_integration",
         waves=waves_enabled
     )
     

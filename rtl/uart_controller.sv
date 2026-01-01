@@ -92,7 +92,7 @@ module uart_controller #(
         WRITE_ACT_SEQ    = 4'd6
     } ctrl_state_t;
 
-    ctrl_state_t state;
+    (* fsm_encoding = "one_hot" *) ctrl_state_t state;
     logic [7:0]  cmd_reg;
     logic [2:0]  byte_count;
     logic [7:0]  data_buffer [0:3];  // Buffer for multi-byte commands
@@ -128,6 +128,9 @@ module uart_controller #(
     assign start_mlp = start_mlp_reg;
     assign tx_valid = tx_valid_reg;
     assign tx_data = tx_data_reg;
+    // Debug: Capture start_mlp pulses in a sticky bit for LED visibility
+    logic start_mlp_sticky = 1'b0;
+
     assign dbg_state = state;
     assign dbg_cmd_reg = cmd_reg;
     assign dbg_byte_count = byte_count;
@@ -136,9 +139,24 @@ module uart_controller #(
     assign dbg_tx_ready = tx_ready;
     assign dbg_rx_valid = rx_valid;
     assign dbg_weights_ready = weights_ready_reg;
-    assign dbg_start_mlp = start_mlp_reg;
+    assign dbg_start_mlp = start_mlp_sticky;  // Show sticky version for LED visibility
 
-    always_ff @(posedge clk or posedge rst) begin
+    // Capture start_mlp pulses
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            start_mlp_sticky <= 1'b0;
+        end else begin
+            if (start_mlp_reg) begin
+                start_mlp_sticky <= 1'b1;  // Set on pulse
+            end
+            // Auto-clear after some time in IDLE
+            if (state == IDLE && byte_count == 3'd0) begin
+                start_mlp_sticky <= 1'b0;
+            end
+        end
+    end
+
+    always_ff @(posedge clk) begin
         if (rst) begin
             state <= IDLE;
             cmd_reg <= 8'd0;

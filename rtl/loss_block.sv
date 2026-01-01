@@ -17,7 +17,7 @@ module loss_block (
     assign diff = data_in - target_in;
     assign abs_diff = diff[31] ? -diff : diff;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
             loss_out  <= 32'sd0;

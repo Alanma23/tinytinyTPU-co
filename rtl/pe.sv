@@ -13,7 +13,7 @@ module pe (
 
     logic [7:0] weight;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             out_act <= 8'd0;
             out_psum <= 16'd0;

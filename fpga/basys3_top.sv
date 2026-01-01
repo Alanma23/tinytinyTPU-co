@@ -39,18 +39,38 @@ module basys3_top (
         .O(clk_100mhz)
     );
 
-    // Synchronize reset button, provide deterministic POR hold
-    logic [2:0] rst_sync = 3'b111;
-    always_ff @(posedge clk_100mhz or posedge btnC) begin
-        if (btnC) begin
-            rst_sync <= 3'b111;
-        end else begin
-            rst_sync <= {rst_sync[1:0], 1'b0};
+    // Power-on reset and button reset logic
+    // Generate 255-cycle reset pulse on power-up, plus reset on button press
+    logic [7:0] rst_counter = 8'hFF;  // Power-on reset: starts at FF, counts down to 0
+    logic rst;
+
+    // Synchronize button input (initialized to prevent X propagation)
+    logic btnC_sync1 = 1'b0, btnC_sync2 = 1'b0;
+    always_ff @(posedge clk_100mhz) begin
+        btnC_sync1 <= btnC;
+        btnC_sync2 <= btnC_sync1;
+    end
+
+    // Reset counter: counts down from FF to 0, or resets to FF on button press
+    always_ff @(posedge clk_100mhz) begin
+        if (btnC_sync2) begin
+            rst_counter <= 8'hFF;  // Button pressed: restart reset pulse
+        end else if (rst_counter != 8'h00) begin
+            rst_counter <= rst_counter - 1'b1;  // Count down
         end
     end
 
-    logic rst;
-    assign rst = rst_sync[2];
+    // Reset is active while counter is non-zero
+    assign rst = (rst_counter != 8'h00);
+
+    // #region agent log
+    always_ff @(posedge clk_100mhz) begin
+        if (rst_counter == 8'hFE || rst_counter == 8'h01 || (rst_counter[3:0] == 4'h0 && rst_counter != 8'h00)) begin
+            $display("[BASYS3_TOP] rst=%d, rst_counter=0x%02X, tpu_mlp_state=%d, tpu_mlp_cycle_cnt=%d, tpu_mlp_acc0=%d, uart_state=%d",
+                     rst, rst_counter, tpu_mlp_state, tpu_mlp_cycle_cnt, tpu_acc0, uart_state_dbg);
+        end
+    end
+    // #endregion
 
     // ========================================================================
     // TPU Instantiation
@@ -127,20 +147,36 @@ module basys3_top (
 // Mode 10: UART Controller Detail
 // Mode 11: UART Controller Internal Debug
 
+// Debug LED test patterns (use SW[13:12] when SW[15:14] = 00)
+logic [15:0] debug_led_test;
+always_comb begin
+    case (sw_sync2[13:12])
+        2'b00: debug_led_test = 16'h0000;  // All off
+        2'b01: debug_led_test = 16'h5555;  // 01010101...
+        2'b10: debug_led_test = 16'hAAAA;  // 10101010...
+        2'b11: debug_led_test = 16'hFFFF;  // All on
+    endcase
+end
+
     logic [15:0] led_next;
 
     always_comb begin
         led_next = 16'h0000;
         case (sw_sync2[15:14])
             2'b00: begin  // MLP State and Status
-                led_next[3:0]   = tpu_mlp_state;           // MLP FSM state
-                led_next[6:4]   = tpu_mlp_layer;           // Current layer
-                led_next[7]     = tpu_layer_complete;      // Layer complete flag
-                led_next[8]     = tpu_acc_valid;           // Accumulator valid
-                led_next[9]     = ~uart_rx;                // UART RX line state (inverted for visibility)
-                led_next[10]    = ~uart_tx;                // UART TX line state (inverted for visibility)
-                led_next[11]    = rst;                     // Reset indicator
-                led_next[15:12] = uart_state_dbg;          // UART controller state
+                // Use debug test pattern if SW[13:12] != 00, otherwise show actual status
+                if (sw_sync2[13:12] != 2'b00) begin
+                    led_next = debug_led_test;  // Debug LED test pattern
+                end else begin
+                    led_next[3:0]   = tpu_mlp_state;           // MLP FSM state
+                    led_next[6:4]   = tpu_mlp_layer;           // Current layer
+                    led_next[7]     = tpu_layer_complete;      // Layer complete flag
+                    led_next[8]     = tpu_acc_valid;           // Accumulator valid
+                    led_next[9]     = ~uart_rx;                // UART RX line state (inverted for visibility)
+                    led_next[10]    = ~uart_tx;                // UART TX line state (inverted for visibility)
+                    led_next[11]    = rst;                     // Reset indicator
+                    led_next[15:12] = uart_state_dbg;          // UART controller state
+                end
             end
 
             2'b01: begin  // Accumulator Result (lower 16 bits of acc0)

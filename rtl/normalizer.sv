@@ -39,7 +39,7 @@ module normalizer (
 
     // Stage 2: multiply (maps cleanly into DSP with registered inputs)
     logic        s2_valid;
-    logic signed [47:0] mult_res;
+    (* use_dsp = "yes" *) logic signed [47:0] mult_res;
     logic signed [31:0] bias_d1;
     logic [4:0]         shift_d1;
 
@@ -58,13 +58,20 @@ module normalizer (
     end
 
     // Stage 3: shift + bias and present output
+    logic signed [47:0] shifted_res;
+
+    // Combinational shift
+    always_comb begin
+        shifted_res = mult_res >>> shift_d1;
+    end
+
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
             data_out  <= 32'sd0;
         end else begin
             valid_out <= s2_valid;
-            data_out  <= (mult_res >>> shift_d1)[31:0] + bias_d1;
+            data_out  <= shifted_res[31:0] + bias_d1;
         end
     end
 

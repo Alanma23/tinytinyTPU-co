@@ -43,6 +43,7 @@ module mlp_top (
 );
 
     // FSM States
+    // synthesis attribute FSM_ENCODING of state_reg is "USER"
     localparam logic [3:0] IDLE         = 4'd0;
     localparam logic [3:0] LOAD_WEIGHT  = 4'd1;
     localparam logic [3:0] LOAD_ACT     = 4'd2;
@@ -56,7 +57,7 @@ module mlp_top (
     localparam int NUM_LAYERS = 2;
 
     // Internal state
-    logic [3:0]  state_reg;
+    (* fsm_encoding = "one_hot" *) logic [3:0]  state_reg;
     logic [4:0]  cycle_cnt_reg;
     logic [2:0]  current_layer_reg;
     logic        buffer_select;
@@ -157,7 +158,7 @@ module mlp_top (
     // Row1 skew register for systolic timing
     logic [7:0] row1_skew_reg;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset)
             row1_skew_reg <= 8'd0;
         else if (compute_phase && act_ub_rd_valid)
@@ -253,7 +254,7 @@ module mlp_top (
     logic        refill_valid;
     logic [15:0] refill_data;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             refill_valid <= 1'b0;
             refill_data <= 16'd0;
@@ -288,7 +289,7 @@ module mlp_top (
     end
 
     // FSM Controller
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             state_reg <= IDLE;
             cycle_cnt_reg <= 5'd0;

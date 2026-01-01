@@ -18,7 +18,7 @@ module accumulator_align (
     logic [15:0] col0_delay_reg;
     logic pending;  // True after first capture, enables output on subsequent valids
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             col0_delay_reg <= 16'd0;
             pending <= 1'b0;

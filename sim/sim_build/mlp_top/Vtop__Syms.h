@@ -23,8 +23,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop__Syms final : public VerilatedSyms {
   public:
     // INTERNAL STATE
     Vtop* const __Vm_modelp;
-    bool __Vm_activity = false;  ///< Used by trace routines to determine change occurred
-    uint32_t __Vm_baseCode = 0;  ///< Used by trace routines when tracing multiple models
     VlDeleter __Vm_deleter;
     bool __Vm_didInit = false;
 
@@ -41,10 +39,12 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop__Syms final : public VerilatedSyms {
     VerilatedScope __Vscope_mlp_top__ap_col0__act_u;
     VerilatedScope __Vscope_mlp_top__ap_col0__loss_u;
     VerilatedScope __Vscope_mlp_top__ap_col0__norm_u;
+    VerilatedScope __Vscope_mlp_top__ap_col0__unnamedblk1;
     VerilatedScope __Vscope_mlp_top__ap_col1;
     VerilatedScope __Vscope_mlp_top__ap_col1__act_u;
     VerilatedScope __Vscope_mlp_top__ap_col1__loss_u;
     VerilatedScope __Vscope_mlp_top__ap_col1__norm_u;
+    VerilatedScope __Vscope_mlp_top__ap_col1__unnamedblk1;
     VerilatedScope __Vscope_mlp_top__mmu_u;
     VerilatedScope __Vscope_mlp_top__mmu_u__pe00;
     VerilatedScope __Vscope_mlp_top__mmu_u__pe01;

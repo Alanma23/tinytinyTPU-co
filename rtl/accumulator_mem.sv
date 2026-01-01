@@ -24,7 +24,7 @@ module accumulator_mem #(
     logic signed [31:0] mem_buff1_col0;
     logic signed [31:0] mem_buff1_col1;
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
             out_col0 <= 32'sd0;

@@ -98,7 +98,7 @@ module activation_pipeline (
 
     // Stage 3b.2 - multiply via DSP
     logic             q_s2_valid;
-    logic signed [47:0] mult_reg;
+    (* use_dsp = "yes" *) logic signed [47:0] mult_reg;
     logic signed [7:0]  q_zero_point_d1;
 
     always_ff @(posedge clk) begin

@@ -9,10 +9,10 @@ module weight_fifo (
     output logic [7:0] data_out
 );
 
-    logic [7:0] buffer [4]; // Tiny depth (4 deep)
-    logic [1:0] wr_ptr, rd_ptr;
+    logic [7:0] buffer [4] = '{8'd0, 8'd0, 8'd0, 8'd0}; // Tiny depth (4 deep), initialized
+    logic [1:0] wr_ptr = 2'd0, rd_ptr = 2'd0;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             wr_ptr <= 2'd0;
             rd_ptr <= 2'd0;

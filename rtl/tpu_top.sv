@@ -178,6 +178,20 @@ module tpu_top #(
         .acc_valid(mlp_acc_valid_out)
     );
 
+    // Connect MLP state to UART controller
+    assign mlp_state = mlp_state_out;
+    assign mlp_cycle_cnt = mlp_cycle_cnt_out;
+    assign mlp_acc0 = mlp_acc0_out;
+
+    // #region agent log
+    always_ff @(posedge clk) begin
+        if (!rst) begin  // Only log when not in reset
+            $display("[TPU_TOP] mlp_state_out=%d, mlp_cycle_cnt_out=%d, mlp_acc0_out=%d, connected to UART: mlp_state=%d, mlp_cycle_cnt=%d, mlp_acc0=%d",
+                     mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out, mlp_state, mlp_cycle_cnt, mlp_acc0);
+        end
+    end
+    // #endregion
+
     // Debug exports
     assign mlp_state_dbg = mlp_state_out;
     assign mlp_cycle_cnt_dbg = mlp_cycle_cnt_out;

@@ -13,7 +13,7 @@ module activation_func #(
     output logic signed [31:0] data_out
 );
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
             data_out  <= 32'sd0;
