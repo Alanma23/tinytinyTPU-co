@@ -1,9 +1,9 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1767173089" />
-    <testcase name="test_tpu_reset" classname="tests.test_tpu_system" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="128" time="0.001255035400390625" sim_time_ns="1100.0" ratio_time="876469.3009118541" />
-    <testcase name="test_weight_loading_via_uart" classname="tests.test_tpu_system" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="141" time="0.6344418525695801" sim_time_ns="540060.0" ratio_time="851236.4022213855" />
-    <testcase name="test_activation_loading_via_uart" classname="tests.test_tpu_system" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="184" time="0.5480999946594238" sim_time_ns="540060.0000000001" ratio_time="985331.1535527024" />
-    <testcase name="test_simple_inference" classname="tests.test_tpu_system" file="/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="226" time="0.6199181079864502" sim_time_ns="1602500.0" ratio_time="2585018.858708716" />
+    <property name="random_seed" value="1767236772" />
+    <testcase name="test_tpu_reset" classname="tests.test_tpu_system" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="128" time="0.0014731884002685547" sim_time_ns="1100.0" ratio_time="746679.7863731995" />
+    <testcase name="test_weight_loading_via_uart" classname="tests.test_tpu_system" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="141" time="0.8532569408416748" sim_time_ns="540060.0" ratio_time="632939.4747932209" />
+    <testcase name="test_activation_loading_via_uart" classname="tests.test_tpu_system" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="184" time="0.741530179977417" sim_time_ns="540060.0000000001" ratio_time="728304.8142645353" />
+    <testcase name="test_simple_inference" classname="tests.test_tpu_system" file="/Users/alanma/Downloads/tinytinyTPU-co/sim/tests/test_tpu_system.py" lineno="228" time="0.9491691589355469" sim_time_ns="1702490.0" ratio_time="1793663.4202372006" />
   </testsuite>
 </testsuites>

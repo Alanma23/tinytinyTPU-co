@@ -215,12 +215,14 @@ async def test_activation_loading_via_uart(dut):
 
     dut._log.info(f"Activation writes seen: {[f'0x{a:04X}' for a in act_writes]}")
 
-    # Verify activations were written
+    # Verify activations were written (column-major for systolic timing)
+    # activations = [A00, A01, A10, A11]
+    # col0 = {A10, A00}, col1 = {A11, A01}
     assert len(act_writes) == 2, f"Expected 2 activation writes, got {len(act_writes)}"
-    expected_row0 = (activations[1] << 8) | activations[0]  # 0x0605
-    expected_row1 = (activations[3] << 8) | activations[2]  # 0x0807
-    assert act_writes[0] == expected_row0, f"Row 0 should be 0x{expected_row0:04X}, got 0x{act_writes[0]:04X}"
-    assert act_writes[1] == expected_row1, f"Row 1 should be 0x{expected_row1:04X}, got 0x{act_writes[1]:04X}"
+    expected_col0 = (activations[2] << 8) | activations[0]  # {A10, A00} = 0x0705
+    expected_col1 = (activations[3] << 8) | activations[1]  # {A11, A01} = 0x0806
+    assert act_writes[0] == expected_col0, f"Col 0 should be 0x{expected_col0:04X}, got 0x{act_writes[0]:04X}"
+    assert act_writes[1] == expected_col1, f"Col 1 should be 0x{expected_col1:04X}, got 0x{act_writes[1]:04X}"
 
 
 @cocotb.test()

@@ -182,12 +182,10 @@ module tpu_top #(
         .acc_valid(mlp_acc_valid_out)
     );
 
-    // Connect MLP state to UART controller
-    assign mlp_cycle_cnt = mlp_cycle_cnt_out;
-    assign mlp_acc0 = mlp_acc0_out;
-
-    // Connect MLP state to UART controller
-    assign mlp_state_ctrl = mlp_state_out;
+    // Note: mlp_state_ctrl, mlp_cycle_cnt, and mlp_acc0 are connected via tpu_bridge
+    // (bridge receives mlp_state_in/mlp_cycle_cnt_in/mlp_acc0_in from mlp_u,
+    //  and outputs mlp_state/mlp_cycle_cnt/mlp_acc0 to uart_controller)
+    // No additional assigns needed - avoid multi-driver conflict
 
     // #region agent log
     logic [3:0] mlp_state_out_prev;

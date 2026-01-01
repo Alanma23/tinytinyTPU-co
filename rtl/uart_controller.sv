@@ -331,24 +331,27 @@ module uart_controller #(
                 end
 
                 WRITE_ACT_SEQ: begin
-                    // Sequence: Row 0 (A00, A01), Row 1 (A10, A11)
+                    // Systolic array needs activations by COLUMN for timing:
+                    //   Step 0: {A10, A00} - first column (fed to row0 and row1 in parallel)
+                    //   Step 1: {A11, A01} - second column
+                    // data_buffer = [A00, A01, A10, A11]
                     case (act_seq_idx)
-                        2'd0: begin  // Row 0: A00 (LSB), A01 (MSB)
-                            init_act_data_reg <= {data_buffer[1], data_buffer[0]};
+                        2'd0: begin  // Column 0: A00 (row0), A10 (row1)
+                            init_act_data_reg <= {data_buffer[2], data_buffer[0]};
                             init_act_valid_reg <= 1'b1;
                             act_seq_idx <= 2'd1;
                             // #region agent log
-                            $display("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing row0=0x%04X (A01=%02X, A00=%02X), init_act_valid=1",
-                                     {data_buffer[1], data_buffer[0]}, data_buffer[1], data_buffer[0]);
+                            $display("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing col0=0x%04X (A10=%02X, A00=%02X), init_act_valid=1",
+                                     {data_buffer[2], data_buffer[0]}, data_buffer[2], data_buffer[0]);
                             // #endregion
                         end
-                        2'd1: begin  // Row 1: A10 (LSB), A11 (MSB)
-                            init_act_data_reg <= {data_buffer[3], data_buffer[2]};
+                        2'd1: begin  // Column 1: A01 (row0), A11 (row1)
+                            init_act_data_reg <= {data_buffer[3], data_buffer[1]};
                             init_act_valid_reg <= 1'b1;
                             state <= IDLE;
                             // #region agent log
-                            $display("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing row1=0x%04X (A11=%02X, A10=%02X), init_act_valid=1, going to IDLE",
-                                     {data_buffer[3], data_buffer[2]}, data_buffer[3], data_buffer[2]);
+                            $display("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing col1=0x%04X (A11=%02X, A01=%02X), init_act_valid=1, going to IDLE",
+                                     {data_buffer[3], data_buffer[1]}, data_buffer[3], data_buffer[1]);
                             // #endregion
                         end
                         default: begin

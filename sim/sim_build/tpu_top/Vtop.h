@@ -13,7 +13,6 @@
 
 class Vtop__Syms;
 class Vtop___024root;
-class VerilatedVcdC;
 
 // This class is the main interface to the Verilated model
 class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
@@ -25,7 +24,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
 
     // CONSTEXPR CAPABILITIES
     // Verilated with --trace?
-    static constexpr bool traceCapable = true;
+    static constexpr bool traceCapable = false;
 
     // PORTS
     // The application code writes and reads these signals to
@@ -34,6 +33,23 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
     VL_IN8(&rst,0,0);
     VL_IN8(&uart_rx,0,0);
     VL_OUT8(&uart_tx,0,0);
+    VL_OUT8(&mlp_state_dbg,3,0);
+    VL_OUT8(&mlp_cycle_cnt_dbg,4,0);
+    VL_OUT8(&mlp_layer_dbg,2,0);
+    VL_OUT8(&mlp_layer_complete_dbg,0,0);
+    VL_OUT8(&mlp_acc_valid_dbg,0,0);
+    VL_OUT8(&uart_state_dbg,3,0);
+    VL_OUT8(&uart_cmd_dbg,7,0);
+    VL_OUT8(&uart_byte_count_dbg,2,0);
+    VL_OUT8(&uart_resp_idx_dbg,1,0);
+    VL_OUT8(&uart_tx_valid_dbg,0,0);
+    VL_OUT8(&uart_tx_ready_dbg,0,0);
+    VL_OUT8(&uart_rx_valid_dbg,0,0);
+    VL_OUT8(&uart_rx_data_dbg,7,0);
+    VL_OUT8(&uart_weights_ready_dbg,0,0);
+    VL_OUT8(&uart_start_mlp_dbg,0,0);
+    VL_OUT(&mlp_acc0_dbg,31,0);
+    VL_OUT(&mlp_acc1_dbg,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
@@ -85,7 +101,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
     /// Re-init after cloning the model at the process level (e.g. fork in Linux)
     /// Re-allocate necessary resources. Called after cloning.
     void atClone() const;
-    std::unique_ptr<VerilatedTraceConfig> traceConfig() const override final;
   private:
     // Internal functions - trace registration
     void traceBaseModel(VerilatedTraceBaseC* tfp, int levels, int options);
