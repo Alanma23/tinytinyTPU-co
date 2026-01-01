@@ -3,6 +3,7 @@
 module accumulator_align (
     input  logic        clk,
     input  logic        reset,
+    input  logic        clear,      // Clear pending state for new inference
 
     input  logic        valid_in,
     input  logic [15:0] raw_col0,
@@ -26,6 +27,12 @@ module accumulator_align (
             align_col0 <= 16'd0;
             align_col1 <= 16'd0;
         end
+        else if (clear) begin
+            // Clear pending state at start of new inference
+            col0_delay_reg <= 16'd0;
+            pending <= 1'b0;
+            aligned_valid <= 1'b0;
+        end
         else begin
             aligned_valid <= 1'b0;
 
@@ -44,6 +51,7 @@ module accumulator_align (
                 end
             end else begin
                 // No valid input - reset pending for next batch
+                // Note: col0_delay_reg is preserved but won't be used unless valid_in goes high again
                 pending <= 1'b0;
             end
         end

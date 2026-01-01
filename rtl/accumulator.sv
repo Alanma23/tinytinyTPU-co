@@ -3,6 +3,7 @@
 module accumulator (
     input  logic        clk,
     input  logic        reset,
+    input  logic        clear,     // Clear align pending state for new inference
     input  logic        valid_in,  // MMU data valid
     input  logic        accumulator_enable, // add to existing sum or overwrite (1/0)
     input  logic        addr_sel, // buffer selection (buffer 1, or buffer 2)
@@ -22,6 +23,7 @@ module accumulator (
     accumulator_align u_align (
         .clk(clk),
         .reset(reset),
+        .clear(clear),
         .valid_in(valid_in),
         .raw_col0(mmu_col0_in),
         .raw_col1(mmu_col1_in),

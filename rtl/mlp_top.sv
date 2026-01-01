@@ -201,13 +201,21 @@ module mlp_top (
     logic mmu_valid;
     logic acc_clear;
     logic acc_reset;
+    logic acc_align_clear;
 
-    assign mmu_valid = (compute_phase && cycle_cnt_reg >= 5'd2) || drain_phase;
+    // Only assert mmu_valid when MMU actually has valid outputs
+    // During COMPUTE: valid when unified buffer has data (act_ub_rd_valid)
+    // During DRAIN: valid only for first 2 cycles (when MMU has valid outputs for 2x2 matrix)
+    assign mmu_valid = (compute_phase && cycle_cnt_reg >= 5'd2 && act_ub_rd_valid) || 
+                       (drain_phase && cycle_cnt_reg < 5'd2);
     assign acc_reset = reset | acc_clear;  // Clear accumulator on reset OR new inference
+    // Clear align pending state during LOAD_ACT to ensure clean start for each inference
+    assign acc_align_clear = (state_reg == LOAD_ACT) && (cycle_cnt_reg == 5'd0);
 
     accumulator accum_u (
         .clk(clk),
         .reset(acc_reset),
+        .clear(acc_align_clear),
         .valid_in(mmu_valid),
         .accumulator_enable(accum_en),
         .addr_sel(addr_sel),
@@ -359,6 +367,7 @@ module mlp_top (
 
                 COMPUTE: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
+                    accum_en <= 1'b1;  // Enable accumulation from start of COMPUTE to accumulate all row results
                     // #region agent log
                     if (cycle_cnt_reg == 5'd0)
                         $display("[MLP] COMPUTE started. mmu_valid will be high when cycle_cnt>=2");
