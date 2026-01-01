@@ -39,30 +39,42 @@ module normalizer (
 
     // Stage 2: multiply (maps cleanly into DSP with registered inputs)
     logic        s2_valid;
-    (* use_dsp = "yes" *) logic signed [47:0] mult_res;
+    (* use_dsp = "yes" *) logic signed [47:0] mult_raw;
+    (* keep = "true" *) logic signed [47:0] mult_res;
     logic signed [31:0] bias_d1;
     logic [4:0]         shift_d1;
 
     always_ff @(posedge clk) begin
         if (reset) begin
             s2_valid  <= 1'b0;
+            mult_raw  <= '0;
             mult_res  <= '0;
             bias_d1   <= '0;
             shift_d1  <= '0;
         end else begin
             s2_valid  <= s1_valid;
-            mult_res  <= data_in_d * gain_d;
+            mult_raw  <= data_in_d * gain_d;
+            mult_res  <= mult_raw;  // Register DSP output
             bias_d1   <= bias_d;
             shift_d1  <= shift_d;
         end
     end
 
     // Stage 3: shift + bias and present output
+    logic        s3_valid;
     logic signed [47:0] shifted_res;
+    logic signed [31:0] bias_d2;
 
-    // Combinational shift
-    always_comb begin
-        shifted_res = mult_res >>> shift_d1;
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            s3_valid  <= 1'b0;
+            shifted_res <= '0;
+            bias_d2   <= '0;
+        end else begin
+            s3_valid  <= s2_valid;
+            shifted_res <= mult_res >>> shift_d1;  // Registered shift
+            bias_d2   <= bias_d1;
+        end
     end
 
     always_ff @(posedge clk) begin
@@ -70,8 +82,8 @@ module normalizer (
             valid_out <= 1'b0;
             data_out  <= 32'sd0;
         end else begin
-            valid_out <= s2_valid;
-            data_out  <= shifted_res[31:0] + bias_d1;
+            valid_out <= s3_valid;
+            data_out  <= shifted_res[31:0] + bias_d2;
         end
     end
 

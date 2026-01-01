@@ -101,7 +101,7 @@ module uart_controller #(
     logic [7:0]  data_buffer [0:3];  // Buffer for multi-byte commands
     logic [1:0]  resp_byte_idx;
     logic [7:0]  resp_buffer [0:3];   // Response buffer
-    logic [1:0]  weight_seq_idx;      // For sequencing weight writes
+    logic [2:0]  weight_seq_idx;      // For sequencing weight writes (0=reset, 1-4=weights)
     logic [1:0]  act_seq_idx;          // For sequencing activation writes
     logic        byte_sent;            // Flag to track if current response byte has been sent
     logic [7:0]  resp_delay_count;     // Delay counter before starting response transmission
@@ -164,7 +164,7 @@ module uart_controller #(
             state <= IDLE;
             cmd_reg <= 8'd0;
             byte_count <= 3'd0;
-            weight_seq_idx <= 2'd0;
+            weight_seq_idx <= 3'd0;
             act_seq_idx <= 2'd0;
             for (int i = 0; i < 4; i++) begin
                 data_buffer[i] <= 8'd0;
@@ -187,7 +187,12 @@ module uart_controller #(
             // Default: clear control signals (pulse signals)
             wf_push_col0_reg <= 1'b0;
             wf_push_col1_reg <= 1'b0;
+            wf_reset_reg <= 1'b0;  // Clear FIFO reset after one cycle
             init_act_valid_reg <= 1'b0;
+            // #region agent log
+            if (start_mlp_reg)
+                $display("[UART_CTRL] Clearing start_mlp_reg (was set, now clearing)");
+            // #endregion
             start_mlp_reg <= 1'b0;
             // Don't clear tx_valid_reg here - it's managed by SEND_RESP state
             // tx_valid_reg <= 1'b0;
@@ -198,7 +203,7 @@ module uart_controller #(
                     resp_byte_idx <= 2'd0;
                     byte_sent <= 1'b0;
                     resp_delay_count <= 8'd0;
-                    weight_seq_idx <= 2'd0;
+                    weight_seq_idx <= 3'd0;
                     act_seq_idx <= 2'd0;
                     if (rx_ready) begin
                         state <= WAIT_CMD;
@@ -233,7 +238,7 @@ module uart_controller #(
                         if (byte_count == 3'd3) begin
                             // All data received, start execution
                             if (cmd_reg == CMD_WRITE_WEIGHT) begin
-                                weight_seq_idx <= 2'd0;
+                                weight_seq_idx <= 3'd0;
                                 state <= WRITE_WEIGHT_SEQ;
                                 // #region agent log
                                 $display("[UART_CTRL] RECV_DATA: Got 4 bytes for CMD_WRITE_WEIGHT, going to WRITE_WEIGHT_SEQ. Data=[%02X,%02X,%02X,%02X]",
@@ -256,32 +261,42 @@ module uart_controller #(
                 end
 
                 WRITE_WEIGHT_SEQ: begin
-                    // Sequence: W00->col0, W01->col1, W10->col0, W11->col1
+                    // Sequence: Reset FIFO, then W00->col0, W01->col1, W10->col0, W11->col1
+                    // Steps: 0=reset, 1=W00, 2=W01, 3=W10, 4=W11
                     case (weight_seq_idx)
-                        2'd0: begin  // W00 -> col0
+                        3'd0: begin  // Reset FIFO pointers first
+                            wf_reset_reg <= 1'b1;
+                            weight_seq_idx <= 3'd1;
+                            // #region agent log
+                            $display("[UART_CTRL] WRITE_WEIGHT_SEQ[0]: Resetting weight FIFO");
+                            // #endregion
+                        end
+                        3'd1: begin  // W00 -> col0
                             wf_data_in_reg <= data_buffer[0];
                             wf_push_col0_reg <= 1'b1;
-                            weight_seq_idx <= 2'd1;
+                            weight_seq_idx <= 3'd2;
                         end
-                        2'd1: begin  // W01 -> col1
+                        3'd2: begin  // W01 -> col1
                             wf_data_in_reg <= data_buffer[1];
                             wf_push_col1_reg <= 1'b1;
-                            weight_seq_idx <= 2'd2;
+                            weight_seq_idx <= 3'd3;
                         end
-                        2'd2: begin  // W10 -> col0
+                        3'd3: begin  // W10 -> col0
                             wf_data_in_reg <= data_buffer[2];
                             wf_push_col0_reg <= 1'b1;
-                            weight_seq_idx <= 2'd3;
+                            weight_seq_idx <= 3'd4;
                         end
-                        2'd3: begin  // W11 -> col1
+                        3'd4: begin  // W11 -> col1, done
                             wf_data_in_reg <= data_buffer[3];
                             wf_push_col1_reg <= 1'b1;
-                            weights_ready_reg <= 1'b1;  // Mark weights as ready
+                            weights_ready_reg <= 1'b1;
+                            // #region agent log
+                            $display("[UART_CTRL] WRITE_WEIGHT_SEQ[4]: Completed, weights=[%02X,%02X,%02X,%02X]",
+                                     data_buffer[0], data_buffer[1], data_buffer[2], data_buffer[3]);
+                            // #endregion
                             state <= IDLE;
                         end
-                        default: begin
-                            state <= IDLE;
-                        end
+                        default: state <= IDLE;
                     endcase
                 end
 
@@ -316,7 +331,7 @@ module uart_controller #(
                     case (cmd_reg)
                         CMD_EXECUTE: begin
                             // #region agent log
-                            $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, state=%0d", state);
+                            $display("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, weights_ready_reg=%b, mlp_state=%d", weights_ready_reg, mlp_state);
                             // #endregion
                             start_mlp_reg <= 1'b1;
                             // Clear weights_ready - they will be consumed by this execution
@@ -344,14 +359,13 @@ module uart_controller #(
 
                         CMD_STATUS: begin
                             // Return 1 byte: [state(3:0) | cycle_cnt(3:0)] = 4+4=8 bits
-                            // Use full 4 bits of state to distinguish DONE(8) from IDLE(0)
-                            // Pack the value directly - non-blocking assignment will update resp_buffer[0] at end of time step
+                            // Use full 4-bit state and lower 4 bits of cycle_cnt
                             resp_buffer[0] <= {mlp_state[3:0], mlp_cycle_cnt[3:0]};
                             resp_byte_idx <= 2'd0;
                             byte_sent <= 1'b0;  // Clear flag for new response
                             // #region agent log
-                            $display("[UART_CTRL] EXEC_CMD: CMD_STATUS - mlp_state=0x%X[3:0], mlp_cycle_cnt=0x%X[4:0], packed_value=0x%02X (packed: state[2:0]=0x%X, cycle[4:0]=0x%X), resp_buffer[0] current=0x%02X",
-                                     mlp_state, mlp_cycle_cnt, {mlp_state[2:0], mlp_cycle_cnt[4:0]}, mlp_state[2:0], mlp_cycle_cnt[4:0], resp_buffer[0]);
+                            $display("[UART_CTRL] EXEC_CMD: CMD_STATUS - mlp_state=0x%X[3:0], mlp_cycle_cnt=0x%X[4:0], packed_value=0x%02X (packed: state[3:0]=0x%X, cycle[3:0]=0x%X), resp_buffer[0] current=0x%02X",
+                                     mlp_state, mlp_cycle_cnt, {mlp_state[3:0], mlp_cycle_cnt[3:0]}, mlp_state[3:0], mlp_cycle_cnt[3:0], resp_buffer[0]);
                             // #endregion
                             state <= SEND_RESP;
                             // Note: resp_buffer[0] will be updated at end of this time step due to non-blocking assignment

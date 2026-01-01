@@ -182,11 +182,20 @@ module tpu_top #(
     assign mlp_cycle_cnt = mlp_cycle_cnt_out;
     assign mlp_acc0 = mlp_acc0_out;
 
+    // Connect MLP state to UART controller
+    assign mlp_state_ctrl = mlp_state_out;
+
     // #region agent log
+    logic [3:0] mlp_state_out_prev;
     always_ff @(posedge clk) begin
         if (!rst) begin  // Only log when not in reset
-            $display("[TPU_TOP] mlp_state_out=%d, mlp_cycle_cnt_out=%d, mlp_acc0_out=%d, connected to UART: mlp_state=%d, mlp_cycle_cnt=%d, mlp_acc0=%d",
-                     mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out, mlp_state_ctrl, mlp_cycle_cnt, mlp_acc0);
+            if (mlp_state_out != mlp_state_out_prev) begin
+                $display("[TPU_TOP] State change: mlp_state_out=%d->%d, mlp_cycle_cnt_out=%d, mlp_acc0_out=0x%08X",
+                         mlp_state_out_prev, mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out);
+            end
+            mlp_state_out_prev <= mlp_state_out;
+        end else begin
+            mlp_state_out_prev <= 4'd0;
         end
     end
     // #endregion

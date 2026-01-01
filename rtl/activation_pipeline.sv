@@ -98,17 +98,20 @@ module activation_pipeline (
 
     // Stage 3b.2 - multiply via DSP
     logic             q_s2_valid;
-    (* use_dsp = "yes" *) logic signed [47:0] mult_reg;
+    (* use_dsp = "yes" *) logic signed [47:0] mult_raw;
+    (* keep = "true" *) logic signed [47:0] mult_reg;
     logic signed [7:0]  q_zero_point_d1;
 
     always_ff @(posedge clk) begin
         if (reset) begin
             q_s2_valid     <= 1'b0;
+            mult_raw       <= '0;
             mult_reg       <= '0;
             q_zero_point_d1<= '0;
         end else begin
             q_s2_valid      <= q_s1_valid;
-            mult_reg        <= q_s1_data * q_inv_scale_d0;  // 32x16 -> 48-bit
+            mult_raw        <= q_s1_data * q_inv_scale_d0;  // 32x16 -> 48-bit
+            mult_reg        <= mult_raw;  // Register DSP output
             q_zero_point_d1 <= q_zero_point_d0;
         end
     end
