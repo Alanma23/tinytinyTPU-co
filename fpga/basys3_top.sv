@@ -82,6 +82,7 @@ module basys3_top (
     logic        uart_tx_valid_dbg;
     logic        uart_tx_ready_dbg;
     logic        uart_rx_valid_dbg;
+    logic [7:0]  uart_rx_data_dbg;
     logic        uart_weights_ready_dbg;
     logic        uart_start_mlp_dbg;
 
@@ -117,6 +118,7 @@ module basys3_top (
         .uart_tx_valid_dbg(uart_tx_valid_dbg),
         .uart_tx_ready_dbg(uart_tx_ready_dbg),
         .uart_rx_valid_dbg(uart_rx_valid_dbg),
+        .uart_rx_data_dbg(uart_rx_data_dbg),
         .uart_weights_ready_dbg(uart_weights_ready_dbg),
         .uart_start_mlp_dbg(uart_start_mlp_dbg)
     );
@@ -183,14 +185,22 @@ end
                 led_next[15:0] = tpu_acc0[15:0];
             end
 
-            2'b10: begin  // UART Controller Detail
-                led_next[3:0]   = uart_state_dbg;
-                led_next[7:4]   = uart_cmd_dbg[3:0];
-                led_next[10:8]  = uart_byte_count_dbg;
-                led_next[12:11] = uart_resp_idx_dbg;
-                led_next[13]    = uart_tx_valid_dbg;
-                led_next[14]    = uart_rx_valid_dbg;
-                led_next[15]    = uart_weights_ready_dbg;
+            2'b10: begin  // UART Controller Detail / Echo Test
+                if (sw_sync2[13]) begin
+                    // Echo mode: Display last received byte
+                    led_next[7:0]   = uart_rx_data_dbg;  // Last received byte on LEDs[7:0]
+                    led_next[8]     = uart_rx_valid_dbg;  // RX valid indicator
+                    led_next[15:9]  = 7'b0;               // Upper LEDs off
+                end else begin
+                    // UART Controller Detail
+                    led_next[3:0]   = uart_state_dbg;
+                    led_next[7:4]   = uart_cmd_dbg[3:0];
+                    led_next[10:8]  = uart_byte_count_dbg;
+                    led_next[12:11] = uart_resp_idx_dbg;
+                    led_next[13]    = uart_tx_valid_dbg;
+                    led_next[14]    = uart_rx_valid_dbg;
+                    led_next[15]    = uart_weights_ready_dbg;
+                end
             end
 
             2'b11: begin  // Debug: UART Controller Internal State

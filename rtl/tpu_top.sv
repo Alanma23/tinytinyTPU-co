@@ -29,6 +29,7 @@ module tpu_top #(
     output logic        uart_tx_valid_dbg,
     output logic        uart_tx_ready_dbg,
     output logic        uart_rx_valid_dbg,
+    output logic [7:0]  uart_rx_data_dbg,
     output logic        uart_weights_ready_dbg,
     output logic        uart_start_mlp_dbg
 );
@@ -55,6 +56,7 @@ module tpu_top #(
     logic        uart_tx_valid_int;
     logic        uart_tx_ready_int;
     logic        uart_rx_valid_int;
+    logic [7:0]  uart_rx_data_int;
     logic        uart_weights_ready_int;
     logic        uart_start_mlp_int;
 
@@ -84,6 +86,7 @@ module tpu_top #(
         .dbg_tx_valid(uart_tx_valid_int),
         .dbg_tx_ready(uart_tx_ready_int),
         .dbg_rx_valid(uart_rx_valid_int),
+        .dbg_rx_data(uart_rx_data_int),
         .dbg_weights_ready(uart_weights_ready_int),
         .dbg_start_mlp(uart_start_mlp_int)
     );
@@ -113,6 +116,7 @@ module tpu_top #(
 
     // TPU Bridge instance
     tpu_bridge bridge_u (
+        .clk(clk),
         // UART Controller interface
         .ctrl_wf_push_col0(wf_push_col0),
         .ctrl_wf_push_col1(wf_push_col1),
@@ -215,6 +219,7 @@ module tpu_top #(
     assign uart_tx_valid_dbg = uart_tx_valid_int;
     assign uart_tx_ready_dbg = uart_tx_ready_int;
     assign uart_rx_valid_dbg = uart_rx_valid_int;
+    assign uart_rx_data_dbg = uart_rx_data_int;
     assign uart_weights_ready_dbg = uart_weights_ready_int;
     assign uart_start_mlp_dbg = uart_start_mlp_int;
 

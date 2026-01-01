@@ -37,6 +37,7 @@ module uart_controller #(
     output logic        dbg_tx_valid,
     output logic        dbg_tx_ready,
     output logic        dbg_rx_valid,
+    output logic [7:0]  dbg_rx_data,
     output logic        dbg_weights_ready,
     output logic        dbg_start_mlp
 );
@@ -143,6 +144,17 @@ module uart_controller #(
     assign dbg_rx_valid = rx_valid;
     assign dbg_weights_ready = weights_ready_reg;
     assign dbg_start_mlp = start_mlp_sticky;  // Show sticky version for LED visibility
+
+    // Capture last received byte for echo test
+    logic [7:0] rx_data_captured;
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            rx_data_captured <= 8'd0;
+        end else if (rx_valid) begin
+            rx_data_captured <= rx_data;
+        end
+    end
+    assign dbg_rx_data = rx_data_captured;
 
     // Capture start_mlp pulses
     always_ff @(posedge clk) begin

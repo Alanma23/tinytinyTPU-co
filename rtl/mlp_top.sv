@@ -290,7 +290,9 @@ module mlp_top (
     end
 
     // FSM Controller
+    logic [3:0] state_reg_prev;
     always_ff @(posedge clk) begin
+        state_reg_prev <= state_reg;
         if (reset) begin
             state_reg <= IDLE;
             cycle_cnt_reg <= 5'd0;
@@ -301,6 +303,10 @@ module mlp_top (
             accum_en <= 1'b0;
             addr_sel <= 1'b0;
         end else begin
+            // #region agent log
+            if (start_mlp && state_reg == IDLE)
+                $display("[MLP] start_mlp=1 detected in IDLE, weights_ready=%b", weights_ready);
+            // #endregion
             case (state_reg)
                 IDLE: begin
                     cycle_cnt_reg <= 5'd0;
@@ -422,5 +428,15 @@ module mlp_top (
             endcase
         end
     end
+
+    // #region agent log
+    // Detect state transitions (check on next cycle after state_reg updates)
+    always_ff @(posedge clk) begin
+        if (!reset && state_reg != state_reg_prev) begin
+            $display("[MLP] State transition: %d -> %d (cycle_cnt=%d, weights_ready=%b, weights_loaded=%b, state output=%d)",
+                     state_reg_prev, state_reg, cycle_cnt_reg, weights_ready, weights_loaded, state);
+        end
+    end
+    // #endregion
 
 endmodule
