@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-TinyTPU Gesture Demo - Mouse-based direction classifier
-Demonstrates TPU inference with real-time visual feedback
+tiny²TPU Gesture Demo - Mouse-based direction classifier
+
+Loads trained model from ../model/gesture_model.json and runs inference
+on the TPU hardware (or simulation).
 
 Usage:
-    python3 gesture_demo.py [serial_port]
-    python3 gesture_demo.py --sim          # Simulation mode (no hardware)
-    python3 gesture_demo.py /dev/tty.usbserial-XXX
+    python3 gesture_demo.py --sim                    # Simulation mode
+    python3 gesture_demo.py /dev/tty.usbserial-XXX   # Real TPU
 
 Requirements:
     pip install pygame pyserial
@@ -16,11 +17,15 @@ import sys
 import os
 import time
 import math
+import json
 
-# Add script directory to path for imports
+# Add script directory to path
 script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
+
+# Model directory
+model_dir = os.path.join(os.path.dirname(script_dir), 'model')
 
 # Check for pygame
 try:
@@ -30,7 +35,7 @@ except ImportError:
     PYGAME_AVAILABLE = False
     print("pygame not installed. Install with: pip install pygame")
 
-# TPU Driver import
+# TPU Driver
 try:
     from tpu_driver import TPUDriver
 except ImportError:
@@ -39,28 +44,34 @@ except ImportError:
 
 
 # ============================================================================
-# TPU Gesture Classifier
+# Model Loading
 # ============================================================================
 
-# Weights for direction classification
-# Input: (dx, dy) motion vector (centered at 128 for unsigned)
-# Output: (horizontal_score, vertical_score)
-#
-# Matrix multiply: C = A @ W
-# A = [[dx, dy], [dx, dy]]  (broadcast input)
-# W = [[1, 0], [0, 1]]      (identity-like, separates dx and dy)
-#
-# acc0 = dx + dx = 2*dx (horizontal component)
-# acc1 = dy + dy = 2*dy (vertical component)
+def load_model(path):
+    """Load trained model from JSON."""
+    with open(path, 'r') as f:
+        return json.load(f)
 
-W_DIRECTION = [
-    [1, 0],  # dx contributes to output 0
-    [0, 1],  # dy contributes to output 1
-]
 
+def find_model():
+    """Find gesture_model.json."""
+    candidates = [
+        os.path.join(model_dir, 'gesture_model.json'),
+        os.path.join(script_dir, 'gesture_model.json'),
+        os.path.join(script_dir, '..', 'model', 'gesture_model.json'),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return None
+
+
+# ============================================================================
+# Gesture Classifier
+# ============================================================================
 
 class GestureClassifier:
-    """Classifies 2D motion vectors into directions using TPU."""
+    """Classifies gestures using trained model on TPU."""
 
     DIRECTIONS = {
         'right': ('RIGHT', '→', (0, 255, 100)),
@@ -70,78 +81,109 @@ class GestureClassifier:
         'none':  ('',      '·', (100, 100, 100)),
     }
 
-    def __init__(self, tpu=None, sim_mode=False):
-        """
-        Args:
-            tpu: TPUDriver instance (None for simulation)
-            sim_mode: If True, simulate TPU responses
-        """
+    def __init__(self, tpu=None, model_data=None, sim_mode=False):
         self.tpu = tpu
         self.sim_mode = sim_mode or (tpu is None)
         self.inference_count = 0
         self.last_inference_time = 0
+
+        # Load model weights
+        if model_data and 'weights' in model_data:
+            self.weights = model_data['weights']
+            self.weights_float = model_data.get('weights_float', None)
+            self.has_model = True
+            print(f"  Loaded trained weights: {self.weights}")
+        else:
+            # Fallback identity weights
+            self.weights = [[255, 1], [1, 255]]
+            self.weights_float = None
+            self.has_model = False
+            print("  Using default weights (no trained model)")
+
+        # Pre-load weights to TPU
+        if self.tpu and not self.sim_mode:
+            try:
+                self.tpu.write_weights(self.weights)
+                print(f"  Weights loaded to TPU")
+            except Exception as e:
+                print(f"  Failed to load weights to TPU: {e}")
 
     def classify(self, dx: int, dy: int, threshold: int = 15) -> dict:
         """
         Classify motion vector into direction.
 
         Args:
-            dx: Horizontal motion (-127 to 127)
-            dy: Vertical motion (-127 to 127)
-            threshold: Minimum motion to register
+            dx: Horizontal motion (can be negative)
+            dy: Vertical motion (can be negative)
+            threshold: Minimum motion magnitude
 
         Returns:
-            dict with 'direction', 'name', 'arrow', 'color', 'confidence'
+            dict with direction info
         """
-        # Check if motion is significant
         magnitude = math.sqrt(dx*dx + dy*dy)
+
         if magnitude < threshold:
-            info = self.DIRECTIONS['none']
             return {
                 'direction': 'none',
-                'name': info[0],
-                'arrow': info[1],
-                'color': info[2],
+                'name': '',
+                'arrow': '·',
+                'color': (100, 100, 100),
                 'confidence': 0,
                 'dx': dx,
                 'dy': dy,
+                'tpu_result': None,
             }
 
-        # Run TPU inference (or simulate)
         start_time = time.time()
 
+        # Normalize input to [0, 255] for TPU
+        # Map motion to 0-255 range where 128 = no motion
+        max_motion = 100
+        dx_norm = int(128 + (dx / max_motion) * 127)
+        dy_norm = int(128 + (dy / max_motion) * 127)
+        dx_u8 = max(0, min(255, dx_norm))
+        dy_u8 = max(0, min(255, dy_norm))
+
+        # Format as 2x2 activation matrix
+        activations = [[dx_u8, dy_u8],
+                       [dx_u8, dy_u8]]
+
+        tpu_result = None
+
         if self.sim_mode:
-            # Simulation: just use the raw values
-            horiz_score = abs(dx)
-            vert_score = abs(dy)
+            # Simulate matrix multiply using trained weights
+            if self.weights_float:
+                import numpy as np
+                W = np.array(self.weights_float)
+                A = np.array([[dx_u8, dy_u8], [dx_u8, dy_u8]])
+                C = A @ W.T  # Note: weights are [out, in] so transpose
+                horiz_score = float(C[0, 0] + C[1, 0])
+                vert_score = float(C[0, 1] + C[1, 1])
+            else:
+                # Use quantized weights
+                W = self.weights
+                horiz_score = dx_u8 * W[0][0] + dy_u8 * W[0][1]
+                vert_score = dx_u8 * W[1][0] + dy_u8 * W[1][1]
+                horiz_score *= 2  # Broadcast doubling
+                vert_score *= 2
         else:
-            # Real TPU inference with signed arithmetic
-            # Clamp to signed 8-bit range (-128 to 127)
-            dx_s8 = max(-128, min(127, dx))
-            dy_s8 = max(-128, min(127, dy))
-
-            # Format as 2x2 activation matrix (signed values)
-            A = [[dx_s8, dy_s8],
-                 [dx_s8, dy_s8]]
-
+            # Real TPU inference
             try:
-                result = self.tpu.inference(W_DIRECTION, A)
-                # Decode result (signed 32-bit)
-                # acc0 = 2 * dx_s8 (from matrix multiply: [[dx,dy],[dx,dy]] @ [[1,0],[0,1]])
-                # The TPU returns acc0 as a signed 32-bit integer
-                acc0_signed = result  # Already signed from struct.unpack('<i', ...)
-                
-                # Extract dx from acc0: acc0 = 2 * dx_s8, so dx_s8 = acc0 / 2
-                # Use the original dx/dy for direction, but verify computation worked
-                # For gesture classification, we use the original dx/dy values
-                # The TPU computation verifies the matrix multiply works correctly
-                horiz_score = abs(dx_s8)  # Use original dx for direction
-                vert_score = abs(dy_s8)   # Use original dy for direction
-                
-                # Optional: verify TPU result matches expected (acc0 should be 2*dx_s8)
-                expected_acc0 = 2 * dx_s8
-                if abs(acc0_signed - expected_acc0) > 2:  # Allow small rounding
-                    print(f"TPU verification: expected {expected_acc0}, got {acc0_signed}")
+                self.tpu.write_activations(activations)
+                self.tpu.execute()
+
+                if not self.tpu.wait_for_done(timeout=1.0):
+                    print("TPU timeout!")
+                    horiz_score = abs(dx)
+                    vert_score = abs(dy)
+                else:
+                    result = self.tpu.read_result()
+                    tpu_result = result
+
+                    # Decode: acc0 in lower 16 bits, acc1 in upper
+                    horiz_score = result & 0xFFFF
+                    vert_score = (result >> 16) & 0xFFFF
+
             except Exception as e:
                 print(f"TPU error: {e}")
                 horiz_score = abs(dx)
@@ -150,13 +192,14 @@ class GestureClassifier:
         self.last_inference_time = time.time() - start_time
         self.inference_count += 1
 
-        # Determine direction from original signed values
-        if abs(dx) > abs(dy):
+        # Determine direction from TPU scores
+        # The trained model outputs: horiz_score high if horizontal, vert_score high if vertical
+        if horiz_score > vert_score:
             direction = 'right' if dx > 0 else 'left'
-            confidence = abs(dx) / magnitude
+            confidence = horiz_score / (horiz_score + vert_score + 1)
         else:
             direction = 'up' if dy > 0 else 'down'
-            confidence = abs(dy) / magnitude
+            confidence = vert_score / (horiz_score + vert_score + 1)
 
         info = self.DIRECTIONS[direction]
         return {
@@ -167,17 +210,19 @@ class GestureClassifier:
             'confidence': confidence,
             'dx': dx,
             'dy': dy,
+            'tpu_result': tpu_result,
+            'scores': (horiz_score, vert_score),
         }
 
 
 # ============================================================================
-# Pygame Visual Demo
+# Pygame Demo
 # ============================================================================
 
 class GestureDemo:
-    """Pygame-based gesture demo with visual feedback."""
+    """Pygame visual demo."""
 
-    def __init__(self, classifier: GestureClassifier, width=600, height=500):
+    def __init__(self, classifier, width=600, height=500):
         self.classifier = classifier
         self.width = width
         self.height = height
@@ -185,177 +230,118 @@ class GestureDemo:
         self.font_large = None
         self.font_medium = None
         self.font_small = None
-
-        # Motion tracking
         self.last_pos = None
-        self.motion_buffer = []  # Smooth motion
+        self.motion_buffer = []
         self.current_result = None
-
-        # Visual state
-        self.trail = []  # Mouse trail for visual effect
+        self.trail = []
         self.arrow_scale = 1.0
-        self.arrow_scale_target = 1.0
+        self.clock = None
 
     def init(self):
-        """Initialize pygame."""
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("tiny²TPU Gesture Demo")
-
         self.font_large = pygame.font.Font(None, 200)
         self.font_medium = pygame.font.Font(None, 48)
         self.font_small = pygame.font.Font(None, 28)
-
         self.clock = pygame.time.Clock()
 
     def run(self):
-        """Main demo loop."""
         self.init()
         running = True
 
         while running:
-            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
+                    if event.key in (pygame.K_ESCAPE, pygame.K_q):
                         running = False
                     elif event.key == pygame.K_r:
-                        # Reset stats
                         self.classifier.inference_count = 0
                 elif event.type == pygame.MOUSEMOTION:
                     self.handle_motion(event.pos)
 
-            # Update visuals
             self.update()
-
-            # Draw
             self.draw()
-
-            # Cap at 60 FPS
             self.clock.tick(60)
 
         pygame.quit()
 
     def handle_motion(self, pos):
-        """Handle mouse motion event."""
         x, y = pos
-
-        # Add to trail
         self.trail.append((x, y, time.time()))
-        # Keep last 20 points
         self.trail = self.trail[-20:]
 
         if self.last_pos is not None:
             dx = x - self.last_pos[0]
-            dy = -(y - self.last_pos[1])  # Invert Y (screen coords)
+            dy = -(y - self.last_pos[1])  # Invert Y
 
-            # Add to motion buffer for smoothing
             self.motion_buffer.append((dx, dy))
-            self.motion_buffer = self.motion_buffer[-5:]  # Average last 5
+            self.motion_buffer = self.motion_buffer[-5:]
 
-            # Calculate smoothed motion
             if len(self.motion_buffer) >= 2:
                 avg_dx = sum(m[0] for m in self.motion_buffer) / len(self.motion_buffer)
                 avg_dy = sum(m[1] for m in self.motion_buffer) / len(self.motion_buffer)
-
-                # Scale up for sensitivity
                 scaled_dx = int(avg_dx * 3)
                 scaled_dy = int(avg_dy * 3)
 
-                # Classify
                 self.current_result = self.classifier.classify(scaled_dx, scaled_dy)
 
-                # Animate arrow scale
                 if self.current_result['direction'] != 'none':
-                    self.arrow_scale_target = 1.2
-                else:
-                    self.arrow_scale_target = 1.0
+                    self.arrow_scale = 1.2
 
         self.last_pos = (x, y)
 
     def update(self):
-        """Update animation state."""
-        # Smooth arrow scale animation
-        self.arrow_scale += (self.arrow_scale_target - self.arrow_scale) * 0.2
-        self.arrow_scale_target = 1.0  # Decay back to normal
-
-        # Clean old trail points
+        self.arrow_scale += (1.0 - self.arrow_scale) * 0.2
         now = time.time()
         self.trail = [(x, y, t) for x, y, t in self.trail if now - t < 0.5]
 
     def draw(self):
-        """Draw the demo screen."""
-        # Background
         self.screen.fill((25, 25, 35))
 
-        # Draw mouse trail
+        # Trail
         if len(self.trail) > 1:
             for i in range(1, len(self.trail)):
                 x1, y1, t1 = self.trail[i-1]
                 x2, y2, t2 = self.trail[i]
                 age = time.time() - t2
                 alpha = max(0, 1 - age * 2)
-                color = (int(100 * alpha), int(150 * alpha), int(200 * alpha))
+                color = (int(100*alpha), int(150*alpha), int(200*alpha))
                 pygame.draw.line(self.screen, color, (x1, y1), (x2, y2), 2)
 
-        # Draw center area
         center_x, center_y = self.width // 2, self.height // 2 - 30
 
-        # Draw direction arrow
+        # Arrow
         if self.current_result and self.current_result['direction'] != 'none':
             arrow = self.current_result['arrow']
             color = self.current_result['color']
 
-            # Render large arrow with scale animation
             text = self.font_large.render(arrow, True, color)
-            scaled_size = (int(text.get_width() * self.arrow_scale),
-                          int(text.get_height() * self.arrow_scale))
-            scaled_text = pygame.transform.scale(text, scaled_size)
-            rect = scaled_text.get_rect(center=(center_x, center_y))
-            self.screen.blit(scaled_text, rect)
+            w = int(text.get_width() * self.arrow_scale)
+            h = int(text.get_height() * self.arrow_scale)
+            scaled = pygame.transform.scale(text, (w, h))
+            rect = scaled.get_rect(center=(center_x, center_y))
+            self.screen.blit(scaled, rect)
 
-            # Direction name
-            name_text = self.font_medium.render(self.current_result['name'], True, color)
-            name_rect = name_text.get_rect(center=(center_x, center_y + 100))
-            self.screen.blit(name_text, name_rect)
+            name = self.font_medium.render(self.current_result['name'], True, color)
+            self.screen.blit(name, name.get_rect(center=(center_x, center_y + 100)))
         else:
-            # Idle state
             text = self.font_medium.render("Move mouse to detect gesture", True, (100, 100, 120))
-            rect = text.get_rect(center=(center_x, center_y))
-            self.screen.blit(text, rect)
+            self.screen.blit(text, text.get_rect(center=(center_x, center_y)))
 
-        # Draw stats panel at bottom
-        self.draw_stats()
-
-        # Draw title
-        title = self.font_medium.render("tiny²TPU Gesture Demo", True, (200, 200, 220))
-        self.screen.blit(title, (20, 15))
-
-        # Mode indicator
-        mode = "SIMULATION" if self.classifier.sim_mode else "HARDWARE"
-        mode_color = (255, 200, 100) if self.classifier.sim_mode else (100, 255, 150)
-        mode_text = self.font_small.render(mode, True, mode_color)
-        self.screen.blit(mode_text, (self.width - mode_text.get_width() - 20, 20))
-
-        pygame.display.flip()
-
-    def draw_stats(self):
-        """Draw statistics panel."""
+        # Stats panel
         panel_y = self.height - 80
         pygame.draw.rect(self.screen, (35, 35, 45), (0, panel_y, self.width, 80))
-        pygame.draw.line(self.screen, (60, 60, 70), (0, panel_y), (self.width, panel_y), 1)
 
-        # Stats text
         stats = [
             f"Inferences: {self.classifier.inference_count}",
-            f"Last inference: {self.classifier.last_inference_time*1000:.1f}ms",
+            f"Latency: {self.classifier.last_inference_time*1000:.1f}ms",
         ]
-
-        if self.current_result:
-            stats.append(f"Motion: ({self.current_result['dx']:+d}, {self.current_result['dy']:+d})")
-            stats.append(f"Confidence: {self.current_result['confidence']:.0%}")
+        if self.current_result and self.current_result.get('scores'):
+            h, v = self.current_result['scores']
+            stats.append(f"H:{h:.0f} V:{v:.0f}")
 
         x = 20
         for stat in stats:
@@ -363,55 +349,23 @@ class GestureDemo:
             self.screen.blit(text, (x, panel_y + 30))
             x += text.get_width() + 40
 
-        # Instructions
-        instructions = "Press Q to quit | R to reset stats"
-        inst_text = self.font_small.render(instructions, True, (80, 80, 100))
-        self.screen.blit(inst_text, (self.width - inst_text.get_width() - 20, panel_y + 30))
+        # Title
+        title = self.font_medium.render("tiny²TPU", True, (200, 200, 220))
+        self.screen.blit(title, (20, 15))
 
+        # Mode
+        mode = "SIMULATION" if self.classifier.sim_mode else "HARDWARE"
+        mode_color = (255, 180, 80) if self.classifier.sim_mode else (80, 255, 120)
+        mode_text = self.font_small.render(mode, True, mode_color)
+        self.screen.blit(mode_text, (self.width - mode_text.get_width() - 20, 20))
 
-# ============================================================================
-# Terminal Fallback (if no pygame)
-# ============================================================================
+        # Model status
+        model_status = "MODEL LOADED" if self.classifier.has_model else "NO MODEL"
+        model_color = (80, 200, 255) if self.classifier.has_model else (255, 100, 100)
+        model_text = self.font_small.render(model_status, True, model_color)
+        self.screen.blit(model_text, (self.width - model_text.get_width() - 20, 45))
 
-def terminal_demo(classifier):
-    """Simple terminal-based demo as fallback."""
-    import select
-    import tty
-    import termios
-
-    print("\nTinyTPU Gesture Demo (Terminal Mode)")
-    print("=" * 40)
-    print("Use arrow keys to input gestures")
-    print("Press 'q' to quit\n")
-
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-
-    ARROW_MAP = {
-        'A': (0, 100, 'UP'),
-        'B': (0, -100, 'DOWN'),
-        'C': (100, 0, 'RIGHT'),
-        'D': (-100, 0, 'LEFT'),
-    }
-
-    try:
-        tty.setraw(fd)
-        while True:
-            if select.select([sys.stdin], [], [], 0.1)[0]:
-                ch = sys.stdin.read(1)
-                if ch == 'q' or ch == 'Q':
-                    break
-                elif ch == '\x1b':
-                    sys.stdin.read(1)  # Skip '['
-                    arrow = sys.stdin.read(1)
-                    if arrow in ARROW_MAP:
-                        dx, dy, name = ARROW_MAP[arrow]
-                        result = classifier.classify(dx, dy)
-                        print(f"\r  {result['arrow']}  {result['name']:6s}  ({dx:+4d}, {dy:+4d})     ", end="")
-                        sys.stdout.flush()
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        print("\n")
+        pygame.display.flip()
 
 
 # ============================================================================
@@ -419,41 +373,44 @@ def terminal_demo(classifier):
 # ============================================================================
 
 def find_serial_port():
-    """Try to find a USB serial port."""
     import glob
-
-    patterns = [
-        '/dev/tty.usbserial-*',
-        '/dev/ttyUSB*',
-        '/dev/ttyACM*',
-        'COM*',
-    ]
-
+    patterns = ['/dev/tty.usbserial-*', '/dev/ttyUSB*', '/dev/ttyACM*']
     for pattern in patterns:
         ports = glob.glob(pattern)
         if ports:
             return ports[0]
-
     return None
 
 
 def main():
     print("tiny²TPU Gesture Demo")
-    print("=" * 40)
+    print("=" * 50)
 
-    # Parse arguments
     sim_mode = False
     port = None
 
-    if len(sys.argv) > 1:
-        arg = sys.argv[1]
-        if arg == '--sim' or arg == '-s':
+    for arg in sys.argv[1:]:
+        if arg in ('--sim', '-s'):
             sim_mode = True
-        elif arg == '--help' or arg == '-h':
+        elif arg in ('--help', '-h'):
             print(__doc__)
             sys.exit(0)
-        else:
+        elif arg.startswith('/dev') or arg.startswith('COM'):
             port = arg
+
+    # Load trained model
+    model_path = find_model()
+    model_data = None
+
+    if model_path:
+        print(f"Loading model from {model_path}")
+        try:
+            model_data = load_model(model_path)
+        except Exception as e:
+            print(f"  Failed to load model: {e}")
+    else:
+        print("No trained model found!")
+        print("  Train one with: cd model && python3 train.py")
 
     # Setup TPU
     tpu = None
@@ -468,49 +425,34 @@ def main():
                 print(f"Connecting to TPU on {port}...")
                 tpu = TPUDriver(port)
                 tpu.open()
-                print("Serial port opened, reading status...")
                 state, cycle = tpu.read_status()
                 print(f"TPU connected! State: {state}, Cycle: {cycle}")
-                if state != 0:
-                    print(f"  Warning: TPU not in IDLE state, press BTNC to reset")
             except Exception as e:
-                import traceback
-                print(f"Failed to connect: {e}")
-                print("Full error:")
-                traceback.print_exc()
-                print("\nFalling back to simulation mode")
+                print(f"Connection failed: {e}")
                 tpu = None
-        else:
-            if not TPUDriver:
-                print("ERROR: TPU driver module not loaded")
-                print(f"  Check that tpu_driver.py exists in {script_dir}")
-            if not port:
-                print("ERROR: No serial port specified or found")
-                print("  Usage: python3 gesture_demo.py /dev/tty.usbserial-XXXXX")
-            print("Running in simulation mode")
 
     if sim_mode or tpu is None:
-        print("Running in SIMULATION mode (no hardware)")
+        print("\nRunning in SIMULATION mode")
 
-    # Create classifier
-    classifier = GestureClassifier(tpu=tpu, sim_mode=(tpu is None))
+    # Create classifier with trained model
+    classifier = GestureClassifier(
+        tpu=tpu,
+        model_data=model_data,
+        sim_mode=(tpu is None)
+    )
 
     # Run demo
     if PYGAME_AVAILABLE:
-        print("\nStarting pygame demo...")
-        print("Move your mouse to classify gestures!")
-        print()
+        print("\nStarting demo - move mouse to classify gestures!")
         demo = GestureDemo(classifier)
         demo.run()
     else:
-        terminal_demo(classifier)
+        print("pygame not available")
 
-    # Cleanup
     if tpu:
         tpu.close()
 
     print(f"\nTotal inferences: {classifier.inference_count}")
-    print("Demo complete!")
 
 
 if __name__ == "__main__":
