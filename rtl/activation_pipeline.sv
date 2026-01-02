@@ -39,7 +39,7 @@ module activation_pipeline (
     // Align target with pipeline (normalizer adds one cycle)
     always_ff @(posedge clk) begin
         if (reset)
-            target_d1 <= 32'sd0;
+            target_d1 <= 32'd0;
         else if (valid_in)
             target_d1 <= target_in;
     end
@@ -128,7 +128,7 @@ module activation_pipeline (
             q_zero_point_d2 <= '0;
         end else begin
             logic signed [47:0] mult_rounded;
-            mult_rounded       = mult_reg + 48'sd128; // +0.5 * 2^8 for nearest
+            mult_rounded       = mult_reg + 48'd128; // +0.5 * 2^8 for nearest
 
             q_s3_valid      <= q_s2_valid;
             scaled_reg      <= 32'(mult_rounded >>> 8);
@@ -150,23 +150,24 @@ module activation_pipeline (
         end
     end
 
-    // Saturation function
-    function automatic logic signed [7:0] sat_int8(input logic signed [31:0] val);
-        if (val > 32'sd127)
-            return 8'sd127;
-        else if (val < -32'sd128)
-            return -8'sd128;
+    // Saturation logic (Yosys-compatible, inlined instead of function)
+    logic signed [7:0] sat_result;
+    always_comb begin
+        if (biased_reg > 127)
+            sat_result = 8'd127;
+        else if (biased_reg < -128)
+            sat_result = -8'd128;
         else
-            return val[7:0];
-    endfunction
+            sat_result = biased_reg[7:0];
+    end
 
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_reg <= 1'b0;
-            ub_q_reg  <= 8'sd0;
+            ub_q_reg  <= 8'd0;
         end else begin
             valid_reg <= q_s4_valid;
-            ub_q_reg  <= sat_int8(biased_reg);
+            ub_q_reg  <= sat_result;
         end
     end
 

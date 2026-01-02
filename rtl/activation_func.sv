@@ -16,17 +16,17 @@ module activation_func #(
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
-            data_out  <= 32'sd0;
+            data_out  <= 32'd0;
         end else begin
             valid_out <= valid_in;
             unique case (DEFAULT_ACT)
                 2'b00: data_out <= data_in;                          // passthrough
-                2'b01: data_out <= data_in[31] ? 32'sd0 : data_in;   // ReLU
+                2'b01: data_out <= data_in[31] ? 32'd0 : data_in;   // ReLU
                 2'b10: begin                                         // ReLU6 (clamp to 6)
                     if (data_in[31])
-                        data_out <= 32'sd0;
-                    else if (data_in > 32'sd6)
-                        data_out <= 32'sd6;
+                        data_out <= 32'd0;
+                    else if (data_in > 32'd6)
+                        data_out <= 32'd6;
                     else
                         data_out <= data_in;
                 end

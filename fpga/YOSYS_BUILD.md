@@ -184,6 +184,16 @@ After successful build:
 - Verify nextpnr completed successfully
 - Check FASM file is not empty
 
+## Yosys Compatibility Notes
+
+The RTL has been modified for Yosys compatibility:
+
+1. **Array Initialization**: Replaced SystemVerilog `'{...}` syntax with reset-based initialization
+2. **Signed Constants**: Replaced `'sd` syntax with standard decimal constants
+3. **Function Returns**: Replaced function `return` statements with `always_comb` blocks
+
+These changes maintain Vivado compatibility while enabling Yosys synthesis.
+
 ## Limitations
 
 1. **SystemVerilog Support**: Yosys has limited SystemVerilog support compared to Vivado

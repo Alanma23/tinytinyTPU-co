@@ -55,11 +55,11 @@ module tpu_bridge (
 
     // Default activation pipeline configuration
     // These values provide identity/pass-through behavior for ReLU
-    assign mlp_norm_gain = 16'sd256;      // 1.0 in Q8 format
-    assign mlp_norm_bias = 32'sd0;        // No bias
+    assign mlp_norm_gain = 16'd256;      // 1.0 in Q8 format
+    assign mlp_norm_bias = 32'd0;        // No bias
     assign mlp_norm_shift = 5'd8;         // Shift back by 8 to undo Q8
-    assign mlp_q_inv_scale = 16'sd256;    // 1.0 scale
-    assign mlp_q_zero_point = 8'sd0;      // No zero point
+    assign mlp_q_inv_scale = 16'd256;    // 1.0 scale
+    assign mlp_q_zero_point = 8'd0;      // No zero point
 
     // Pass-through: MLP → UART Controller
     assign mlp_state = mlp_state_in;

@@ -20,7 +20,7 @@ module loss_block (
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
-            loss_out  <= 32'sd0;
+            loss_out  <= 32'd0;
         end else begin
             valid_out <= valid_in;
             loss_out  <= abs_diff;

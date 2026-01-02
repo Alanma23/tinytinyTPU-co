@@ -80,7 +80,7 @@ module normalizer (
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
-            data_out  <= 32'sd0;
+            data_out  <= 32'd0;
         end else begin
             valid_out <= s3_valid;
             data_out  <= shifted_res[31:0] + bias_d2;

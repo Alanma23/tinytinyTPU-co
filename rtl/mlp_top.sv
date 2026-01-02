@@ -163,7 +163,7 @@ module mlp_top (
 
     always_ff @(posedge clk) begin
         if (reset)
-            row1_skew_reg <= 8'sd0;
+            row1_skew_reg <= 8'd0;
         else if (compute_phase && act_ub_rd_valid)
             row1_skew_reg <= act_row1_data;
     end
@@ -172,10 +172,10 @@ module mlp_top (
     logic signed [7:0] mmu_row0_in, mmu_row1_in;
     logic signed [7:0] mmu_col0_in, mmu_col1_in;
 
-    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'sd0;
-    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'sd0;
-    assign mmu_col0_in = en_load_weight ? $signed(wf_col0_out) : 8'sd0;
-    assign mmu_col1_in = en_load_weight ? $signed(wf_col1_out) : 8'sd0;
+    assign mmu_row0_in = (compute_phase && act_ub_rd_valid) ? act_row0_data : 8'd0;
+    assign mmu_row1_in = compute_phase ? row1_skew_reg : 8'd0;
+    assign mmu_col0_in = en_load_weight ? $signed(wf_col0_out) : 8'd0;
+    assign mmu_col1_in = en_load_weight ? $signed(wf_col1_out) : 8'd0;
 
     logic en_capture_col0, en_capture_col1;
     assign en_capture_col0 = en_load_weight && (cycle_cnt_reg == 5'd1);
@@ -235,7 +235,7 @@ module mlp_top (
         .reset(reset),
         .valid_in(acc_valid),
         .acc_in(acc0),
-        .target_in(32'sd0),
+        .target_in(32'd0),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),
@@ -252,7 +252,7 @@ module mlp_top (
         .reset(reset),
         .valid_in(acc_valid),
         .acc_in(acc1),
-        .target_in(32'sd0),
+        .target_in(32'd0),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),

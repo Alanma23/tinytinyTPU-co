@@ -34,12 +34,12 @@ module accumulator_mem #(
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
-            out_col0 <= 32'sd0;
-            out_col1 <= 32'sd0;
-            mem_buff0_col0 <= 32'sd0;
-            mem_buff0_col1 <= 32'sd0;
-            mem_buff1_col0 <= 32'sd0;
-            mem_buff1_col1 <= 32'sd0;
+            out_col0 <= 32'd0;
+            out_col1 <= 32'd0;
+            mem_buff0_col0 <= 32'd0;
+            mem_buff0_col1 <= 32'd0;
+            mem_buff1_col0 <= 32'd0;
+            mem_buff1_col1 <= 32'd0;
         end
         else begin
             if (enable) begin
