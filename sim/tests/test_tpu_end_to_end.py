@@ -17,61 +17,6 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, Timer
 
 
-def _run_tpu_end_to_end_test(module_name):
-    """Run TPU end-to-end test with specified module"""
-    from cocotb_test.run import run
-    
-    rtl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "rtl")
-    sim_dir = os.path.dirname(os.path.dirname(__file__))
-    build_dir = os.path.join(sim_dir, "sim_build", module_name)
-    wave_dir = os.path.join(sim_dir, "waves")
-    
-    # Ensure directories exist
-    os.makedirs(build_dir, exist_ok=True)
-    os.makedirs(wave_dir, exist_ok=True)
-    
-    # All RTL sources needed for tpu_top
-    rtl_sources = [
-        os.path.join(rtl_dir, "pe.sv"),
-        os.path.join(rtl_dir, "mmu.sv"),
-        os.path.join(rtl_dir, "weight_fifo.sv"),
-        os.path.join(rtl_dir, "dual_weight_fifo.sv"),
-        os.path.join(rtl_dir, "accumulator_align.sv"),
-        os.path.join(rtl_dir, "accumulator_mem.sv"),
-        os.path.join(rtl_dir, "accumulator.sv"),
-        os.path.join(rtl_dir, "activation_func.sv"),
-        os.path.join(rtl_dir, "normalizer.sv"),
-        os.path.join(rtl_dir, "loss_block.sv"),
-        os.path.join(rtl_dir, "activation_pipeline.sv"),
-        os.path.join(rtl_dir, "unified_buffer.sv"),
-        os.path.join(rtl_dir, "mlp_top.sv"),
-        os.path.join(rtl_dir, "uart_rx.sv"),
-        os.path.join(rtl_dir, "uart_tx.sv"),
-        os.path.join(rtl_dir, "uart_controller.sv"),
-        os.path.join(rtl_dir, "tpu_bridge.sv"),
-        os.path.join(rtl_dir, "tpu_top.sv"),
-    ]
-    
-    # Check if waves are enabled
-    waves_enabled = os.environ.get("WAVES", "0") == "1"
-    
-    run(
-        verilog_sources=rtl_sources,
-        toplevel=module_name,
-        module="test_tpu_end_to_end",
-        python_search=[os.path.join(sim_dir, "tests")],
-        toplevel_lang="systemverilog",
-        build_dir=build_dir,
-        test_module="test_tpu_end_to_end",
-    )
-    
-    # Copy waveform if generated
-    if waves_enabled:
-        vcd_src = os.path.join(build_dir, "dump.vcd")
-        if os.path.exists(vcd_src):
-            shutil.copy(vcd_src, os.path.join(wave_dir, f"{module_name}_end_to_end.vcd"))
-
-
 @cocotb.test()
 async def test_tpu_inference_flow(dut):
     """Test complete inference flow from UART command to result"""
@@ -232,5 +177,98 @@ async def test_tpu_state_machine(dut):
     assert final_state == 0, "State should remain IDLE without start command"
 
 
-if __name__ == "__main__":
+def _run_tpu_end_to_end_test(module_name):
+    """Run TPU end-to-end test with specified module"""
+    from cocotb_tools.runner import get_runner
+    
+    sim_dir = os.path.dirname(__file__)
+    rtl_dir = os.path.join(sim_dir, "..", "..", "rtl")
+    wave_dir = os.path.join(sim_dir, "..", "waves")
+    build_dir = os.path.join(sim_dir, "..", "sim_build", module_name)
+    
+    print(f"Building {module_name}...")
+    print(f"RTL dir: {rtl_dir}")
+    print(f"Build dir: {build_dir}")
+    sys.stdout.flush()
+    
+    os.makedirs(wave_dir, exist_ok=True)
+    if os.path.exists(build_dir):
+        print(f"Removing existing build directory: {build_dir}")
+        shutil.rmtree(build_dir)
+    
+    waves_enabled = os.environ.get("WAVES", "0") != "0"
+    
+    # Set C++ standard
+    os.environ["CXXFLAGS"] = "-std=c++17"
+    
+    # All RTL files needed for tpu_top
+    source_files = [
+        os.path.join(rtl_dir, "tpu_top.sv"),
+        os.path.join(rtl_dir, "uart_controller.sv"),
+        os.path.join(rtl_dir, "uart_rx.sv"),
+        os.path.join(rtl_dir, "uart_tx.sv"),
+        os.path.join(rtl_dir, "tpu_bridge.sv"),
+        os.path.join(rtl_dir, "mlp_top.sv"),
+        os.path.join(rtl_dir, "dual_weight_fifo.sv"),
+        os.path.join(rtl_dir, "weight_fifo.sv"),
+        os.path.join(rtl_dir, "unified_buffer.sv"),
+        os.path.join(rtl_dir, "mmu.sv"),
+        os.path.join(rtl_dir, "pe.sv"),
+        os.path.join(rtl_dir, "accumulator.sv"),
+        os.path.join(rtl_dir, "accumulator_mem.sv"),
+        os.path.join(rtl_dir, "accumulator_align.sv"),
+        os.path.join(rtl_dir, "activation_pipeline.sv"),
+        os.path.join(rtl_dir, "activation_func.sv"),
+        os.path.join(rtl_dir, "normalizer.sv"),
+        os.path.join(rtl_dir, "loss_block.sv"),
+    ]
+    
+    # Verify all files exist
+    for src in source_files:
+        if not os.path.exists(src):
+            raise FileNotFoundError(f"Source file not found: {src}")
+        print(f"  Source: {src}")
+    
+    sys.stdout.flush()
+    
+    runner = get_runner("verilator")
+    
+    print("Starting Verilator build...")
+    sys.stdout.flush()
+    
+    runner.build(
+        sources=source_files,
+        hdl_toplevel=module_name,
+        build_dir=build_dir,
+        waves=waves_enabled,
+        build_args=[
+            "--timing",
+            "-Wno-WIDTHEXPAND",
+            "-Wno-WIDTHTRUNC",
+            "-Wno-UNUSEDSIGNAL",
+            "-Wno-UNDRIVEN",
+        ],
+    )
+    
+    print("Build complete. Starting tests...")
+    sys.stdout.flush()
+    
+    runner.test(
+        hdl_toplevel=module_name,
+        test_module="tests.test_tpu_end_to_end",
+        waves=waves_enabled,
+    )
+    
+    if waves_enabled:
+        vcd_src = os.path.join(build_dir, "dump.vcd")
+        if os.path.exists(vcd_src):
+            shutil.copy(vcd_src, os.path.join(wave_dir, f"{module_name}_end_to_end.vcd"))
+
+
+def test_tpu_end_to_end_runner():
+    """Test runner for tpu_top."""
     _run_tpu_end_to_end_test("tpu_top")
+
+
+if __name__ == "__main__":
+    test_tpu_end_to_end_runner()

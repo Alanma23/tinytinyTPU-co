@@ -1,0 +1,26 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.60 (git sha1 5bafeb77dc71e054fa331ab9efa613e6fb0a1c49, clang++ 17.0.0 -fPIC -O3)
+
+-- Executing script file `/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/synth_yosys.ys' --
+
+1. Executing Verilog-2005 frontend: /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/pe.sv
+Parsing SystemVerilog input from `/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/pe.sv' to AST representation.
+verilog frontend filename /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/pe.sv
+Generating RTLIL representation for module `\pe'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/mmu.sv
+Parsing SystemVerilog input from `/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/mmu.sv' to AST representation.
+verilog frontend filename /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/mmu.sv
+Generating RTLIL representation for module `\mmu'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/weight_fifo.sv
+Parsing SystemVerilog input from `/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/weight_fifo.sv' to AST representation.
+verilog frontend filename /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/weight_fifo.sv
+/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/weight_fifo.sv:12: ERROR: syntax error, unexpected OP_CAST

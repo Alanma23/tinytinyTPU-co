@@ -9,7 +9,7 @@ module weight_fifo (
     output logic [7:0] data_out
 );
 
-    logic [7:0] buffer [4] = '{8'd0, 8'd0, 8'd0, 8'd0}; // Tiny depth (4 deep), initialized
+    logic [7:0] buffer [4]; // Tiny depth (4 deep), initialized to 0 by default
     logic [1:0] wr_ptr = 2'd0, rd_ptr = 2'd0;
 
     always_ff @(posedge clk) begin
@@ -17,6 +17,11 @@ module weight_fifo (
             wr_ptr <= 2'd0;
             rd_ptr <= 2'd0;
             data_out <= 8'd0;
+            // Initialize buffer on reset (Yosys-compatible)
+            buffer[0] <= 8'd0;
+            buffer[1] <= 8'd0;
+            buffer[2] <= 8'd0;
+            buffer[3] <= 8'd0;
         end else begin
             // Write (Push)
             if (push) begin
