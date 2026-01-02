@@ -4,6 +4,7 @@ Tests complete inference flow: UART commands → TPU → Results
 """
 import os
 import sys
+import shutil
 
 # Add parent directory to path
 if __name__ == "__main__":
@@ -22,6 +23,12 @@ def _run_tpu_end_to_end_test(module_name):
     
     rtl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "rtl")
     sim_dir = os.path.dirname(os.path.dirname(__file__))
+    build_dir = os.path.join(sim_dir, "sim_build", module_name)
+    wave_dir = os.path.join(sim_dir, "waves")
+    
+    # Ensure directories exist
+    os.makedirs(build_dir, exist_ok=True)
+    os.makedirs(wave_dir, exist_ok=True)
     
     # All RTL sources needed for tpu_top
     rtl_sources = [
@@ -45,13 +52,24 @@ def _run_tpu_end_to_end_test(module_name):
         os.path.join(rtl_dir, "tpu_top.sv"),
     ]
     
+    # Check if waves are enabled
+    waves_enabled = os.environ.get("WAVES", "0") == "1"
+    
     run(
         verilog_sources=rtl_sources,
         toplevel=module_name,
         module="test_tpu_end_to_end",
         python_search=[os.path.join(sim_dir, "tests")],
         toplevel_lang="systemverilog",
+        build_dir=build_dir,
+        test_module="test_tpu_end_to_end",
     )
+    
+    # Copy waveform if generated
+    if waves_enabled:
+        vcd_src = os.path.join(build_dir, "dump.vcd")
+        if os.path.exists(vcd_src):
+            shutil.copy(vcd_src, os.path.join(wave_dir, f"{module_name}_end_to_end.vcd"))
 
 
 @cocotb.test()
