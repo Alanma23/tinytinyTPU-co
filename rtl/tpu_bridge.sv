@@ -54,13 +54,6 @@ module tpu_bridge (
     assign mlp_start_mlp = ctrl_start_mlp;
     assign mlp_weights_ready = ctrl_weights_ready;
 
-    // #region agent log
-    always_ff @(posedge clk) begin
-        if (ctrl_start_mlp)
-            $display("[TPU_BRIDGE] ctrl_start_mlp=1, passing to mlp_start_mlp=%b, mlp_state_in=%d", mlp_start_mlp, mlp_state_in);
-    end
-    // #endregion
-
     // Default activation pipeline configuration
     // Default to ReLU activation (001)
     assign mlp_vpu_activation_type = 3'b001;  // ReLU by default

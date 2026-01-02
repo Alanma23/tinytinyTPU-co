@@ -194,21 +194,6 @@ module tpu_top #(
     //  and outputs mlp_state/mlp_cycle_cnt/mlp_acc0 to uart_controller)
     // No additional assigns needed - avoid multi-driver conflict
 
-    // #region agent log
-    logic [3:0] mlp_state_out_prev;
-    always_ff @(posedge clk) begin
-        if (!rst) begin  // Only log when not in reset
-            if (mlp_state_out != mlp_state_out_prev) begin
-                $display("[TPU_TOP] State change: mlp_state_out=%d->%d, mlp_cycle_cnt_out=%d, mlp_acc0_out=0x%08X",
-                         mlp_state_out_prev, mlp_state_out, mlp_cycle_cnt_out, mlp_acc0_out);
-            end
-            mlp_state_out_prev <= mlp_state_out;
-        end else begin
-            mlp_state_out_prev <= 4'd0;
-        end
-    end
-    // #endregion
-
     // Debug exports
     assign mlp_state_dbg = mlp_state_out;
     assign mlp_cycle_cnt_dbg = mlp_cycle_cnt_out;

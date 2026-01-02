@@ -318,20 +318,12 @@ module mlp_top (
             acc_clear <= 1'b0;
         end else begin
             acc_clear <= 1'b0;  // Default: clear is a single-cycle pulse
-            // #region agent log
-            if (start_mlp && state_reg == IDLE)
-                $display("[MLP] start_mlp=1 detected in IDLE, weights_ready=%b", weights_ready);
-            // #endregion
             case (state_reg)
                 IDLE: begin
                     cycle_cnt_reg <= 5'd0;
                     layer_complete <= 1'b0;  // Clear completion flag
                     accum_en <= 1'b0;        // Reset accumulator enable
                     addr_sel <= 1'b0;        // Reset address select
-                    // #region agent log
-                    if (start_mlp)
-                        $display("[MLP] IDLE: start_mlp=1, weights_ready=%b, transitioning to LOAD_WEIGHT", weights_ready);
-                    // #endregion
                     if (start_mlp) begin
                         state_reg <= LOAD_WEIGHT;
                         current_layer_reg <= 3'd0;
@@ -343,14 +335,7 @@ module mlp_top (
 
                 LOAD_WEIGHT: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
-                    // #region agent log
-                    if (cycle_cnt_reg == 5'd0)
-                        $display("[MLP] LOAD_WEIGHT: cycle_cnt=%d, current_layer=%d", cycle_cnt_reg, current_layer_reg);
-                    // #endregion
                     if (cycle_cnt_reg == 5'd2) begin
-                        // #region agent log
-                        $display("[MLP] LOAD_WEIGHT: Completed, transitioning to %s", (current_layer_reg == 0) ? "LOAD_ACT" : "COMPUTE");
-                        // #endregion
                         state_reg <= (current_layer_reg == 0) ? LOAD_ACT : COMPUTE;
                         cycle_cnt_reg <= 5'd0;
                         weights_loaded <= 1'b1;
@@ -368,10 +353,6 @@ module mlp_top (
                 COMPUTE: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
                     accum_en <= 1'b1;  // Enable accumulation from start of COMPUTE to accumulate all row results
-                    // #region agent log
-                    if (cycle_cnt_reg == 5'd0)
-                        $display("[MLP] COMPUTE started. mmu_valid will be high when cycle_cnt>=2");
-                    // #endregion
                     if (cycle_cnt_reg == 5'd2) begin
                         state_reg <= DRAIN;
                         cycle_cnt_reg <= 5'd0;
@@ -381,12 +362,6 @@ module mlp_top (
                 DRAIN: begin
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
                     accum_en <= 1'b1;  // Enable accumulation during DRAIN to sum partial products
-                    // #region agent log
-                    if (cycle_cnt_reg == 5'd0)
-                        $display("[MLP] DRAIN started. mmu_valid=1 throughout DRAIN. mmu_acc0=%04X, mmu_acc1=%04X", mmu_acc0_out, mmu_acc1_out);
-                    if (cycle_cnt_reg == 5'd6)
-                        $display("[MLP] DRAIN ending. acc0=0x%08X, acc1=0x%08X, acc_valid=%b", acc0, acc1, acc_valid);
-                    // #endregion
                     if (cycle_cnt_reg == 5'd6) begin
                         if (current_layer_reg < 3'(NUM_LAYERS - 1)) begin
                             state_reg <= TRANSFER;
@@ -424,15 +399,8 @@ module mlp_top (
 
                 DONE: begin
                     layer_complete <= 1'b1;
-                    // #region agent log
-                    if (cycle_cnt_reg == 5'd0)
-                        $display("[MLP] DONE state reached. acc0=0x%08X, acc1=0x%08X, acc_valid=%b, cycle_cnt=%d", acc0, acc1, acc_valid, cycle_cnt_reg);
-                    // #endregion
                     cycle_cnt_reg <= cycle_cnt_reg + 1'd1;
                     if (cycle_cnt_reg >= 5'd8) begin
-                        // #region agent log
-                        $display("[MLP] DONE: Returning to IDLE after 8 cycles");
-                        // #endregion
                         state_reg <= IDLE;
                         cycle_cnt_reg <= 5'd0;
                         layer_complete <= 1'b0;
@@ -445,15 +413,5 @@ module mlp_top (
             endcase
         end
     end
-
-    // #region agent log
-    // Detect state transitions (check on next cycle after state_reg updates)
-    always_ff @(posedge clk) begin
-        if (!reset && state_reg != state_reg_prev) begin
-            $display("[MLP] State transition: %d -> %d (cycle_cnt=%d, weights_ready=%b, weights_loaded=%b, state output=%d)",
-                     state_reg_prev, state_reg, cycle_cnt_reg, weights_ready, weights_loaded, state);
-        end
-    end
-    // #endregion
 
 endmodule
