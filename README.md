@@ -150,57 +150,6 @@ make waves MODULE=mlp_top
 
 ## FPGA Build & Deployment
 
-### Building with Vivado
-
-The project includes a TCL script for automated Vivado builds:
-
-```bash
-cd fpga
-
-# Build bitstream (synthesis + implementation + bitgen)
-vivado -mode batch -source build_vivado.tcl
-
-# Expected build time: 5-10 minutes
-# Output: basys3_top.bit
-```
-
-**Build Script Details:**
-- Creates Vivado project: `vivado_project/tinytinyTPU_basys3`
-- Synthesizes all RTL files from `../rtl/`
-- Implements design with timing constraints
-- Generates bitstream: `basys3_top.bit`
-- Creates reports: utilization, timing, DRC
-
-**Resource Utilization (Post-Implementation):**
-- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/utilization_post_impl.rpt`
-- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/timing_summary_post_impl.rpt`
-
-### Programming the FPGA
-
-**Via Vivado Hardware Manager (GUI):**
-1. Connect Basys3 board via USB
-2. Open Vivado
-3. Open Hardware Manager
-4. Auto-connect to target
-5. Program with `basys3_top.bit`
-
-**Via Command Line:**
-```bash
-vivado -mode tcl
-open_hw_manager
-connect_hw_server
-open_hw_target
-set_property PROGRAM.FILE {basys3_top.bit} [get_hw_devices xc7a35t_0]
-program_hw_devices [get_hw_devices xc7a35t_0]
-```
-
-**Via OpenOCD (Alternative):**
-```bash
-# If using OpenOCD with Digilent cable
-openocd -f interface/ftdi/digilent_jtag_hs3.cfg -f target/xc7a35t.cfg
-# Then use GDB or other tools to program
-```
-
 ### Hardware Connections
 
 **Basys3 Pinout:**
@@ -502,7 +451,60 @@ nextpnr-xilinx \
 # Generate bitstream (requires Xilinx tools or open-source fasm2bit)
 # Note: fasm2bit conversion may require Xilinx tools or open-source alternatives
 ```
+---
 
+
+### Building with Vivado
+
+The project includes a TCL script for automated Vivado builds:
+
+```bash
+cd fpga
+
+# Build bitstream (synthesis + implementation + bitgen)
+vivado -mode batch -source build_vivado.tcl
+
+# Expected build time: 5-10 minutes
+# Output: basys3_top.bit
+```
+
+**Build Script Details:**
+- Creates Vivado project: `vivado_project/tinytinyTPU_basys3`
+- Synthesizes all RTL files from `../rtl/`
+- Implements design with timing constraints
+- Generates bitstream: `basys3_top.bit`
+- Creates reports: utilization, timing, DRC
+
+**Resource Utilization (Post-Implementation):**
+- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/utilization_post_impl.rpt`
+- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/timing_summary_post_impl.rpt`
+
+### Programming the FPGA
+
+**Via Vivado Hardware Manager (GUI):**
+1. Connect Basys3 board via USB
+2. Open Vivado
+3. Open Hardware Manager
+4. Auto-connect to target
+5. Program with `basys3_top.bit`
+
+**Via Command Line:**
+```bash
+vivado -mode tcl
+open_hw_manager
+connect_hw_server
+open_hw_target
+set_property PROGRAM.FILE {basys3_top.bit} [get_hw_devices xc7a35t_0]
+program_hw_devices [get_hw_devices xc7a35t_0]
+```
+
+**Via OpenOCD (Alternative):**
+```bash
+# If using OpenOCD with Digilent cable
+openocd -f interface/ftdi/digilent_jtag_hs3.cfg -f target/xc7a35t.cfg
+# Then use GDB or other tools to program
+```
+---
 ### Limitations & Considerations
 
 **Current Status:**
