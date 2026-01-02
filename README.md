@@ -573,12 +573,6 @@ Contributions welcome! Areas for improvement:
 
 ---
 
-## License
-
-[Add your license here]
-
----
-
 ## References
 
 - [Google TPU Paper](https://arxiv.org/abs/1704.04760)
@@ -590,6 +584,8 @@ Contributions welcome! Areas for improvement:
 
 ## Acknowledgments
 
-- Inspired by Google's TPU architecture
-- Educational implementation for learning systolic arrays
-- Built for FPGA prototyping and experimentation
+- Inspired by Google's TPU architecture (thank you Cliff and Richard for your time!)
+- The boys from the TinyTPU team!!
+- Edmund and the Yosys / Symbiotic EDA crew
+- Stanford FAF for the support, funding, and community!
+- Princeton ECE Dept for the Basys 3 to play around with :)
