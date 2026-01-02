@@ -2,9 +2,56 @@
 End-to-end TPU system test.
 Tests complete inference flow: UART commands → TPU → Results
 """
+import os
+import sys
+
+# Add parent directory to path
+if __name__ == "__main__":
+    sim_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if sim_dir not in sys.path:
+        sys.path.insert(0, sim_dir)
+
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, Timer
+
+
+def _run_tpu_end_to_end_test(module_name):
+    """Run TPU end-to-end test with specified module"""
+    from cocotb_test.run import run
+    
+    rtl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "rtl")
+    sim_dir = os.path.dirname(os.path.dirname(__file__))
+    
+    # All RTL sources needed for tpu_top
+    rtl_sources = [
+        os.path.join(rtl_dir, "pe.sv"),
+        os.path.join(rtl_dir, "mmu.sv"),
+        os.path.join(rtl_dir, "weight_fifo.sv"),
+        os.path.join(rtl_dir, "dual_weight_fifo.sv"),
+        os.path.join(rtl_dir, "accumulator_align.sv"),
+        os.path.join(rtl_dir, "accumulator_mem.sv"),
+        os.path.join(rtl_dir, "accumulator.sv"),
+        os.path.join(rtl_dir, "activation_func.sv"),
+        os.path.join(rtl_dir, "normalizer.sv"),
+        os.path.join(rtl_dir, "loss_block.sv"),
+        os.path.join(rtl_dir, "activation_pipeline.sv"),
+        os.path.join(rtl_dir, "unified_buffer.sv"),
+        os.path.join(rtl_dir, "mlp_top.sv"),
+        os.path.join(rtl_dir, "uart_rx.sv"),
+        os.path.join(rtl_dir, "uart_tx.sv"),
+        os.path.join(rtl_dir, "uart_controller.sv"),
+        os.path.join(rtl_dir, "tpu_bridge.sv"),
+        os.path.join(rtl_dir, "tpu_top.sv"),
+    ]
+    
+    run(
+        verilog_sources=rtl_sources,
+        toplevel=module_name,
+        module="test_tpu_end_to_end",
+        python_search=[os.path.join(sim_dir, "tests")],
+        toplevel_lang="systemverilog",
+    )
 
 
 @cocotb.test()
@@ -16,6 +63,7 @@ async def test_tpu_inference_flow(dut):
     
     # Reset
     dut.rst.value = 1
+    dut.uart_rx.value = 1  # Idle high
     await ClockCycles(dut.clk, 5)
     dut.rst.value = 0
     await ClockCycles(dut.clk, 5)
@@ -127,6 +175,7 @@ async def test_tpu_reset_behavior(dut):
     
     # Reset
     dut.rst.value = 1
+    dut.uart_rx.value = 1  # Idle high
     await ClockCycles(dut.clk, 10)
     
     # Check all outputs are in reset state
@@ -148,6 +197,7 @@ async def test_tpu_state_machine(dut):
     
     # Reset
     dut.rst.value = 1
+    dut.uart_rx.value = 1  # Idle high
     await ClockCycles(dut.clk, 5)
     dut.rst.value = 0
     await ClockCycles(dut.clk, 5)
@@ -163,3 +213,6 @@ async def test_tpu_state_machine(dut):
     final_state = dut.mlp_state_dbg.value.integer
     assert final_state == 0, "State should remain IDLE without start command"
 
+
+if __name__ == "__main__":
+    _run_tpu_end_to_end_test("tpu_top")
