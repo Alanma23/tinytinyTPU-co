@@ -5,8 +5,6 @@ Tests complete inference flow: UART commands → TPU → Results
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, Timer
-from cocotb.binary import BinaryValue
-import numpy as np
 
 
 @cocotb.test()
