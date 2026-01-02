@@ -136,17 +136,20 @@ class GestureClassifier:
 
         start_time = time.time()
 
-        # Normalize input to [0, 255] for TPU
-        # Map motion to 0-255 range where 128 = no motion
+        # Use ABSOLUTE VALUES (magnitudes) for TPU - this makes the decision
+        # boundary linear: |dx| > |dy| -> horizontal
+        # Keep signs for determining left/right/up/down
         max_motion = 100
-        dx_norm = int(128 + (dx / max_motion) * 127)
-        dy_norm = int(128 + (dy / max_motion) * 127)
-        dx_u8 = max(0, min(255, dx_norm))
-        dy_u8 = max(0, min(255, dy_norm))
+        abs_dx = int(min(127, (abs(dx) / max_motion) * 127))
+        abs_dy = int(min(127, (abs(dy) / max_motion) * 127))
 
-        # Format as 2x2 activation matrix
-        activations = [[dx_u8, dy_u8],
-                       [dx_u8, dy_u8]]
+        # Store signs for direction determination
+        dx_sign = 1 if dx >= 0 else -1
+        dy_sign = 1 if dy >= 0 else -1
+
+        # Format as 2x2 activation matrix (magnitudes only, unsigned)
+        activations = [[abs_dx, abs_dy],
+                       [abs_dx, abs_dy]]
 
         tpu_result = None
 
@@ -155,16 +158,19 @@ class GestureClassifier:
             if self.weights_float:
                 import numpy as np
                 W = np.array(self.weights_float)
-                A = np.array([[dx_u8, dy_u8], [dx_u8, dy_u8]])
+                # Use magnitude values for simulation
+                A = np.array([[abs_dx, abs_dy], [abs_dx, abs_dy]], dtype=np.float32)
                 C = A @ W.T  # Note: weights are [out, in] so transpose
                 horiz_score = float(C[0, 0] + C[1, 0])
                 vert_score = float(C[0, 1] + C[1, 1])
             else:
-                # Use quantized weights
-                W = self.weights
-                horiz_score = dx_u8 * W[0][0] + dy_u8 * W[0][1]
-                vert_score = dx_u8 * W[1][0] + dy_u8 * W[1][1]
-                horiz_score *= 2  # Broadcast doubling
+                # Use quantized weights - convert uint8 to signed int8
+                import numpy as np
+                W = np.array(self.weights, dtype=np.uint8).view(np.int8)
+                # Signed matmul simulation
+                horiz_score = abs_dx * int(W[0, 0]) + abs_dy * int(W[0, 1])
+                vert_score = abs_dx * int(W[1, 0]) + abs_dy * int(W[1, 1])
+                horiz_score *= 2  # Broadcast doubling (2 rows)
                 vert_score *= 2
         else:
             # Real TPU inference
@@ -194,11 +200,12 @@ class GestureClassifier:
 
         # Determine direction from TPU scores
         # The trained model outputs: horiz_score high if horizontal, vert_score high if vertical
+        # Use stored signs to determine left/right/up/down
         if horiz_score > vert_score:
-            direction = 'right' if dx > 0 else 'left'
+            direction = 'right' if dx_sign > 0 else 'left'
             confidence = horiz_score / (horiz_score + vert_score + 1)
         else:
-            direction = 'up' if dy > 0 else 'down'
+            direction = 'up' if dy_sign > 0 else 'down'
             confidence = vert_score / (horiz_score + vert_score + 1)
 
         info = self.DIRECTIONS[direction]
