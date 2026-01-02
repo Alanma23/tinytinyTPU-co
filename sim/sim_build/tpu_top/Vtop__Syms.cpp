@@ -49,7 +49,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(430);
+    Verilated::stackCheck(416);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);
@@ -148,6 +148,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc0", &(TOP.tpu_top__DOT__mlp_acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc0_dbg", &(TOP.tpu_top__DOT__mlp_acc0_dbg), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc0_out", &(TOP.tpu_top__DOT__mlp_acc0_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc1", &(TOP.tpu_top__DOT__mlp_acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc1_dbg", &(TOP.tpu_top__DOT__mlp_acc1_dbg), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc1_out", &(TOP.tpu_top__DOT__mlp_acc1_out), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_acc_valid_dbg", &(TOP.tpu_top__DOT__mlp_acc_valid_dbg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
@@ -170,7 +171,6 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_state_ctrl", &(TOP.tpu_top__DOT__mlp_state_ctrl), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_state_dbg", &(TOP.tpu_top__DOT__mlp_state_dbg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_state_out", &(TOP.tpu_top__DOT__mlp_state_out), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
-        __Vscope_tpu_top.varInsert(__Vfinal,"mlp_state_out_prev", &(TOP.tpu_top__DOT__mlp_state_out_prev), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_weights_ready", &(TOP.tpu_top__DOT__mlp_weights_ready), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_wf_data_in", &(TOP.tpu_top__DOT__mlp_wf_data_in), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top.varInsert(__Vfinal,"mlp_wf_push_col0", &(TOP.tpu_top__DOT__mlp_wf_push_col0), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
@@ -216,6 +216,8 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"ctrl_wf_reset", &(TOP.tpu_top__DOT__bridge_u__DOT__ctrl_wf_reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_acc0", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_acc0_in", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_acc0_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_acc1", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_acc1_in", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_acc1_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_cycle_cnt", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_cycle_cnt), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_cycle_cnt_in", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_cycle_cnt_in), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_tpu_top__bridge_u.varInsert(__Vfinal,"mlp_init_act_data", &(TOP.tpu_top__DOT__bridge_u__DOT__mlp_init_act_data), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
@@ -245,6 +247,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"WAIT_WEIGHTS", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__mlp_u__DOT__WAIT_WEIGHTS))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc0", &(TOP.tpu_top__DOT__mlp_u__DOT__acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc1", &(TOP.tpu_top__DOT__mlp_u__DOT__acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc_align_clear", &(TOP.tpu_top__DOT__mlp_u__DOT__acc_align_clear), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc_clear", &(TOP.tpu_top__DOT__mlp_u__DOT__acc_clear), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc_reset", &(TOP.tpu_top__DOT__mlp_u__DOT__acc_reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u.varInsert(__Vfinal,"acc_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__acc_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
@@ -323,6 +326,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"aligned_c0", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__aligned_c0), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"aligned_c1", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__aligned_c1), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"aligned_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__aligned_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"clear", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__clear), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"clk", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"mmu_col0_in", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__mmu_col0_in), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u.varInsert(__Vfinal,"mmu_col1_in", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__mmu_col1_in), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
@@ -332,6 +336,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"align_col0", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__align_col0), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"align_col1", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__align_col1), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"aligned_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__aligned_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"clear", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__clear), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"clk", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"col0_delay_reg", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__col0_delay_reg), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_align.varInsert(__Vfinal,"pending", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__pending), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
@@ -353,6 +358,8 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"out_col0", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__out_col0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"out_col1", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__out_col1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"reset", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__reset), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"sign_ext_col0", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__sign_ext_col0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"sign_ext_col1", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__sign_ext_col1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__accum_u__u_mem.varInsert(__Vfinal,"valid_out", &(TOP.tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__valid_out), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"acc_in", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__acc_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"biased_reg", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__biased_reg), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
@@ -380,6 +387,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"s1_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__s1_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"s2_data", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__s2_data), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"s2_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__s2_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"sat_result", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__sat_result), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"scaled_reg", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__scaled_reg), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"target_d1", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__target_d1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col0.varInsert(__Vfinal,"target_in", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__target_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
@@ -453,6 +461,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"s1_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__s1_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"s2_data", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__s2_data), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"s2_valid", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__s2_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"sat_result", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__sat_result), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"scaled_reg", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__scaled_reg), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"target_d1", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__target_d1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__mlp_u__ap_col1.varInsert(__Vfinal,"target_in", &(TOP.tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__target_in), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
@@ -616,6 +625,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CLOCK_FREQ", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CLOCK_FREQ))), true, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_EXECUTE", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_EXECUTE))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_READ_RESULT", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_READ_RESULT_COL1", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT_COL1))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_STATUS", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_STATUS))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_WRITE_ACT", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_WRITE_ACT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"CMD_WRITE_WEIGHT", const_cast<void*>(static_cast<const void*>(&(TOP.tpu_top__DOT__uart_ctrl_u__DOT__CMD_WRITE_WEIGHT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
@@ -641,6 +651,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"init_act_valid", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__init_act_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"init_act_valid_reg", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__init_act_valid_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"mlp_acc0", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__mlp_acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
+        __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"mlp_acc1", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__mlp_acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"mlp_cycle_cnt", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__mlp_cycle_cnt), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"mlp_state", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__mlp_state), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_tpu_top__uart_ctrl_u.varInsert(__Vfinal,"mlp_state_prev", &(TOP.tpu_top__DOT__uart_ctrl_u__DOT__mlp_state_prev), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);

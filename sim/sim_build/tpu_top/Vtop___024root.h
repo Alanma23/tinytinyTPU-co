@@ -89,7 +89,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*2:0*/ tpu_top__DOT__mlp_current_layer_out;
         CData/*0:0*/ tpu_top__DOT__mlp_layer_complete_out;
         CData/*0:0*/ tpu_top__DOT__mlp_acc_valid_out;
-        CData/*3:0*/ tpu_top__DOT__mlp_state_out_prev;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__rst;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx;
@@ -146,9 +145,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__rx_valid;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__rx_ready;
         CData/*1:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__state;
+        CData/*2:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__bit_index;
     };
     struct {
-        CData/*2:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__bit_index;
         CData/*7:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__rx_byte;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__rx_sync_1;
         CData/*0:0*/ tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__rx_sync_2;
@@ -212,9 +211,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__wf_col1_raw;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_wr_valid;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_rd_ready;
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_wr_ready;
     };
     struct {
-        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_wr_ready;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_rd_valid;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_a_empty;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ub_b_wr_valid;
@@ -238,6 +237,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__mmu_valid;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__acc_clear;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__acc_reset;
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__acc_align_clear;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_valid;
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_data_col0;
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_data_col1;
@@ -330,6 +330,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__mmu_u__DOT__pe11__DOT__weight;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__reset;
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__clear;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__valid_in;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__accumulator_enable;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__addr_sel;
@@ -337,15 +338,16 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__aligned_valid;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__reset;
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__clear;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__valid_in;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__aligned_valid;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_align__DOT__pending;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__reset;
-        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__enable;
-        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__accumulator_mode;
     };
     struct {
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__enable;
+        CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__accumulator_mode;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__buffer_select;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__valid_out;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__clk;
@@ -367,6 +369,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__q_s3_valid;
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__q_zero_point_d2;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__q_s4_valid;
+        CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__sat_result;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__act_u__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__act_u__DOT__reset;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__act_u__DOT__valid_in;
@@ -404,14 +407,15 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__q_s3_valid;
         CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__q_zero_point_d2;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__q_s4_valid;
+        CData/*7:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__sat_result;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__act_u__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__act_u__DOT__reset;
+    };
+    struct {
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__act_u__DOT__valid_in;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__act_u__DOT__valid_out;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__clk;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__reset;
-    };
-    struct {
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__valid_in;
         CData/*4:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__shift;
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__valid_out;
@@ -426,11 +430,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         CData/*0:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__loss_u__DOT__valid_out;
         CData/*0:0*/ __VstlFirstIteration;
         CData/*0:0*/ __VicoFirstIteration;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__uart_ctrl_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__uart_ctrl_u__DOT__uart_rx_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__uart_ctrl_u__DOT__uart_tx_u__DOT__clk__0;
-        CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__bridge_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__mlp_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__mlp_u__DOT__weight_fifo_u__DOT__clk__0;
         CData/*0:0*/ __Vtrigprevexpr___TOP__tpu_top__DOT__mlp_u__DOT__ub_a__DOT__clk__0;
@@ -474,10 +476,10 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__refill_data;
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__wr_data;
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__rd_data;
-        SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__rd_data_comb;
-        SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__rd_data_reg;
     };
     struct {
+        SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__rd_data_comb;
+        SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_a__DOT__rd_data_reg;
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_b__DOT__wr_data;
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_b__DOT__rd_data;
         SData/*15:0*/ tpu_top__DOT__mlp_u__DOT__ub_b__DOT__rd_data_comb;
@@ -520,14 +522,18 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         IData/*31:0*/ tpu_top__DOT__mlp_acc0_dbg;
         IData/*31:0*/ tpu_top__DOT__mlp_acc1_dbg;
         IData/*31:0*/ tpu_top__DOT__mlp_acc0;
+        IData/*31:0*/ tpu_top__DOT__mlp_acc1;
         IData/*31:0*/ tpu_top__DOT__mlp_norm_bias;
         IData/*31:0*/ tpu_top__DOT__mlp_acc0_out;
         IData/*31:0*/ tpu_top__DOT__mlp_acc1_out;
         IData/*31:0*/ tpu_top__DOT__uart_ctrl_u__DOT__mlp_acc0;
+        IData/*31:0*/ tpu_top__DOT__uart_ctrl_u__DOT__mlp_acc1;
         IData/*31:0*/ tpu_top__DOT__uart_ctrl_u__DOT__unnamedblk1__DOT__i;
         IData/*31:0*/ tpu_top__DOT__bridge_u__DOT__mlp_acc0;
+        IData/*31:0*/ tpu_top__DOT__bridge_u__DOT__mlp_acc1;
         IData/*31:0*/ tpu_top__DOT__bridge_u__DOT__mlp_norm_bias;
         IData/*31:0*/ tpu_top__DOT__bridge_u__DOT__mlp_acc0_in;
+        IData/*31:0*/ tpu_top__DOT__bridge_u__DOT__mlp_acc1_in;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__norm_bias;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__acc0;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__acc1;
@@ -536,14 +542,16 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__out_col0;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__out_col1;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__mem_buff0_col0;
+    };
+    struct {
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__mem_buff0_col1;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__mem_buff1_col0;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__mem_buff1_col1;
+        IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__sign_ext_col0;
+        IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__accum_u__DOT__u_mem__DOT__sign_ext_col1;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__acc_in;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__target_in;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__norm_bias;
-    };
-    struct {
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__loss_out;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__s1_data;
         IData/*31:0*/ tpu_top__DOT__mlp_u__DOT__ap_col0__DOT__target_d1;
@@ -600,6 +608,8 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         QData/*47:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__mult_reg;
         QData/*47:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__unnamedblk1__DOT__mult_rounded;
         QData/*47:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__mult_raw;
+    };
+    struct {
         QData/*47:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__mult_res;
         QData/*47:0*/ tpu_top__DOT__mlp_u__DOT__ap_col1__DOT__norm_u__DOT__shifted_res;
         VlUnpacked<CData/*7:0*/, 4> tpu_top__DOT__uart_ctrl_u__DOT__data_buffer;
@@ -608,8 +618,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
         VlUnpacked<CData/*7:0*/, 4> tpu_top__DOT__mlp_u__DOT__weight_fifo_u__DOT__queue1;
         VlUnpacked<SData/*15:0*/, 16> tpu_top__DOT__mlp_u__DOT__ub_a__DOT__mem;
         VlUnpacked<SData/*15:0*/, 16> tpu_top__DOT__mlp_u__DOT__ub_b__DOT__mem;
-    };
-    struct {
         VlUnpacked<QData/*63:0*/, 1> __VstlTriggered;
         VlUnpacked<QData/*63:0*/, 1> __VicoTriggered;
         VlUnpacked<QData/*63:0*/, 1> __VactTriggered;
@@ -627,6 +635,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final : public VerilatedModule
     static constexpr CData/*7:0*/ tpu_top__DOT__uart_ctrl_u__DOT__CMD_EXECUTE = 3U;
     static constexpr CData/*7:0*/ tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT = 4U;
     static constexpr CData/*7:0*/ tpu_top__DOT__uart_ctrl_u__DOT__CMD_STATUS = 5U;
+    static constexpr CData/*7:0*/ tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT_COL1 = 6U;
     static constexpr CData/*3:0*/ tpu_top__DOT__uart_ctrl_u__DOT__MLP_STATE_LOAD_WEIGHT = 1U;
     static constexpr CData/*3:0*/ tpu_top__DOT__mlp_u__DOT__IDLE = 0U;
     static constexpr CData/*3:0*/ tpu_top__DOT__mlp_u__DOT__LOAD_WEIGHT = 1U;

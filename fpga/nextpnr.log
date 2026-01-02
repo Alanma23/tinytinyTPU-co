@@ -1,0 +1,353 @@
+Info: Using uarch 'xilinx' for device 'xc7a35tcpg236-1'
+
+Info: Parsing XDC file...
+Info: Packing constants..
+Info: Inserting IO buffers..
+Info:     IO port 'clk' driven by IBUF '$iopadmap$basys3_top.clk'
+Info:     IO port 'btnC' driven by IBUF '$iopadmap$basys3_top.btnC'
+Info:     IO port 'uart_tx' driven by OBUF '$iopadmap$basys3_top.uart_tx'
+Info:     IO port 'uart_rx' driven by IBUF '$iopadmap$basys3_top.uart_rx'
+Info:     IO port 'sw[15]' driven by IBUF '$iopadmap$basys3_top.sw_15'
+Info:     IO port 'sw[14]' driven by IBUF '$iopadmap$basys3_top.sw_14'
+Info:     IO port 'sw[13]' driven by IBUF '$iopadmap$basys3_top.sw_13'
+Info:     IO port 'sw[12]' driven by IBUF '$iopadmap$basys3_top.sw_12'
+Info:     IO port 'sw[11]' driven by IBUF '$iopadmap$basys3_top.sw_11'
+Info:     IO port 'sw[10]' driven by IBUF '$iopadmap$basys3_top.sw_10'
+Info:     IO port 'sw[9]' driven by IBUF '$iopadmap$basys3_top.sw_9'
+Info:     IO port 'sw[8]' driven by IBUF '$iopadmap$basys3_top.sw_8'
+Info:     IO port 'sw[7]' driven by IBUF '$iopadmap$basys3_top.sw_7'
+Info:     IO port 'sw[6]' driven by IBUF '$iopadmap$basys3_top.sw_6'
+Info:     IO port 'sw[5]' driven by IBUF '$iopadmap$basys3_top.sw_5'
+Info:     IO port 'sw[4]' driven by IBUF '$iopadmap$basys3_top.sw_4'
+Info:     IO port 'sw[3]' driven by IBUF '$iopadmap$basys3_top.sw_3'
+Info:     IO port 'sw[2]' driven by IBUF '$iopadmap$basys3_top.sw_2'
+Info:     IO port 'sw[1]' driven by IBUF '$iopadmap$basys3_top.sw_1'
+Info:     IO port 'sw[0]' driven by IBUF '$iopadmap$basys3_top.sw'
+Info:     IO port 'led[15]' driven by OBUF '$iopadmap$basys3_top.led_15'
+Info:     IO port 'led[14]' driven by OBUF '$iopadmap$basys3_top.led_14'
+Info:     IO port 'led[13]' driven by OBUF '$iopadmap$basys3_top.led_13'
+Info:     IO port 'led[12]' driven by OBUF '$iopadmap$basys3_top.led_12'
+Info:     IO port 'led[11]' driven by OBUF '$iopadmap$basys3_top.led_11'
+Info:     IO port 'led[10]' driven by OBUF '$iopadmap$basys3_top.led_10'
+Info:     IO port 'led[9]' driven by OBUF '$iopadmap$basys3_top.led_9'
+Info:     IO port 'led[8]' driven by OBUF '$iopadmap$basys3_top.led_8'
+Info:     IO port 'led[7]' driven by OBUF '$iopadmap$basys3_top.led_7'
+Info:     IO port 'led[6]' driven by OBUF '$iopadmap$basys3_top.led_6'
+Info:     IO port 'led[5]' driven by OBUF '$iopadmap$basys3_top.led_5'
+Info:     IO port 'led[4]' driven by OBUF '$iopadmap$basys3_top.led_4'
+Info:     IO port 'led[2]' driven by OBUF '$iopadmap$basys3_top.led_2'
+Info:     IO port 'led[3]' driven by OBUF '$iopadmap$basys3_top.led_3'
+Info:     IO port 'led[0]' driven by OBUF '$iopadmap$basys3_top.led'
+Info:     IO port 'led[1]' driven by OBUF '$iopadmap$basys3_top.led_1'
+Info:     Constraining 'clk' to pad 'X114Y129/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'btnC' to pad 'X0Y142/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'uart_tx' to pad 'X0Y40/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'uart_rx' to pad 'X0Y40/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[15]' to pad 'X114Y107/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[14]' to pad 'X114Y111/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[13]' to pad 'X114Y111/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[12]' to pad 'X114Y115/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[11]' to pad 'X114Y109/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[10]' to pad 'X114Y107/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[9]' to pad 'X114Y109/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[8]' to pad 'X114Y115/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[7]' to pad 'X0Y150/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[6]' to pad 'X0Y150/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[5]' to pad 'X0Y148/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[4]' to pad 'X0Y148/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[3]' to pad 'X0Y146/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'sw[2]' to pad 'X0Y146/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[1]' to pad 'X0Y144/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'sw[0]' to pad 'X0Y144/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[15]' to pad 'X114Y65/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[14]' to pad 'X114Y92/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[13]' to pad 'X114Y77/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[12]' to pad 'X114Y77/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[11]' to pad 'X114Y123/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[10]' to pad 'X114Y117/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[9]' to pad 'X114Y117/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[8]' to pad 'X0Y154/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[7]' to pad 'X0Y154/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[6]' to pad 'X0Y155/IOB_X0Y0.IOB33.PAD'
+Info:     Constraining 'led[5]' to pad 'X0Y152/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[4]' to pad 'X0Y138/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[2]' to pad 'X0Y136/IOB_X0Y1.IOB33M.PAD'
+Info:     Constraining 'led[3]' to pad 'X0Y136/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[0]' to pad 'X0Y152/IOB_X0Y0.IOB33S.PAD'
+Info:     Constraining 'led[1]' to pad 'X0Y111/IOB_X0Y0.IOB33S.PAD'
+Info: Generating input buffer for '$iopadmap$basys3_top.clk'
+Info: Generating input buffer for '$iopadmap$basys3_top.btnC'
+Info: Generating output buffer for '$iopadmap$basys3_top.uart_tx'
+Info: Generating input buffer for '$iopadmap$basys3_top.uart_rx'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_15'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_14'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_13'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_12'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_11'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_10'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_9'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_8'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_7'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_6'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_5'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_4'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_3'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_2'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw_1'
+Info: Generating input buffer for '$iopadmap$basys3_top.sw'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_15'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_14'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_13'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_12'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_11'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_10'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_9'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_8'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_7'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_6'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_5'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_4'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_2'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_3'
+Info: Generating output buffer for '$iopadmap$basys3_top.led'
+Info: Generating output buffer for '$iopadmap$basys3_top.led_1'
+Info:     Created 36 PAD cells from:
+Info:             36x PAD
+Info: Preparing clocking...
+Info: Packing constants..
+Info: Packing IOLOGIC...
+Info: Packing PLLs...
+Info: Packing global buffers...
+Info:     Constrained BUFGCTRL 'bufg_inst' to bel 'X60Y108/BUFGCTRL_X0Y0.BUFGCTRL' based on dedicated routing
+Info: Packing MUX[789]s..
+Info: Packing carries..
+Info:    Grouped 724 MUXCYs and 724 XORCYs into 42 chains.
+Info:    Blasted 0 non-chain MUXCYs and 4 non-chain XORCYs to soft logic
+Info: Packing LUTs..
+Info:     Created 2761 SLICE_LUTX cells from:
+Info:           1295x LUT1
+Info:            434x LUT2
+Info:            306x LUT3
+Info:             50x LUT4
+Info:            175x LUT5
+Info:            501x LUT6
+Info: Packing DRAM..
+Info:    Transformed 0 tied-low DRAM address inputs to be tied-high
+Info: Packing BRAM..
+Info: Packing DSPs..
+Info:     Created 12 DSP48E1_DSP48E1 cells from:
+Info:             12x DSP48E1
+Info: Found 4 cascaded DSP from 8 roots
+Info: Packing flipflops..
+Info:     Created 1792 SLICE_FFX cells from:
+Info:           1783x FDRE
+Info:              9x FDSE
+Info:     Created 59 SELMUX2_1 cells from:
+Info:             56x MUXF7
+Info:              3x MUXF8
+Info: Constrained 614 LUTFF pairs.
+Info: Checksum: 0x4e19dcb2
+
+Info: Device utilisation:
+Info: 	          SLICE_LUTX:    2809/  65200     4%
+Info: 	           SLICE_FFX:    1792/  65200     2%
+Info: 	              CARRY4:     185/   8150     2%
+Info: 	          PSEUDO_GND:       1/      1   100%
+Info: 	          PSEUDO_VCC:       1/      1   100%
+Info: 	               HARD0:       0/   1980     0%
+Info: 	   RAMB18E1_RAMB18E1:       0/    150     0%
+Info: 	   FIFO18E1_FIFO18E1:       0/     75     0%
+Info: 	RAMBFIFO36E1_RAMBFIFO36E1:       0/     75     0%
+Info: 	   RAMB36E1_RAMB36E1:       0/     75     0%
+Info: 	     DSP48E1_DSP48E1:      12/    120    10%
+Info: 	                 PAD:      36/    730     4%
+Info: 	       IOB33M_OUTBUF:       0/    120     0%
+Info: 	       IOB33S_OUTBUF:       0/    120     0%
+Info: 	        IOB33_OUTBUF:      17/    250     6%
+Info: 	     IOB33M_INBUF_EN:       0/    120     0%
+Info: 	     IOB33S_INBUF_EN:       0/    120     0%
+Info: 	      IOB33_INBUF_EN:      19/    250     7%
+Info: 	IOB33M_TERM_OVERRIDE:       0/    120     0%
+Info: 	IOB33S_TERM_OVERRIDE:       0/    120     0%
+Info: 	 IOB33_TERM_OVERRIDE:       0/    250     0%
+Info: 	       PULL_OR_KEEP1:       0/    490     0%
+Info: 	   IDELAYE2_IDELAYE2:       0/    250     0%
+Info: 	        OLOGICE3_TFF:       0/    250     0%
+Info: 	      OLOGICE3_OUTFF:       0/    250     0%
+Info: 	       OLOGICE3_MISR:       0/    250     0%
+Info: 	 OSERDESE2_OSERDESE2:       0/    250     0%
+Info: 	        ILOGICE3_IFF:       0/    250     0%
+Info: 	ILOGICE3_ZHOLD_DELAY:       0/    250     0%
+Info: 	 ISERDESE2_ISERDESE2:       0/    250     0%
+Info: 	         BUFIO_BUFIO:       0/     20     0%
+Info: 	IDELAYCTRL_IDELAYCTRL:       0/      5     0%
+Info: 	            BUFGCTRL:       1/     32     3%
+Info: 	           BUFG_BUFG:       0/     32     0%
+Info: 	            INVERTER:       0/    120     0%
+Info: 	        OLOGICE2_TFF:       0/    250     0%
+Info: 	      OLOGICE2_OUTFF:       0/    250     0%
+Info: 	 PLLE2_ADV_PLLE2_ADV:       0/      5     0%
+Info: 	           SELMUX2_1:      59/  25450     0%
+Info: 	               BSCAN:       0/      4     0%
+Info: 	   DCIRESET_DCIRESET:       0/      1     0%
+Info: 	 FRAME_ECC_FRAME_ECC:       0/      1     0%
+Info: 	           ICAP_ICAP:       0/      2     0%
+Info: 	     STARTUP_STARTUP:       0/      1     0%
+Info: 	USR_ACCESS_USR_ACCESS:       0/      1     0%
+Info: 	   DNA_PORT_DNA_PORT:       0/      1     0%
+Info: 	 EFUSE_USR_EFUSE_USR:       0/      1     0%
+Info: 	       BUFHCE_BUFHCE:       0/     72     0%
+Info: 	              BUFFER:       0/    240     0%
+Info: 	        ILOGICE2_IFF:       0/    250     0%
+Info: 	       OLOGICE2_MISR:       0/    250     0%
+
+Info: Placed 36 cells based on constraints.
+Info: Creating initial analytic placement for 2484 cells, random placement wirelen = 505074.
+Info:     at initial placer iter 0, wirelen = 6525
+Info:     at initial placer iter 1, wirelen = 5537
+Info:     at initial placer iter 2, wirelen = 5759
+Info:     at initial placer iter 3, wirelen = 5512
+Info: Running main analytical placer, max placement attempts per cell = 3040578.
+Info:     at iteration #1, type ALL: wirelen solved = 5478, spread = 60107, legal = 65665; time = 0.29s
+Info:     at iteration #2, type ALL: wirelen solved = 8685, spread = 55867, legal = 69440; time = 0.84s
+Info:     at iteration #3, type ALL: wirelen solved = 10213, spread = 52701, legal = 65552; time = 0.81s
+Info:     at iteration #4, type ALL: wirelen solved = 10662, spread = 52809, legal = 65563; time = 0.30s
+Info:     at iteration #5, type ALL: wirelen solved = 12054, spread = 52727, legal = 65427; time = 0.74s
+Info:     at iteration #6, type ALL: wirelen solved = 12658, spread = 41731, legal = 60031; time = 0.34s
+Info:     at iteration #7, type ALL: wirelen solved = 12961, spread = 47716, legal = 61866; time = 0.28s
+Info:     at iteration #8, type ALL: wirelen solved = 14630, spread = 44084, legal = 59205; time = 0.19s
+Info:     at iteration #9, type ALL: wirelen solved = 15164, spread = 49662, legal = 63640; time = 0.28s
+Info:     at iteration #10, type ALL: wirelen solved = 15882, spread = 49618, legal = 67398; time = 0.16s
+Info:     at iteration #11, type ALL: wirelen solved = 16940, spread = 53124, legal = 70542; time = 0.32s
+Info:     at iteration #12, type ALL: wirelen solved = 19197, spread = 43328, legal = 62992; time = 0.29s
+Info:     at iteration #13, type ALL: wirelen solved = 19375, spread = 38607, legal = 59090; time = 0.31s
+Info:     at iteration #14, type ALL: wirelen solved = 19392, spread = 40212, legal = 55972; time = 0.31s
+Info:     at iteration #15, type ALL: wirelen solved = 20473, spread = 46051, legal = 62224; time = 0.31s
+Info:     at iteration #16, type ALL: wirelen solved = 22688, spread = 40245, legal = 55811; time = 0.29s
+Info:     at iteration #17, type ALL: wirelen solved = 22573, spread = 40505, legal = 56236; time = 0.31s
+Info:     at iteration #18, type ALL: wirelen solved = 22939, spread = 39313, legal = 56939; time = 0.31s
+Info:     at iteration #19, type ALL: wirelen solved = 23234, spread = 44011, legal = 62593; time = 0.20s
+Info:     at iteration #20, type ALL: wirelen solved = 23927, spread = 40693, legal = 58800; time = 0.16s
+Info:     at iteration #21, type ALL: wirelen solved = 24768, spread = 41487, legal = 59122; time = 0.12s
+Info: HeAP Placer Time: 7.85s
+Info:   of which solving equations: 1.34s
+Info:   of which spreading cells: 0.19s
+Info:   of which strict legalisation: 5.93s
+
+Info: Running simulated annealing placer for refinement.
+Info:   at iteration #1: temp = 0.000000, timing cost = 240, wirelen = 55811
+Info:   at iteration #5: temp = 0.000000, timing cost = 547, wirelen = 50936
+Info:   at iteration #10: temp = 0.000000, timing cost = 447, wirelen = 50250
+Info:   at iteration #15: temp = 0.000000, timing cost = 444, wirelen = 50010
+Info:   at iteration #20: temp = 0.000000, timing cost = 338, wirelen = 49876
+Info:   at iteration #20: temp = 0.000000, timing cost = 336, wirelen = 49880 
+Info: SA placement time 2.54s
+
+Info: Max frequency for clock 'clk_100mhz': 86.58 MHz (PASS at 12.00 MHz)
+
+Info: Slack histogram:
+Info:  legend: * represents 10 endpoint(s)
+Info:          + represents [1,10) endpoint(s)
+Info: [ 71783,  72339) |**+
+Info: [ 72339,  72895) |+
+Info: [ 72895,  73451) |****+
+Info: [ 73451,  74007) |***********+
+Info: [ 74007,  74563) |*************+
+Info: [ 74563,  75119) |************************+
+Info: [ 75119,  75675) |****************+
+Info: [ 75675,  76231) |******************+
+Info: [ 76231,  76787) |*************************************+
+Info: [ 76787,  77343) |*********************+
+Info: [ 77343,  77899) |**********************************+
+Info: [ 77899,  78455) |************************************************************ 
+Info: [ 78455,  79011) |*********+
+Info: [ 79011,  79567) |**********+
+Info: [ 79567,  80123) |************+
+Info: [ 80123,  80679) |********+
+Info: [ 80679,  81235) |**********+
+Info: [ 81235,  81791) |*********+
+Info: [ 81791,  82347) |**************+
+Info: [ 82347,  82903) |*************************************************+
+Info: Checksum: 0x67ac7a52
+Info: Running post-placement legalisation...
+Info: Routing global clocks...
+Info:     routing clock 'clk_100mhz'
+Info: Running router2...
+Info: Setting up routing resources...
+Info: Running main router loop...
+Info:     iter=1 wires=80757 overused=4552 overuse=5183 archfail=NA
+Info:     iter=2 wires=82264 overused=1357 overuse=1374 archfail=NA
+Info:     iter=3 wires=82837 overused=358 overuse=358 archfail=NA
+Info:     iter=4 wires=83067 overused=96 overuse=96 archfail=NA
+Info:     iter=5 wires=83159 overused=25 overuse=25 archfail=NA
+Info:     iter=6 wires=83194 overused=2 overuse=2 archfail=NA
+Info:     iter=7 wires=83198 overused=0 overuse=0 archfail=0
+Info: Router2 time 5.79s
+Info: Running router1 to check that route is legal...
+
+Info: Routing..
+Info: Setting up routing queue.
+Info: Routing 0 arcs.
+Info:            |   (re-)routed arcs  |   delta    | remaining|       time spent     |
+Info:    IterCnt |  w/ripup   wo/ripup |  w/r  wo/r |      arcs| batch(sec) total(sec)|
+Info:          0 |        0          0 |    0     0 |         0|       0.35       0.35|
+Info: Routing complete.
+Info: Router1 time 0.35s
+Info: Checksum: 0x0123bddf
+
+Info: Critical path report for clock 'clk_100mhz' (posedge -> posedge):
+Info:       type curr  total name
+Info:   clk-to-q  0.35  0.35 Source $auto$ff.cc:337:slice$9223.Q
+Info:    routing  0.51  0.86 Net rst_counter[4] (10,125) -> (10,125)
+Info:                          Sink $abc$16524$auto$blifparse.cc:536:parse_blif$16526.A1
+Info:                          Defined in:
+Info:                               /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:44.17-44.28
+Info:      logic  0.15  1.01 Source $abc$16524$auto$blifparse.cc:536:parse_blif$16526.O5
+Info:    routing  1.77  2.78 Net $techmap18728$abc$16524$auto$blifparse.cc:536:parse_blif$16525.A[4] (10,125) -> (14,90)
+Info:                          Sink $abc$16524$auto$blifparse.cc:536:parse_blif$16525.A5
+Info:                          Defined in:
+Info:                               /opt/homebrew/bin/../share/yosys/xilinx/lut_map.v:30.21-30.22
+Info:      logic  0.12  2.90 Source $abc$16524$auto$blifparse.cc:536:parse_blif$16525.O6
+Info:    routing  0.77  3.67 Net rst (14,90) -> (17,87)
+Info:                          Sink tpu_inst.mlp_u.$abc$16767$auto$blifparse.cc:536:parse_blif$16769.A1
+Info:                          Defined in:
+Info:                               /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:45.11-45.14
+Info:      logic  0.15  3.82 Source tpu_inst.mlp_u.$abc$16767$auto$blifparse.cc:536:parse_blif$16769.O5
+Info:    routing  2.13  5.95 Net tpu_inst.mlp_u.acc_reset (17,87) -> (17,115)
+Info:                          Sink tpu_inst.mlp_u.accum_u.u_align.$abc$16131$auto$blifparse.cc:536:parse_blif$16134.A1
+Info:                          Defined in:
+Info:                               /Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/../rtl/mlp_top.sv:203.11-203.20
+Info:      logic  0.12  6.07 Source tpu_inst.mlp_u.accum_u.u_align.$abc$16131$auto$blifparse.cc:536:parse_blif$16134.O6
+Info:    routing  1.07  7.14 Net tpu_inst.mlp_u.accum_u.u_align.$abc$16131$auto$opt_dff.cc:306:combine_resets$4323 (17,115) -> (17,115)
+Info:                          Sink tpu_inst.mlp_u.accum_u.u_align.$auto$ff.cc:337:slice$11606.SR
+Info:      setup  0.10  7.24 Source tpu_inst.mlp_u.accum_u.u_align.$auto$ff.cc:337:slice$11606.SR
+Info: 1.00 ns logic, 6.24 ns routing
+
+Info: Max frequency for clock 'clk_100mhz': 138.03 MHz (PASS at 12.00 MHz)
+
+Info: Slack histogram:
+Info:  legend: * represents 10 endpoint(s)
+Info:          + represents [1,10) endpoint(s)
+Info: [ 76088,  76415) |+
+Info: [ 76415,  76742) |*+
+Info: [ 76742,  77069) |**+
+Info: [ 77069,  77396) |********+
+Info: [ 77396,  77723) |**************+
+Info: [ 77723,  78050) |***********************+
+Info: [ 78050,  78377) |*********************+
+Info: [ 78377,  78704) |*************************************+
+Info: [ 78704,  79031) |***********************************************+
+Info: [ 79031,  79358) |************************************************************ 
+Info: [ 79358,  79685) |****************************************+
+Info: [ 79685,  80012) |****************+
+Info: [ 80012,  80339) |*******+
+Info: [ 80339,  80666) |**********+
+Info: [ 80666,  80993) |********+
+Info: [ 80993,  81320) |**************+
+Info: [ 81320,  81647) |*****************+
+Info: [ 81647,  81974) |***********+
+Info: [ 81974,  82301) |****************+
+Info: [ 82301,  82628) |************************+
+Info: Running post-routing legalisation...
+
+Info: Program finished normally.

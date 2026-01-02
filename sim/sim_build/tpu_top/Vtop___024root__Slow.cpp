@@ -10,6 +10,7 @@ constexpr CData/*7:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__CMD_WRITE
 constexpr CData/*7:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__CMD_EXECUTE;
 constexpr CData/*7:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT;
 constexpr CData/*7:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__CMD_STATUS;
+constexpr CData/*7:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__CMD_READ_RESULT_COL1;
 constexpr CData/*3:0*/ Vtop___024root::tpu_top__DOT__uart_ctrl_u__DOT__MLP_STATE_LOAD_WEIGHT;
 constexpr CData/*3:0*/ Vtop___024root::tpu_top__DOT__mlp_u__DOT__IDLE;
 constexpr CData/*3:0*/ Vtop___024root::tpu_top__DOT__mlp_u__DOT__LOAD_WEIGHT;

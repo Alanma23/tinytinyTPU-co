@@ -1075,7 +1075,7 @@ Creating decoders for process `\basys3_top.$proc$/Users/abiralshakya/Documents/t
      1/1: $1\debug_led_test[15:0]
 Creating decoders for process `\basys3_top.$proc$/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:141$366'.
 Creating decoders for process `\basys3_top.$proc$/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:90$357'.
-     1/1: $display$0x121a04158:92$365_EN
+     1/1: $display$0x600003b40078:92$365_EN
 Creating decoders for process `\basys3_top.$proc$/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:55$353'.
      1/1: $0\rst_counter[7:0]
 Creating decoders for process `\basys3_top.$proc$/Users/abiralshakya/Documents/tpu_to_fpga_rev2/tinytinyTPU-co/fpga/basys3_top.sv:49$352'.
@@ -6370,7 +6370,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6407,7 +6407,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6437,7 +6437,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6467,7 +6467,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6504,7 +6504,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6534,7 +6534,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6564,7 +6564,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6594,7 +6594,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6624,7 +6624,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6654,7 +6654,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6684,7 +6684,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6714,7 +6714,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6751,7 +6751,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -6781,7 +6781,7 @@ Running ABC script: <abc-temp-dir>/abc.script
 ABC: 
 ABC: ======== ABC command line "source <abc-temp-dir>/abc.script"
 ABC: + read_blif <abc-temp-dir>/input.blif 
-ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-PjXY3b/lutdefs.txt 
+ABC: + read_lut /var/folders/sb/srkfc7tj3319314qk68v5cch0000gn/T/yosys-abc-TS5G3Q/lutdefs.txt 
 ABC: + strash 
 ABC: + &get -n 
 ABC: + &fraig -x 
@@ -8265,6 +8265,6 @@ Warning: Bit 1 of cell port $paramod$1719986e2d5dc43517b18f4e324b0f602a4474e9\un
         1   $paramod$90e6c1c3bcf1d6d4de7201f9535341d4dc0dae4e\tpu_top
 
 Warnings: 4 unique messages, 5 total
-End of script. Logfile hash: b155f92273, CPU: user 6.14s system 0.16s, MEM: 137.05 MB peak
+End of script. Logfile hash: 61a688314a, CPU: user 4.30s system 0.14s, MEM: 157.78 MB peak
 Yosys 0.60 (git sha1 5bafeb77dc71e054fa331ab9efa613e6fb0a1c49, clang++ 17.0.0 -fPIC -O3)
-Time spent: 27% 55x read_verilog (2 sec), 18% 1x abc (1 sec), ...
+Time spent: 28% 55x read_verilog (1 sec), 21% 1x abc (1 sec), ...

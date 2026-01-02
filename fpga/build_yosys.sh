@@ -9,6 +9,10 @@ RTL_DIR="$SCRIPT_DIR/../rtl"
 PROJECT_NAME="tinytinyTPU_basys3"
 FPGA_PART="xc7a35tcpg236-1"
 
+# Default paths for nextpnr-himbaechel (can be overridden with environment variables)
+NEXTPNR_BIN="${NEXTPNR_BIN:-$HOME/tools/nextpnr/build/nextpnr-himbaechel}"
+NEXTPNR_CHIPDB="${NEXTPNR_CHIPDB:-$HOME/tools/nextpnr/build/share/himbaechel/xilinx/chipdb-xc7a50t.bin}"
+
 echo "=========================================="
 echo "Yosys/nextpnr Build Script"
 echo "=========================================="
@@ -93,47 +97,63 @@ echo "Yosys synthesis completed successfully"
 echo "Check yosys.log for detailed output"
 echo ""
 
-# Check if nextpnr is available
-if ! command -v nextpnr-xilinx &> /dev/null; then
-    echo "WARNING: nextpnr-xilinx not found."
-    echo "Synthesis complete, but place & route requires nextpnr."
+# Check if nextpnr-himbaechel is available
+if [ ! -f "$NEXTPNR_BIN" ]; then
+    echo "WARNING: nextpnr-himbaechel not found at: $NEXTPNR_BIN"
     echo ""
-    echo "To install nextpnr-xilinx:"
-    echo "  git clone https://github.com/YosysHQ/nextpnr.git"
-    echo "  cd nextpnr"
-    echo "  cmake . -DARCH=xilinx -DTRELLIS_INSTALL_PREFIX=/usr"
-    echo "  make -j\$(nproc)"
-    echo "  sudo make install"
+    echo "To build nextpnr-himbaechel for Xilinx:"
+    echo "  1. Clone nextpnr and prjxray:"
+    echo "     cd ~/tools"
+    echo "     git clone https://github.com/YosysHQ/nextpnr.git"
+    echo "     cd nextpnr && git submodule update --init --recursive"
+    echo "     git clone https://github.com/f4pga/prjxray.git ~/tools/prjxray"
+    echo "     cd ~/tools/prjxray && bash download-latest-db.sh"
     echo ""
-    echo "Output files:"
+    echo "  2. Build nextpnr-himbaechel:"
+    echo "     mkdir -p ~/tools/nextpnr/build && cd ~/tools/nextpnr/build"
+    echo "     cmake .. -DARCH=himbaechel -DHIMBAECHEL_UARCH=xilinx \\"
+    echo "              -DHIMBAECHEL_XILINX_DEVICES=xc7a50t \\"
+    echo "              -DHIMBAECHEL_PRJXRAY_DB=~/tools/prjxray/database \\"
+    echo "              -DBUILD_PYTHON=OFF"
+    echo "     make -j\$(nproc)"
+    echo ""
+    echo "Output files from Yosys synthesis:"
     echo "  - Netlist: basys3_top_yosys.v"
     echo "  - JSON: basys3_top.json"
     echo "  - EDIF: basys3_top.edif"
     exit 0
 fi
 
-NEXTPNR_VERSION=$(nextpnr-xilinx --version 2>&1 | head -1)
-echo "Found nextpnr-xilinx: $NEXTPNR_VERSION"
+if [ ! -f "$NEXTPNR_CHIPDB" ]; then
+    echo "WARNING: nextpnr chipdb not found at: $NEXTPNR_CHIPDB"
+    echo "Please build nextpnr with Xilinx support first."
+    exit 0
+fi
+
+NEXTPNR_VERSION=$("$NEXTPNR_BIN" --version 2>&1 | head -1 || echo "unknown")
+echo "Found nextpnr-himbaechel: $NEXTPNR_VERSION"
 echo ""
 echo "Running nextpnr place & route..."
 echo "=========================================="
 
-# Run nextpnr
-XDC_FILE="$SCRIPT_DIR/basys3.xdc"
+# Run nextpnr-himbaechel
+XDC_FILE="$SCRIPT_DIR/basys3_nextpnr.xdc"
 JSON_FILE="$SCRIPT_DIR/basys3_top.json"
-FASM_FILE="$SCRIPT_DIR/basys3_top.fasm"
+FASM_FILE="$SCRIPT_DIR/basys3_top_nextpnr.fasm"
 
-if ! nextpnr-xilinx \
-    --xdc "$XDC_FILE" \
+if ! "$NEXTPNR_BIN" \
+    --device "$FPGA_PART" \
+    --chipdb "$NEXTPNR_CHIPDB" \
     --json "$JSON_FILE" \
-    --write "$SCRIPT_DIR/basys3_top_routed.json" \
-    --fasm "$FASM_FILE" \
+    -o xdc="$XDC_FILE" \
+    -o fasm="$FASM_FILE" \
+    --router router2 \
     > nextpnr.log 2>&1; then
     echo "WARNING: nextpnr place & route had issues:"
     echo "Check nextpnr.log for details"
     tail -50 nextpnr.log
     echo ""
-    echo "Note: nextpnr may have limitations compared to Vivado."
+    echo "Note: nextpnr-himbaechel for Xilinx is experimental."
     echo "For production builds, use Vivado (build_vivado.tcl)."
     exit 1
 fi
@@ -144,66 +164,55 @@ echo ""
 echo "=========================================="
 echo "Output files:"
 echo "  - FASM: $FASM_FILE"
-echo "  - Routed JSON: $SCRIPT_DIR/basys3_top_routed.json"
 echo ""
 echo "Converting FASM to bitstream..."
 echo "=========================================="
 
-# Check for fasm2frames (part of prjtrellis)
-if command -v fasm2frames &> /dev/null; then
-    echo "Found fasm2frames, generating frames..."
-    fasm2frames --db "$(prjtrellis-config --sharedir)/database" \
-                --part "$FPGA_PART" \
-                "$FASM_FILE" \
-                "$SCRIPT_DIR/basys3_top.frames" \
-        || echo "WARNING: fasm2frames failed"
-fi
+# For Xilinx 7-series, we need fasm2frames from prjxray and xc7frames2bit
+PRJXRAY_DIR="${PRJXRAY_DIR:-$HOME/tools/prjxray}"
 
-# Check for xc7frames2bit (part of prjtrellis)
-if command -v xc7frames2bit &> /dev/null; then
-    if [ -f "$SCRIPT_DIR/basys3_top.frames" ]; then
+if [ -f "$PRJXRAY_DIR/utils/fasm2frames.py" ]; then
+    echo "Found fasm2frames, generating frames..."
+    python3 "$PRJXRAY_DIR/utils/fasm2frames.py" \
+        --db-root "$PRJXRAY_DIR/database/artix7" \
+        --part "$FPGA_PART" \
+        "$FASM_FILE" \
+        "$SCRIPT_DIR/basys3_top.frames" 2>&1 || echo "WARNING: fasm2frames failed"
+
+    if [ -f "$SCRIPT_DIR/basys3_top.frames" ] && [ -f "$PRJXRAY_DIR/utils/xc7frames2bit.py" ]; then
         echo "Found xc7frames2bit, generating bitstream..."
-        xc7frames2bit --part "$FPGA_PART" \
-                      --frm_file "$SCRIPT_DIR/basys3_top.frames" \
-                      --output_file "$SCRIPT_DIR/basys3_top_yosys.bit" \
-            || echo "WARNING: xc7frames2bit failed"
-        
-        if [ -f "$SCRIPT_DIR/basys3_top_yosys.bit" ]; then
-            echo ""
-            echo "=========================================="
-            echo "SUCCESS: Bitstream generated!"
-            echo "  Bitstream: $SCRIPT_DIR/basys3_top_yosys.bit"
-            echo "=========================================="
-        fi
+        python3 "$PRJXRAY_DIR/utils/xc7frames2bit.py" \
+            --db-root "$PRJXRAY_DIR/database/artix7" \
+            --part "$FPGA_PART" \
+            --frm_file "$SCRIPT_DIR/basys3_top.frames" \
+            --output_file "$SCRIPT_DIR/basys3_top_yosys.bit" 2>&1 || echo "WARNING: xc7frames2bit failed"
     fi
 fi
 
-# If bitstream generation tools not available, provide instructions
-if [ ! -f "$SCRIPT_DIR/basys3_top_yosys.bit" ]; then
+if [ -f "$SCRIPT_DIR/basys3_top_yosys.bit" ]; then
     echo ""
-    echo "NOTE: Bitstream generation requires prjtrellis tools:"
-    echo "  git clone https://github.com/Yowlings/prjtrellis.git"
-    echo "  cd prjtrellis/libtrellis"
-    echo "  cmake ."
-    echo "  make -j\$(nproc)"
-    echo "  sudo make install"
+    echo "=========================================="
+    echo "SUCCESS: Bitstream generated!"
+    echo "  Bitstream: $SCRIPT_DIR/basys3_top_yosys.bit"
+    echo "=========================================="
+else
     echo ""
-    echo "Or use Vivado to convert FASM to bitstream:"
-    echo "  vivado -mode tcl"
-    echo "  read_fasm basys3_top.fasm"
-    echo "  write_bitstream basys3_top.bit"
+    echo "NOTE: Bitstream generation requires prjxray tools."
+    echo "The FASM file has been generated and can be converted to bitstream"
+    echo "using prjxray's fasm2frames.py and xc7frames2bit.py scripts."
+    echo ""
+    echo "For more information, see: https://github.com/f4pga/prjxray"
 fi
 
 echo ""
 echo "=========================================="
 echo "Build Summary"
 echo "=========================================="
-echo "✓ Yosys synthesis: Complete"
-echo "✓ nextpnr place & route: Complete"
+echo "Yosys synthesis: Complete"
+echo "nextpnr place & route: Complete"
 if [ -f "$SCRIPT_DIR/basys3_top_yosys.bit" ]; then
-    echo "✓ Bitstream generation: Complete"
+    echo "Bitstream generation: Complete"
 else
-    echo "⚠ Bitstream generation: Requires additional tools"
+    echo "Bitstream generation: FASM generated (use prjxray for .bit)"
 fi
 echo "=========================================="
-

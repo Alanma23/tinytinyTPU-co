@@ -35,6 +35,20 @@ except ImportError:
     PYGAME_AVAILABLE = False
     print("pygame not installed. Install with: pip install pygame")
 
+# Check for PIL/Pillow for text rendering workaround
+try:
+    from PIL import Image, ImageDraw, ImageFont
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+
+# Check for PIL/Pillow for text rendering workaround
+try:
+    from PIL import Image, ImageDraw, ImageFont
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+
 # TPU Driver
 try:
     from tpu_driver import TPUDriver
@@ -237,13 +251,61 @@ class GestureDemo:
         self.arrow_scale = 1.0
         self.clock = None
 
+    def _render_text_pil(self, text, size, color=(255, 255, 255)):
+        """Render text using PIL as workaround for broken pygame.font"""
+        if not PIL_AVAILABLE:
+            return None
+        try:
+            # Create image with PIL
+            img = Image.new('RGBA', (size * len(text) * 2, size * 2), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+            # Try to use system fonts
+            font = None
+            font_paths = [
+                "/System/Library/Fonts/Helvetica.ttc",
+                "/Library/Fonts/Arial.ttf",
+                "/System/Library/Fonts/Supplemental/Arial.ttf",
+            ]
+            for path in font_paths:
+                try:
+                    font = ImageFont.truetype(path, size)
+                    break
+                except:
+                    continue
+            if font is None:
+                font = ImageFont.load_default()
+            draw.text((0, 0), text, fill=color, font=font)
+            # Convert PIL image to pygame surface
+            mode = img.mode
+            size_img = img.size
+            data = img.tobytes()
+            return pygame.image.fromstring(data, size_img, mode)
+        except Exception:
+            return None
+
     def init(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("tiny²TPU Gesture Demo")
-        self.font_large = pygame.font.Font(None, 200)
-        self.font_medium = pygame.font.Font(None, 48)
-        self.font_small = pygame.font.Font(None, 28)
+        # Workaround for pygame.font circular import issue with Python 3.14
+        self.font_large = None
+        self.font_medium = None
+        self.font_small = None
+        self.use_pil = False
+        
+        try:
+            # Try to import and use font module
+            import pygame.font as font_module
+            self.font_large = font_module.Font(None, 80)   # Reduced from 200
+            self.font_medium = font_module.Font(None, 32)  # Reduced from 48
+            self.font_small = font_module.Font(None, 20)   # Reduced from 28
+        except (NotImplementedError, ImportError, AttributeError) as e:
+            # Font module is broken - use PIL workaround if available
+            if PIL_AVAILABLE:
+                self.use_pil = True
+                print("Using PIL for text rendering (pygame.font unavailable)")
+            else:
+                print(f"Warning: pygame.font not available. Install Pillow for text: pip install Pillow")
         self.clock = pygame.time.Clock()
 
     def run(self):
@@ -318,18 +380,31 @@ class GestureDemo:
             arrow = self.current_result['arrow']
             color = self.current_result['color']
 
-            text = self.font_large.render(arrow, True, color)
-            w = int(text.get_width() * self.arrow_scale)
-            h = int(text.get_height() * self.arrow_scale)
-            scaled = pygame.transform.scale(text, (w, h))
-            rect = scaled.get_rect(center=(center_x, center_y))
-            self.screen.blit(scaled, rect)
+            if self.font_large:
+                text = self.font_large.render(arrow, True, color)
+            elif self.use_pil:
+                text = self._render_text_pil(arrow, 80, color)  # Reduced from 200
+            if text:
+                w = int(text.get_width() * self.arrow_scale)
+                h = int(text.get_height() * self.arrow_scale)
+                scaled = pygame.transform.scale(text, (w, h))
+                rect = scaled.get_rect(center=(center_x, center_y))
+                self.screen.blit(scaled, rect)
 
-            name = self.font_medium.render(self.current_result['name'], True, color)
-            self.screen.blit(name, name.get_rect(center=(center_x, center_y + 100)))
+            if self.font_medium:
+                name = self.font_medium.render(self.current_result['name'], True, color)
+            elif self.use_pil:
+                name = self._render_text_pil(self.current_result['name'], 32, color)  # Reduced from 48
+            if name:
+                name_rect = name.get_rect(center=(center_x, center_y + 100))
+                self.screen.blit(name, name_rect)
         else:
-            text = self.font_medium.render("Move mouse to detect gesture", True, (100, 100, 120))
-            self.screen.blit(text, text.get_rect(center=(center_x, center_y)))
+            if self.font_medium:
+                text = self.font_medium.render("Move mouse to detect gesture", True, (100, 100, 120))
+            elif self.use_pil:
+                text = self._render_text_pil("Move mouse to detect gesture", 32, (100, 100, 120))  # Reduced from 48
+            if text:
+                self.screen.blit(text, text.get_rect(center=(center_x, center_y)))
 
         # Stats panel
         panel_y = self.height - 80
@@ -345,25 +420,49 @@ class GestureDemo:
 
         x = 20
         for stat in stats:
-            text = self.font_small.render(stat, True, (150, 150, 170))
-            self.screen.blit(text, (x, panel_y + 30))
-            x += text.get_width() + 40
+            if self.font_small:
+                text = self.font_small.render(stat, True, (150, 150, 170))
+            elif self.use_pil:
+                text = self._render_text_pil(stat, 20, (150, 150, 170))  # Reduced from 28
+            else:
+                text = None
+            if text:
+                self.screen.blit(text, (x, panel_y + 30))
+                x += text.get_width() + 40
 
         # Title
-        title = self.font_medium.render("tiny²TPU", True, (200, 200, 220))
-        self.screen.blit(title, (20, 15))
+        if self.font_medium:
+            title = self.font_medium.render("tiny²TPU", True, (200, 200, 220))
+        elif self.use_pil:
+            title = self._render_text_pil("tiny²TPU", 32, (200, 200, 220))  # Reduced from 48
+        else:
+            title = None
+        if title:
+            self.screen.blit(title, (20, 15))
 
         # Mode
         mode = "SIMULATION" if self.classifier.sim_mode else "HARDWARE"
         mode_color = (255, 180, 80) if self.classifier.sim_mode else (80, 255, 120)
-        mode_text = self.font_small.render(mode, True, mode_color)
-        self.screen.blit(mode_text, (self.width - mode_text.get_width() - 20, 20))
+        if self.font_small:
+            mode_text = self.font_small.render(mode, True, mode_color)
+        elif self.use_pil:
+            mode_text = self._render_text_pil(mode, 20, mode_color)  # Reduced from 28
+        else:
+            mode_text = None
+        if mode_text:
+            self.screen.blit(mode_text, (self.width - mode_text.get_width() - 20, 20))
 
         # Model status
         model_status = "MODEL LOADED" if self.classifier.has_model else "NO MODEL"
         model_color = (80, 200, 255) if self.classifier.has_model else (255, 100, 100)
-        model_text = self.font_small.render(model_status, True, model_color)
-        self.screen.blit(model_text, (self.width - model_text.get_width() - 20, 45))
+        if self.font_small:
+            model_text = self.font_small.render(model_status, True, model_color)
+        elif self.use_pil:
+            model_text = self._render_text_pil(model_status, 20, model_color)  # Reduced from 28
+        else:
+            model_text = None
+        if model_text:
+            self.screen.blit(model_text, (self.width - model_text.get_width() - 20, 45))
 
         pygame.display.flip()
 

@@ -27,39 +27,73 @@ sudo make install
 
 ### 2. Install nextpnr-xilinx
 
-nextpnr-xilinx requires building from source:
+**Note:** nextpnr-xilinx is experimental and complex to set up. For production builds, **Vivado is strongly recommended**.
+
+nextpnr-xilinx requires several dependencies:
+
+#### Prerequisites
 
 ```bash
-# Install dependencies
-sudo apt-get install cmake libboost-all-dev libeigen3-dev
+# Install dependencies (Ubuntu/Debian)
+sudo apt-get install cmake libboost-all-dev libeigen3-dev openjdk-11-jdk
 
-# Clone nextpnr
-git clone https://github.com/YosysHQ/nextpnr.git
-cd nextpnr
+# macOS
+brew install cmake boost eigen openjdk@11
+```
 
-# Build for Xilinx architecture
-cmake . -DARCH=xilinx -DTRELLIS_INSTALL_PREFIX=/usr
-make -j$(nproc)
+#### Install RapidWright
+
+RapidWright is required for Xilinx device support:
+
+```bash
+# Download RapidWright
+wget https://github.com/Xilinx/RapidWright/releases/download/v2023.1.1/rapidwright-2023.1.1-standalone-lin64.tgz
+tar -xzf rapidwright-2023.1.1-standalone-lin64.tgz
+export RAPIDWRIGHT_PATH=$(pwd)/rapidwright-2023.1.1-standalone-lin64
+```
+
+#### Install Project X-Ray
+
+Project X-Ray provides the Xilinx 7-series bitstream database:
+
+```bash
+# Clone Project X-Ray
+git clone --recursive https://github.com/SymbiFlow/prjxray.git
+cd prjxray
+# Follow installation instructions in their README
+```
+
+#### Build nextpnr-xilinx
+
+```bash
+# Clone nextpnr-xilinx (separate repository from main nextpnr)
+git clone --recursive https://github.com/gatecat/nextpnr-xilinx.git
+cd nextpnr-xilinx
+
+# Create build directory (out-of-tree build required)
+mkdir build
+cd build
+
+# Configure with RapidWright path
+cmake .. -DARCH=xilinx -DRAPIDWRIGHT_PATH=$RAPIDWRIGHT_PATH
+
+# Build (use sysctl -n hw.ncpu on macOS instead of nproc)
+make -j$(nproc)  # Linux
+# make -j$(sysctl -n hw.ncpu)  # macOS
+
+# Install
 sudo make install
 ```
 
-### 3. Install prjtrellis (for bitstream generation)
-
-prjtrellis provides tools to convert FASM to bitstream:
+**Alternative (Linux only):** The openXC7 toolchain installer can automate this:
 
 ```bash
-# Install dependencies
-sudo apt-get install python3-dev libboost-python-dev
-
-# Clone prjtrellis
-git clone https://github.com/Yowlings/prjtrellis.git
-cd prjtrellis/libtrellis
-
-# Build
-cmake .
-make -j$(nproc)
-sudo make install
+wget -qO - https://raw.githubusercontent.com/openXC7/toolchain-installer/main/toolchain-installer.sh | bash
 ```
+
+### 3. Bitstream Generation
+
+For Xilinx 7-series, bitstream generation from FASM requires additional tools. The openXC7 toolchain includes these, or you can use Vivado's `write_bitstream` command on the EDIF file.
 
 ## Building the Bitstream
 
@@ -194,12 +228,24 @@ The RTL has been modified for Yosys compatibility:
 
 These changes maintain Vivado compatibility while enabling Yosys synthesis.
 
+## Platform Support
+
+- **Linux**: Full support for Yosys + nextpnr-xilinx (with RapidWright setup)
+- **macOS**: Yosys works, but nextpnr-xilinx setup is complex and may have issues
+- **Windows**: Use WSL or Vivado directly
+
+**Recommendation**: For Xilinx FPGAs, use Vivado for production builds. The open-source toolchain is best for:
+- Learning and experimentation
+- Lattice FPGAs (where nextpnr has mature support)
+- CI/CD environments where licensing is an issue
+
 ## Limitations
 
 1. **SystemVerilog Support**: Yosys has limited SystemVerilog support compared to Vivado
 2. **Timing Analysis**: nextpnr provides basic timing analysis, not as comprehensive as Vivado
 3. **Optimization**: Vivado may produce better area/timing results
 4. **Debug Tools**: No equivalent to Vivado's ILA/ChipScope
+5. **Xilinx Support**: nextpnr-xilinx is experimental and requires complex setup (RapidWright, Project X-Ray)
 
 ## Recommendations
 

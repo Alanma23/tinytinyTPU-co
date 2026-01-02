@@ -182,6 +182,7 @@ def _run_tpu_end_to_end_test(module_name):
     from cocotb_tools.runner import get_runner
     
     sim_dir = os.path.dirname(__file__)
+    sim_parent_dir = os.path.dirname(sim_dir)  # sim directory
     rtl_dir = os.path.join(sim_dir, "..", "..", "rtl")
     wave_dir = os.path.join(sim_dir, "..", "waves")
     build_dir = os.path.join(sim_dir, "..", "sim_build", module_name)
@@ -189,7 +190,12 @@ def _run_tpu_end_to_end_test(module_name):
     print(f"Building {module_name}...")
     print(f"RTL dir: {rtl_dir}")
     print(f"Build dir: {build_dir}")
+    print(f"Sim dir: {sim_parent_dir}")
     sys.stdout.flush()
+    
+    # Add sim directory to Python path so tests can be imported
+    if sim_parent_dir not in sys.path:
+        sys.path.insert(0, sim_parent_dir)
     
     os.makedirs(wave_dir, exist_ok=True)
     if os.path.exists(build_dir):
