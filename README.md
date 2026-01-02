@@ -2,6 +2,9 @@
 
 A minimal 2×2 systolic-array TPU-style matrix-multiply unit, implemented in SystemVerilog and deployed on FPGA.
 
+<img width="1900" height="1244" alt="image" src="https://github.com/user-attachments/assets/0fa29f4b-eec1-4c61-814c-23a8cc3b80ba" />
+
+
 This project implements a complete TPU architecture including:
 - 2×2 systolic array (4 processing elements)
 - Full post-MAC pipeline (accumulator, activation, normalization, quantization)
@@ -10,6 +13,8 @@ This project implements a complete TPU architecture including:
 - FPGA deployment on Basys3 (Xilinx Artix-7)
 
 **Resource Usage (Basys3 XC7A35T):**
+<img width="4032" height="3024" alt="image" src="https://github.com/user-attachments/assets/4df73d8c-6068-4ba8-a65d-c223d89de3aa" />
+
 - LUTs: ~1,000 (5% utilization)
 - Flip-Flops: ~1,000 (3% utilization)
 - DSP48E1: 8 slices
