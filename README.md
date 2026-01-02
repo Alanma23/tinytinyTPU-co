@@ -1,84 +1,93 @@
 # TinyTinyTPU
 
-A minimal 2x2 systolic-array TPU-style matrix-multiply unit, implemented in SystemVerilog.
+A minimal 2×2 systolic-array TPU-style matrix-multiply unit, implemented in SystemVerilog and deployed on FPGA.
 
-The design models the full post-MAC pipeline:
-MMU -> Accumulator (alignment + double buffering) -> Activation + Normalization + Loss -> Quantization -> Unified Buffer
+This project implements a complete TPU architecture including:
+- 2×2 systolic array (4 processing elements)
+- Full post-MAC pipeline (accumulator, activation, normalization, quantization)
+- UART-based host interface
+- Multi-layer MLP inference capability
+- FPGA deployment on Basys3 (Xilinx Artix-7)
 
---------------------------------------------------------------------------------
+**Resource Usage (Basys3 XC7A35T):**
+- LUTs: ~1,000 (5% utilization)
+- Flip-Flops: ~1,000 (3% utilization)
+- DSP48E1: 8 slices
+- BRAM: ~10-15 blocks
+- Estimated Gate Count: ~25,000 gates
 
-## Project Structure
+---
 
-```
-tinytinyTPU/
-|
-|-- rtl/                          # SystemVerilog RTL source files
-|   |-- pe.sv                     # Processing Element
-|   |-- mmu.sv                    # 2x2 Matrix Multiply Unit
-|   |-- weight_fifo.sv            # Single-column weight FIFO
-|   |-- dual_weight_fifo.sv       # Dual-column weight FIFO with skew
-|   |-- accumulator.sv            # Top-level accumulator
-|   |-- accumulator_align.sv      # Column alignment logic
-|   |-- accumulator_mem.sv        # Double-buffered accumulator memory
-|   |-- activation_func.sv        # ReLU/ReLU6 activation
-|   |-- normalizer.sv             # Gain/bias/shift normalization
-|   |-- loss_block.sv             # L1 loss computation
-|   |-- activation_pipeline.sv    # Full post-accumulator pipeline
-|   |-- unified_buffer.sv         # Ready/valid output FIFO
-|   `-- mlp_top.sv                # Top-level MLP integration wrapper
-|
-|-- sim/                          # Simulation environment
-|   |-- Makefile                  # Build and test automation
-|   |-- tests/                    # cocotb Python testbenches
-|   |   |-- test_pe.py
-|   |   |-- test_mmu.py
-|   |   |-- test_weight_fifo.py
-|   |   |-- test_dual_weight_fifo.py
-|   |   |-- test_accumulator.py
-|   |   |-- test_activation_func.py
-|   |   |-- test_normalizer.py
-|   |   |-- test_activation_pipeline.py
-|   |   `-- test_mlp_integration.py
-|   `-- waves/                    # Generated VCD waveforms
-|
-|-- archive/                      # Original Vivado project (preserved)
-|   |-- tinytinyTPU.xpr           # Vivado project file
-|   |-- tinytinyTPU.srcs/         # Original Verilog sources and testbenches
-|   |-- tinytinyTPU.sim/          # Vivado simulation outputs
-|   |-- tinytinyTPU.cache/        # Vivado cache files
-|   |-- tinytinyTPU.hw/           # Hardware files
-|   |-- tinytinyTPU.ip_user_files/
-|   `-- vivado.log, vivado.jou    # Vivado session logs
-|
-`-- README.md
-```
+## Table of Contents
 
-Note: The archive/ folder contains the original Vivado project with Verilog
-sources. The rtl/ folder contains the migrated SystemVerilog versions.
+1. [Project Overview](#project-overview)
+2. [Quick Start](#quick-start)
+3. [Simulation & Testing](#simulation--testing)
+4. [FPGA Build & Deployment](#fpga-build--deployment)
+5. [Running Inference](#running-inference)
+6. [Project Structure](#project-structure)
+7. [Architecture Details](#architecture-details)
+8. [Open Source Tooling (Yosys/nextpnr)](#open-source-tooling-yosysnextpnr)
 
---------------------------------------------------------------------------------
+---
+
+## Project Overview
+
+TinyTinyTPU is an educational implementation of Google's TPU architecture, scaled down to a 2×2 systolic array. It demonstrates:
+
+- **Systolic Array Architecture**: Data flows horizontally (activations) and vertically (partial sums)
+- **Diagonal Wavefront Weight Loading**: Staggered weight capture for proper systolic timing
+- **Full MLP Pipeline**: Weight FIFO → MMU → Accumulator → Activation → Normalization → Quantization
+- **Multi-Layer Inference**: Supports sequential layer processing with double-buffered activations
+
+### Design Philosophy
+
+This is a **minimal, educational-scale TPU** designed for:
+- Learning TPU architecture principles
+- Understanding systolic array dataflow
+- FPGA prototyping and experimentation
+- Small-scale ML inference (2×2 matrices)
+
+For production workloads, scale up the array size (e.g., 256×256 like Google TPU v1).
+
+---
 
 ## Quick Start
 
 ### Prerequisites
 
+**For Simulation:**
 - Verilator 5.022 or later
 - Python 3.8+
-- Surfer or GTKWave for waveform viewing
+- cocotb
+- GTKWave or Surfer (for waveform viewing)
 
-### Environment Setup
+**For FPGA Build:**
+- Xilinx Vivado 2020.1 or later (for Basys3)
+- OR Yosys + nextpnr (open source alternative, see [Open Source Tooling](#open-source-tooling-yosysnextpnr))
+
+**For Running Inference:**
+- Basys3 FPGA board
+- USB cable for programming
+- Python 3.8+ with pyserial
+
+### Installation
 
 ```bash
-# Navigate to simulation directory
+# Clone the repository
+git clone <repository-url>
+cd tinytinyTPU-co
+
+# Set up simulation environment
 cd sim
-
-# Create virtual environment (recommended)
 python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-python3 -m pip install -r requirements.txt
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 ```
+
+---
+
+## Simulation & Testing
 
 ### Running Tests
 
@@ -87,21 +96,38 @@ All simulation commands must be run from the `sim/` directory:
 ```bash
 cd sim
 
-# Run all tests (virtual environment is activated automatically)
+# Run all tests
 make test
 
 # Run all tests with waveform generation
 make test WAVES=1
 
-# Run specific module test
+# Run specific module tests
 make test_pe
 make test_mmu
 make test_mlp
 make test_uart
+make test_tpu_system
 
 # Run with waveforms
 make test_pe WAVES=1
 ```
+
+### Test Coverage
+
+| Test File | Module | Coverage |
+|-----------|--------|----------|
+| `test_pe.py` | Processing Element | Reset, MAC operations, weight capture |
+| `test_mmu.py` | 2×2 Systolic Array | Weight loading, matrix multiply |
+| `test_weight_fifo.py` | Weight FIFO | Push/pop, wraparound |
+| `test_dual_weight_fifo.py` | Dual Weight FIFO | Column independence, skew timing |
+| `test_accumulator.py` | Accumulator | Alignment, buffering, accumulate/overwrite modes |
+| `test_activation_func.py` | Activation Function | ReLU positive/negative/zero cases |
+| `test_normalizer.py` | Normalizer | Gain, bias, shift operations |
+| `test_activation_pipeline.py` | Activation Pipeline | Full pipeline, saturation handling |
+| `test_mlp_integration.py` | MLP Top | Multi-layer MLP inference |
+| `test_uart_controller.py` | UART Controller | Command parsing, response generation |
+| `test_tpu_system.py` | TPU Top | End-to-end system integration |
 
 ### Viewing Waveforms
 
@@ -115,68 +141,232 @@ make waves MODULE=mmu
 make waves MODULE=mlp_top
 ```
 
-### Linting
+---
+
+## FPGA Build & Deployment
+
+### Building with Vivado
+
+The project includes a TCL script for automated Vivado builds:
 
 ```bash
-make lint
+cd fpga
+
+# Build bitstream (synthesis + implementation + bitgen)
+vivado -mode batch -source build_vivado.tcl
+
+# Expected build time: 5-10 minutes
+# Output: basys3_top.bit
 ```
 
---------------------------------------------------------------------------------
+**Build Script Details:**
+- Creates Vivado project: `vivado_project/tinytinyTPU_basys3`
+- Synthesizes all RTL files from `../rtl/`
+- Implements design with timing constraints
+- Generates bitstream: `basys3_top.bit`
+- Creates reports: utilization, timing, DRC
 
-## SystemVerilog Migration
+**Resource Utilization (Post-Implementation):**
+- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/utilization_post_impl.rpt`
+- Check `vivado_project/tinytinyTPU_basys3.runs/impl_1/timing_summary_post_impl.rpt`
 
-This project was migrated from Verilog to SystemVerilog for improved synthesis compatibility and modern language features.
+### Programming the FPGA
 
-### Key Changes
+**Via Vivado Hardware Manager (GUI):**
+1. Connect Basys3 board via USB
+2. Open Vivado
+3. Open Hardware Manager
+4. Auto-connect to target
+5. Program with `basys3_top.bit`
 
-1. File extension: `.v` -> `.sv`
+**Via Command Line:**
+```bash
+vivado -mode tcl
+open_hw_manager
+connect_hw_server
+open_hw_target
+set_property PROGRAM.FILE {basys3_top.bit} [get_hw_devices xc7a35t_0]
+program_hw_devices [get_hw_devices xc7a35t_0]
+```
 
-2. Type declarations:
-   - `input wire` / `output reg` -> `input logic` / `output logic`
-   - `reg` / `wire` -> `logic`
+**Via OpenOCD (Alternative):**
+```bash
+# If using OpenOCD with Digilent cable
+openocd -f interface/ftdi/digilent_jtag_hs3.cfg -f target/xc7a35t.cfg
+# Then use GDB or other tools to program
+```
 
-3. Always blocks:
-   - `always @(posedge clk)` -> `always_ff @(posedge clk)`
-   - `always @(*)` -> `always_comb`
+### Hardware Connections
 
-4. Array syntax:
-   - `[0:DEPTH-1]` -> `[DEPTH]`
+**Basys3 Pinout:**
+- **UART RX** (B18): Receives commands from PC
+- **UART TX** (A18): Sends responses to PC
+- **Clock**: 100 MHz (onboard oscillator)
+- **Reset**: Center button (BTNC, U18)
+- **LEDs**: Status display (see `fpga/README.md` for LED modes)
 
-5. Case statements:
-   - `case` -> `unique case` where appropriate
+**UART Settings:**
+- Baud Rate: 115200
+- Data Bits: 8
+- Parity: None
+- Stop Bits: 1
 
-6. Width handling:
-   - Explicit bit-width casts to avoid Verilator warnings
-   - Example: `count == DEPTH` -> `count == (ADDR_W+1)'(DEPTH)`
+---
 
-### Testbench Migration
+## Running Inference
 
-The Verilog testbenches were replaced with cocotb Python testbenches:
+### Python Host Interface
 
-- More maintainable and readable test code
-- Easier debugging with Python tools
-- VCD waveform generation via Verilator
-- Pytest integration for test discovery and reporting
+The project includes a Python driver for communicating with the FPGA:
 
---------------------------------------------------------------------------------
+```bash
+cd host
 
-## Core RTL Modules
+# Basic inference demo
+python3 inference_demo.py
 
-### pe.sv - Processing Element
+# Gesture recognition demo (requires trained model)
+python3 gesture_demo.py
 
-The PE is the fundamental compute block.
+# Interactive test
+python3 test_tpu_driver.py
+```
 
-- Multiply-Accumulate (MAC): `psum_out = psum_in + (in_act * weight)`
-- Data forwarding: activation flows right, partial sum flows down
-- Weight loading: separate `en_weight_pass` and `en_weight_capture` signals
+### Inference Demo
 
-Design Notes:
-- Single-cycle registered outputs
-- `en_weight_pass` controls psum passthrough during load phase
-- `en_weight_capture` triggers weight register latch
-- Systolic-friendly timing for TPU-style arrays
+The `inference_demo.py` script demonstrates:
+1. Loading weights into the TPU
+2. Loading input activations
+3. Executing inference
+4. Reading results
 
-### mmu.sv - 2x2 Systolic Array
+**Example Usage:**
+```python
+from tpu_driver import TPUDriver
+
+# Connect to FPGA (adjust port as needed)
+tpu = TPUDriver('/dev/ttyUSB0')  # Linux
+# tpu = TPUDriver('COM3')         # Windows
+
+# Load 2×2 weight matrix
+weights = [[1, 2], [3, 4]]
+tpu.write_weights(weights)
+
+# Load 2×2 activation matrix
+activations = [[5, 6], [7, 8]]
+tpu.write_activations(activations)
+
+# Execute inference
+tpu.execute()
+
+# Read results
+result = tpu.read_result()
+print(f"Result: {result}")
+```
+
+### Gesture Recognition Demo
+
+The `gesture_demo.py` script implements a simple gesture classifier:
+- Trains a 2-layer MLP on mouse movement data
+- Classifies gestures as "Horizontal" or "Vertical"
+- Real-time inference on FPGA
+
+**Running the Demo:**
+```bash
+cd host
+python3 gesture_demo.py
+```
+
+**Model Training:**
+```bash
+cd model
+python3 train.py
+# Generates: gesture_model.json
+```
+
+### UART Protocol
+
+The TPU uses a simple byte-based UART protocol:
+
+**Commands:**
+- `0x01`: Write Weight (4 bytes: W00, W01, W10, W11)
+- `0x02`: Write Activation (4 bytes: A00, A01, A10, A11)
+- `0x03`: Execute (start inference)
+- `0x04`: Read Result (returns 4 bytes: acc0[31:0])
+- `0x05`: Read Result Column 1 (returns 4 bytes: acc1[31:0])
+- `0x06`: Read Status (returns 1 byte: state[3:0] | cycle_cnt[3:0])
+
+See `host/tpu_driver.py` for full protocol implementation.
+
+---
+
+## Project Structure
+
+```
+tinytinyTPU-co/
+├── rtl/                          # SystemVerilog RTL source files
+│   ├── pe.sv                     # Processing Element (MAC unit)
+│   ├── mmu.sv                    # 2×2 Matrix Multiply Unit (systolic array)
+│   ├── weight_fifo.sv            # Single-column weight FIFO
+│   ├── dual_weight_fifo.sv       # Dual-column weight FIFO with skew
+│   ├── accumulator.sv            # Top-level accumulator
+│   ├── accumulator_align.sv      # Column alignment logic
+│   ├── accumulator_mem.sv        # Double-buffered accumulator memory
+│   ├── activation_func.sv        # ReLU/ReLU6 activation
+│   ├── normalizer.sv             # Gain/bias/shift normalization
+│   ├── loss_block.sv             # L1 loss computation
+│   ├── activation_pipeline.sv    # Full post-accumulator pipeline
+│   ├── unified_buffer.sv          # Ready/valid output FIFO
+│   ├── mlp_top.sv                # Top-level MLP integration
+│   ├── tpu_bridge.sv              # UART-to-MLP bridge
+│   ├── uart_controller.sv         # UART command processor
+│   ├── uart_rx.sv                # UART receiver
+│   ├── uart_tx.sv                # UART transmitter
+│   └── tpu_top.sv                # Complete TPU system
+│
+├── sim/                          # Simulation environment
+│   ├── Makefile                  # Build and test automation
+│   ├── requirements.txt          # Python dependencies
+│   ├── tests/                    # cocotb Python testbenches
+│   │   ├── test_pe.py
+│   │   ├── test_mmu.py
+│   │   ├── test_weight_fifo.py
+│   │   ├── test_dual_weight_fifo.py
+│   │   ├── test_accumulator.py
+│   │   ├── test_activation_func.py
+│   │   ├── test_normalizer.py
+│   │   ├── test_activation_pipeline.py
+│   │   ├── test_mlp_integration.py
+│   │   ├── test_uart_controller.py
+│   │   └── test_tpu_system.py
+│   └── waves/                    # Generated VCD waveforms
+│
+├── fpga/                         # FPGA deployment files
+│   ├── basys3_top.sv             # Top-level FPGA wrapper
+│   ├── basys3.xdc                # Pin constraints
+│   ├── build_vivado.tcl          # Automated build script
+│   ├── basys3_top.bit            # Generated bitstream
+│   └── README.md                 # FPGA-specific documentation
+│
+├── host/                         # Python host interface
+│   ├── tpu_driver.py             # TPU communication driver
+│   ├── tpu_compiler.py           # Model compilation utilities
+│   ├── inference_demo.py          # Basic inference demo
+│   ├── gesture_demo.py           # Gesture recognition demo
+│   └── test_tpu_driver.py        # Driver unit tests
+│
+├── model/                        # ML model training
+│   ├── train.py                  # Model training script
+│   └── gesture_model.json        # Trained model (JSON format)
+│
+└── README.md                     # This file
+```
+
+---
+
+## Architecture Details
+
+### Systolic Array Dataflow
 
 ```
 PE00 -> PE01    Activations flow horizontally (right)
@@ -186,143 +376,215 @@ PE10 -> PE11    Partial sums flow vertically (down)
 acc0    acc1    Outputs to accumulator
 ```
 
-Responsibilities:
-- Feeds activations into rows (row0 direct, row1 with skew register)
-- Loads weights via vertical psum path with per-column capture timing
-- Emits two partial-sum columns to the accumulator
+**Weight Loading (Diagonal Wavefront):**
+- Cycle 0: W10 → col0, no capture
+- Cycle 1: W00 → col0 (capture), W11 → col1 (no capture)
+- Cycle 2: W01 → col1 (capture)
 
-Control Signals:
-- `en_weight_pass` - broadcast to all PEs during weight load phase
-- `en_capture_col0` - capture enable for column 0 PEs
-- `en_capture_col1` - capture enable for column 1 PEs (staggered)
+**Activation Flow:**
+- Row 0: A00 → PE00 → PE01
+- Row 1: A10 → PE10 → PE11 (with 1-cycle skew)
 
-### dual_weight_fifo.sv - Staggered Column Weight FIFO
+### Pipeline Stages
 
-Two independent 4-entry queues share one data bus to fill both MMU columns.
+1. **Weight FIFO**: Stores weights, outputs with column skew
+2. **MMU (Systolic Array)**: Matrix multiply-accumulate
+3. **Accumulator**: Aligns columns, double-buffered storage
+4. **Activation Pipeline**:
+   - Activation function (ReLU/ReLU6)
+   - Normalization (gain × bias + shift)
+   - Quantization (int8 with saturation)
+5. **Unified Buffer**: Output FIFO with ready/valid handshaking
 
-- Column 0: Combinational read output (no latency)
-- Column 1: Registered output with 1-cycle skew for diagonal wavefront
-- Single `pop` signal advances both read pointers
+### Multi-Layer MLP
 
-### accumulator.sv
-
-Captures MMU outputs, aligns staggered columns, and supports accumulate/overwrite with double buffering.
-
-Components:
-- `accumulator_align.sv` - Deskews column outputs
-- `accumulator_mem.sv` - Double-buffered 32-bit storage
-
-### activation_pipeline.sv
-
-Top-level post-accumulator stage:
-
-1. Activation (ReLU/ReLU6/passthrough)
-2. Normalization (gain/bias/shift)
-3. Parallel loss computation
-4. Affine int8 quantization with saturation
-
-### unified_buffer.sv
-
-Byte-wide synchronous FIFO with ready/valid backpressure.
-
---------------------------------------------------------------------------------
-
-## Diagonal Wavefront Weight Loading
-
-The 3-cycle staggered weight loading scheme ensures weights propagate through the systolic array in a proper diagonal wavefront pattern.
-
-For weight matrix W = [[1, 2], [3, 4]]:
-
-| Cycle | col0_out | col1_out | Column 0 Captures | Column 1 Captures |
-|-------|----------|----------|-------------------|-------------------|
-| 0     | 3        | 0 (skew) | No                | No                |
-| 1     | 1        | 4        | Yes               | No                |
-| 2     | (hold)   | 2        | No                | Yes               |
-
-Final Weight Distribution:
-```
-PE00: W[0,0]=1    PE01: W[0,1]=2
-PE10: W[1,0]=3    PE11: W[1,1]=4
-```
-
---------------------------------------------------------------------------------
-
-## Multi-Layer MLP Inference
-
-The `test_mlp_integration.py` demonstrates multi-layer neural network inference:
+The MLP controller manages sequential layer processing:
 
 ```
-Weight FIFO -> MMU (systolic) -> Accumulator -> Activation Pipeline -> UB
-                 ^                                                      |
-                 +------------------ feedback (next layer) ------------+
+State Machine:
+IDLE → LOAD_WEIGHT → LOAD_ACT → COMPUTE → DRAIN → TRANSFER → NEXT_LAYER → WAIT_WEIGHTS → ...
 ```
 
-### 2-Layer MLP Example
+- **Double Buffering**: Activations ping-pong between buffers for layer-to-layer transfer
+- **Weight Loading**: Weights loaded per layer via UART
+- **Pipeline Overlap**: While layer N drains, layer N+1 weights can be loaded
 
-```
-Input:  A  = [[5, 6], [7, 8]]
+---
 
-Layer 1: H = ReLU(A * W1)    where W1 = [[1, 2], [3, 4]]
-         H = [[23, 34], [31, 46]]
+## Open Source Tooling (Yosys/nextpnr)
 
-Layer 2: Y = ReLU(H * W2)    where W2 = [[1, 1], [1, 1]]
-         Y = [[57, 57], [77, 77]]
-```
+### Overview
 
---------------------------------------------------------------------------------
+While Vivado is the standard toolchain for Xilinx FPGAs, open-source alternatives exist:
+- **Yosys**: Synthesis (RTL → netlist)
+- **nextpnr**: Place & Route (netlist → bitstream)
 
-## Makefile Reference
+### Setup
 
-```
-make help                  Show all available commands
+**Installation (Ubuntu/Debian):**
+```bash
+# Install Yosys
+sudo apt-get install yosys
 
-Test Commands:
-  make test                Run all tests
-  make test WAVES=1        Run all tests with waveform generation
-  make test_pe             Run PE tests only
-  make test_mmu            Run MMU tests only
-  make test_mlp            Run MLP integration tests
-
-Waveform Commands:
-  make waves               List available waveforms
-  make waves MODULE=pe     Open specific waveform in viewer
-
-Other:
-  make lint                Run Verilator lint check
-  make clean               Remove build artifacts
-  make clean_waves         Remove generated waveforms
-
-Environment Variables:
-  WAVES=1                  Enable waveform generation
-  WAVE_VIEWER=gtkwave      Use GTKWave instead of Surfer
-  MODULE=<name>            Specify module for waveform viewing
+# Install nextpnr (for Xilinx 7-series)
+# Requires building from source - see nextpnr documentation
+git clone https://github.com/YosysHQ/nextpnr.git
+cd nextpnr
+cmake . -DARCH=xilinx
+make -j$(nproc)
+sudo make install
 ```
 
---------------------------------------------------------------------------------
+**Installation (macOS):**
+```bash
+brew install yosys
+# nextpnr requires manual build
+```
 
-## Pipeline Timing Summary
+### Building with Yosys/nextpnr
 
-| Phase        | Duration | Description                                    |
-|--------------|----------|------------------------------------------------|
-| Weight Load  | 3 cycles | Staggered column capture with diagonal wavefront |
-| Compute      | 3 cycles | Activation streaming with row skew             |
-| First Result | 5 cycles | From compute start to first accumulator output |
-|Result Spacing| 1 cycle  | Between consecutive valid accumulator outputs  |
+**Step 1: Synthesis (Yosys)**
+```bash
+cd fpga
 
---------------------------------------------------------------------------------
+# Create synthesis script
+cat > synth.ys << 'EOF'
+# Read RTL files
+read_verilog -sv ../rtl/pe.sv
+read_verilog -sv ../rtl/mmu.sv
+read_verilog -sv ../rtl/weight_fifo.sv
+read_verilog -sv ../rtl/dual_weight_fifo.sv
+read_verilog -sv ../rtl/accumulator_align.sv
+read_verilog -sv ../rtl/accumulator_mem.sv
+read_verilog -sv ../rtl/accumulator.sv
+read_verilog -sv ../rtl/activation_func.sv
+read_verilog -sv ../rtl/normalizer.sv
+read_verilog -sv ../rtl/loss_block.sv
+read_verilog -sv ../rtl/activation_pipeline.sv
+read_verilog -sv ../rtl/unified_buffer.sv
+read_verilog -sv ../rtl/mlp_top.sv
+read_verilog -sv ../rtl/uart_rx.sv
+read_verilog -sv ../rtl/uart_tx.sv
+read_verilog -sv ../rtl/uart_controller.sv
+read_verilog -sv ../rtl/tpu_bridge.sv
+read_verilog -sv ../rtl/tpu_top.sv
+read_verilog -sv basys3_top.sv
 
-## Test Coverage
+# Set top module
+hierarchy -top basys3_top
 
-| Test File                  | Module              | Tests                           |
-|---------------------------|---------------------|--------------------------------|
-| test_pe.py                | pe                  | Reset, MAC, weight capture      |
-| test_mmu.py               | mmu                 | Weight loading, matrix multiply |
-| test_weight_fifo.py       | weight_fifo         | Push/pop, wraparound           |
-| test_dual_weight_fifo.py  | dual_weight_fifo    | Column independence, skew      |
-| test_accumulator.py       | accumulator         | Alignment, buffering, modes    |
-| test_activation_func.py   | activation_func     | ReLU positive/negative/zero    |
-| test_normalizer.py        | normalizer          | Gain, bias, scaling            |
-|test_activation_pipeline.py| activation_pipeline| Full pipeline, saturation     |
-| test_mlp_integration.py   | mlp_top             | Multi-layer MLP inference      |
+# Synthesize
+synth_xilinx -top basys3_top -family xc7
 
-All 9 test suites pass with Verilator 5.042.
+# Write netlist
+write_verilog basys3_top_synth.v
+write_json basys3_top.json
+EOF
+
+# Run synthesis
+yosys synth.ys
+```
+
+**Step 2: Place & Route (nextpnr)**
+```bash
+# Generate bitstream
+nextpnr-xilinx \
+    --xdc basys3.xdc \
+    --json basys3_top.json \
+    --write basys3_top_routed.json \
+    --fasm basys3_top.fasm
+
+# Generate bitstream (requires Xilinx tools or open-source fasm2bit)
+# Note: fasm2bit conversion may require Xilinx tools or open-source alternatives
+```
+
+### Limitations & Considerations
+
+**Current Status:**
+- Yosys synthesis works well for most SystemVerilog constructs
+- nextpnr supports Xilinx 7-series but may have timing/routing challenges
+- Bitstream generation (fasm2bit) may require Xilinx tools or open-source alternatives
+
+**Recommendations:**
+- For development: Use Vivado for reliable builds
+- For open-source exploration: Use Yosys for synthesis, verify with Vivado
+- For production: Stick with Vivado until open-source toolchain matures
+
+**Future Work:**
+- Create automated Yosys/nextpnr build script
+- Document fasm2bit conversion process
+- Benchmark open-source vs. Vivado results
+
+---
+
+## Troubleshooting
+
+### Simulation Issues
+
+**Verilator Errors:**
+- Ensure Verilator 5.022+ is installed
+- Check SystemVerilog syntax (use `make lint`)
+
+**Test Failures:**
+- Run with `WAVES=1` to generate waveforms for debugging
+- Check `sim/test_output.log` for detailed error messages
+
+### FPGA Build Issues
+
+**Synthesis Errors:**
+- Check RTL files are in `rtl/` directory
+- Verify SystemVerilog syntax (Vivado may be stricter than Verilator)
+
+**Timing Violations:**
+- Check `timing_summary_post_impl.rpt`
+- May need to add pipeline stages or reduce clock frequency
+
+**Place & Route Failures:**
+- Check utilization reports
+- Verify constraints in `basys3.xdc`
+
+### Hardware Issues
+
+**UART Not Working:**
+- Verify COM port: `ls /dev/ttyUSB*` (Linux) or Device Manager (Windows)
+- Check baud rate: 115200
+- Verify TX/RX pins in constraints file
+
+**LEDs Not Responding:**
+- Check bitstream programmed correctly
+- Verify reset button (center button)
+- Check switch settings for LED modes (see `fpga/README.md`)
+
+---
+
+## Contributing
+
+Contributions welcome! Areas for improvement:
+- Additional test coverage
+- Performance optimizations
+- Documentation improvements
+- Open-source toolchain support
+- Larger array sizes
+
+---
+
+## License
+
+[Add your license here]
+
+---
+
+## References
+
+- [Google TPU Paper](https://arxiv.org/abs/1704.04760)
+- [TPU Architecture Blog](https://chewingonchips.substack.com/)
+- [Systolic Arrays](https://en.wikipedia.org/wiki/Systolic_array)
+- [Basys3 Reference Manual](https://digilent.com/reference/programmable-logic/basys-3/reference-manual)
+
+---
+
+## Acknowledgments
+
+- Inspired by Google's TPU architecture
+- Educational implementation for learning systolic arrays
+- Built for FPGA prototyping and experimentation
