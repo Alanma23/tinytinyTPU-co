@@ -15,24 +15,24 @@ module pe (
 
     always_ff @(posedge clk) begin
         if (reset) begin
-            out_act <= 8'sd0;
-            out_psum <= 16'sd0;
-            weight <= 8'sd0;
+            out_act <= 8'd0;
+            out_psum <= 16'd0;
+            weight <= 8'd0;
         end
         else begin
             if (en_weight_pass) begin
                 // Weight loading mode: pass psum through, reset activation
                 out_psum <= in_psum;
-                out_act <= 8'sd0;
+                out_act <= 8'd0;
                 // Capture weight only when this PE's capture signal is active
                 if (en_weight_capture) begin
-                    weight <= $signed(in_psum[7:0]);
+                    weight <= in_psum[7:0];
                 end
             end
             else begin
                 // Compute mode: MAC operation (signed multiplication)
                 out_act <= in_act;
-                out_psum <= ($signed(in_act) * $signed(weight)) + in_psum;
+                out_psum <= ($signed(in_act) * $signed(weight)) + $signed(in_psum);
             end
         end
     end

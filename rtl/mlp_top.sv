@@ -24,7 +24,6 @@ module mlp_top (
     input  logic        weights_ready,
 
     // Activation pipeline configuration
-    input  logic [2:0]  vpu_activation_type, // VPU activation function (000=passthrough, 001=ReLU, 010=ReLU6, 011=Sigmoid, 100=Tanh)
     input  logic signed [15:0] norm_gain,
     input  logic signed [31:0] norm_bias,
     input  logic [4:0]  norm_shift,
@@ -38,8 +37,8 @@ module mlp_top (
     output logic        layer_complete,
 
     // Debug outputs
-    output logic signed [15:0] mmu_acc0_out,
-    output logic signed [15:0] mmu_acc1_out,
+    output logic [15:0] mmu_acc0_out,
+    output logic [15:0] mmu_acc1_out,
     output logic signed [31:0] acc0,
     output logic signed [31:0] acc1,
     output logic        acc_valid
@@ -159,7 +158,7 @@ module mlp_top (
     assign act_row0_data = $signed(act_ub_rd_data[7:0]);
     assign act_row1_data = $signed(act_ub_rd_data[15:8]);
 
-    // Row1 skew register for systolic timing
+    // Row1 skew register for systolic timing (signed)
     logic signed [7:0] row1_skew_reg;
 
     always_ff @(posedge clk) begin
@@ -237,7 +236,6 @@ module mlp_top (
         .valid_in(acc_valid),
         .acc_in(acc0),
         .target_in(32'sd0),
-        .vpu_activation_type(vpu_activation_type),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),
@@ -255,7 +253,6 @@ module mlp_top (
         .valid_in(acc_valid),
         .acc_in(acc1),
         .target_in(32'sd0),
-        .vpu_activation_type(vpu_activation_type),
         .norm_gain(norm_gain),
         .norm_bias(norm_bias),
         .norm_shift(norm_shift),

@@ -17,8 +17,8 @@ module accumulator (
 );
 
     logic        aligned_valid;
-    logic [15:0] aligned_c0;
-    logic [15:0] aligned_c1;
+    logic signed [15:0] aligned_c0;
+    logic signed [15:0] aligned_c1;
 
     accumulator_align u_align (
         .clk(clk),

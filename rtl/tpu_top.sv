@@ -47,6 +47,7 @@ module tpu_top #(
     logic [3:0]  mlp_state_ctrl;
     logic [4:0]  mlp_cycle_cnt;
     logic signed [31:0] mlp_acc0;
+    logic signed [31:0] mlp_acc1;
 
     // UART Controller instance
     logic [3:0]  uart_state_int;
@@ -79,6 +80,7 @@ module tpu_top #(
         .mlp_state(mlp_state_ctrl),
         .mlp_cycle_cnt(mlp_cycle_cnt),
         .mlp_acc0(mlp_acc0),
+        .mlp_acc1(mlp_acc1),
         .dbg_state(uart_state_int),
         .dbg_cmd_reg(uart_cmd_int),
         .dbg_byte_count(uart_byte_cnt_int),
@@ -130,6 +132,7 @@ module tpu_top #(
         .mlp_state(mlp_state_ctrl),
         .mlp_cycle_cnt(mlp_cycle_cnt),
         .mlp_acc0(mlp_acc0),
+        .mlp_acc1(mlp_acc1),
         // MLP Top interface
         .mlp_wf_push_col0(mlp_wf_push_col0),
         .mlp_wf_push_col1(mlp_wf_push_col1),
@@ -147,7 +150,8 @@ module tpu_top #(
         .mlp_q_zero_point(mlp_q_zero_point),
         .mlp_state_in(mlp_state_out),
         .mlp_cycle_cnt_in(mlp_cycle_cnt_out),
-        .mlp_acc0_in(mlp_acc0_out)
+        .mlp_acc0_in(mlp_acc0_out),
+        .mlp_acc1_in(mlp_acc1_out)
     );
 
     // MLP Top instance

@@ -25,7 +25,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(306);
+    Verilated::stackCheck(320);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);
     _vm_contextp__->timeprecision(-12);
@@ -48,14 +48,21 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
     // Setup export functions
     for (int __Vfinal = 0; __Vfinal < 2; ++__Vfinal) {
         __Vscope_TOP.varInsert(__Vfinal,"clk", &(TOP.clk), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_byte_count", &(TOP.dbg_byte_count), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,1 ,2,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_cmd_reg", &(TOP.dbg_cmd_reg), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_resp_byte_idx", &(TOP.dbg_resp_byte_idx), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,1 ,1,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_rx_data", &(TOP.dbg_rx_data), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_rx_valid", &(TOP.dbg_rx_valid), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_start_mlp", &(TOP.dbg_start_mlp), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_state", &(TOP.dbg_state), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,1 ,3,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_tx_ready", &(TOP.dbg_tx_ready), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_tx_valid", &(TOP.dbg_tx_valid), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
+        __Vscope_TOP.varInsert(__Vfinal,"dbg_weights_ready", &(TOP.dbg_weights_ready), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
         __Vscope_TOP.varInsert(__Vfinal,"init_act_data", &(TOP.init_act_data), false, VLVT_UINT16,VLVD_OUT|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_TOP.varInsert(__Vfinal,"init_act_valid", &(TOP.init_act_valid), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
         __Vscope_TOP.varInsert(__Vfinal,"mlp_acc0", &(TOP.mlp_acc0), false, VLVT_UINT32,VLVD_IN|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_TOP.varInsert(__Vfinal,"mlp_acc1", &(TOP.mlp_acc1), false, VLVT_UINT32,VLVD_IN|VLVF_PUB_RW,0,1 ,31,0);
-        __Vscope_TOP.varInsert(__Vfinal,"mlp_acc_valid", &(TOP.mlp_acc_valid), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,0);
-        __Vscope_TOP.varInsert(__Vfinal,"mlp_current_layer", &(TOP.mlp_current_layer), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,1 ,2,0);
         __Vscope_TOP.varInsert(__Vfinal,"mlp_cycle_cnt", &(TOP.mlp_cycle_cnt), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,1 ,4,0);
-        __Vscope_TOP.varInsert(__Vfinal,"mlp_layer_complete", &(TOP.mlp_layer_complete), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,0);
         __Vscope_TOP.varInsert(__Vfinal,"mlp_state", &(TOP.mlp_state), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_TOP.varInsert(__Vfinal,"rst", &(TOP.rst), false, VLVT_UINT8,VLVD_IN|VLVF_PUB_RW,0,0);
         __Vscope_TOP.varInsert(__Vfinal,"start_mlp", &(TOP.start_mlp), false, VLVT_UINT8,VLVD_OUT|VLVF_PUB_RW,0,0);
@@ -70,35 +77,47 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_uart_controller.varInsert(__Vfinal,"CLOCK_FREQ", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CLOCK_FREQ))), true, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"CMD_EXECUTE", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_EXECUTE))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"CMD_READ_RESULT", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_READ_RESULT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"CMD_READ_RESULT_COL1", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_READ_RESULT_COL1))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"CMD_STATUS", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_STATUS))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"CMD_WRITE_ACT", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_WRITE_ACT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"CMD_WRITE_WEIGHT", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__CMD_WRITE_WEIGHT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"MLP_STATE_LOAD_WEIGHT", const_cast<void*>(static_cast<const void*>(&(TOP.uart_controller__DOT__MLP_STATE_LOAD_WEIGHT))), true, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"act_seq_idx", &(TOP.uart_controller__DOT__act_seq_idx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,1,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"byte_count", &(TOP.uart_controller__DOT__byte_count), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,2,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"byte_sent", &(TOP.uart_controller__DOT__byte_sent), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"clk", &(TOP.uart_controller__DOT__clk), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"cmd_reg", &(TOP.uart_controller__DOT__cmd_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"data_buffer", &(TOP.uart_controller__DOT__data_buffer), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,1,1 ,0,3 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_byte_count", &(TOP.uart_controller__DOT__dbg_byte_count), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,2,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_cmd_reg", &(TOP.uart_controller__DOT__dbg_cmd_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_resp_byte_idx", &(TOP.uart_controller__DOT__dbg_resp_byte_idx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,1,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_rx_data", &(TOP.uart_controller__DOT__dbg_rx_data), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_rx_valid", &(TOP.uart_controller__DOT__dbg_rx_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_start_mlp", &(TOP.uart_controller__DOT__dbg_start_mlp), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_state", &(TOP.uart_controller__DOT__dbg_state), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_tx_ready", &(TOP.uart_controller__DOT__dbg_tx_ready), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_tx_valid", &(TOP.uart_controller__DOT__dbg_tx_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"dbg_weights_ready", &(TOP.uart_controller__DOT__dbg_weights_ready), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"init_act_data", &(TOP.uart_controller__DOT__init_act_data), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"init_act_data_reg", &(TOP.uart_controller__DOT__init_act_data_reg), false, VLVT_UINT16,VLVD_NODIR|VLVF_PUB_RW,0,1 ,15,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"init_act_valid", &(TOP.uart_controller__DOT__init_act_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"init_act_valid_reg", &(TOP.uart_controller__DOT__init_act_valid_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"mlp_acc0", &(TOP.uart_controller__DOT__mlp_acc0), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"mlp_acc1", &(TOP.uart_controller__DOT__mlp_acc1), false, VLVT_UINT32,VLVD_NODIR|VLVF_PUB_RW,0,1 ,31,0);
-        __Vscope_uart_controller.varInsert(__Vfinal,"mlp_acc_valid", &(TOP.uart_controller__DOT__mlp_acc_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
-        __Vscope_uart_controller.varInsert(__Vfinal,"mlp_current_layer", &(TOP.uart_controller__DOT__mlp_current_layer), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,2,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"mlp_cycle_cnt", &(TOP.uart_controller__DOT__mlp_cycle_cnt), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,4,0);
-        __Vscope_uart_controller.varInsert(__Vfinal,"mlp_layer_complete", &(TOP.uart_controller__DOT__mlp_layer_complete), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"mlp_state", &(TOP.uart_controller__DOT__mlp_state), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"mlp_state_prev", &(TOP.uart_controller__DOT__mlp_state_prev), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"resp_buffer", &(TOP.uart_controller__DOT__resp_buffer), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,1,1 ,0,3 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"resp_byte_idx", &(TOP.uart_controller__DOT__resp_byte_idx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,1,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"resp_delay_count", &(TOP.uart_controller__DOT__resp_delay_count), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"rst", &(TOP.uart_controller__DOT__rst), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"rx_data", &(TOP.uart_controller__DOT__rx_data), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"rx_data_captured", &(TOP.uart_controller__DOT__rx_data_captured), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"rx_ready", &(TOP.uart_controller__DOT__rx_ready), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"rx_valid", &(TOP.uart_controller__DOT__rx_valid), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"start_mlp", &(TOP.uart_controller__DOT__start_mlp), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"start_mlp_reg", &(TOP.uart_controller__DOT__start_mlp_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"start_mlp_sticky", &(TOP.uart_controller__DOT__start_mlp_sticky), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"state", &(TOP.uart_controller__DOT__state), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,3,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"tx_data", &(TOP.uart_controller__DOT__tx_data), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"tx_data_reg", &(TOP.uart_controller__DOT__tx_data_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);
@@ -107,7 +126,7 @@ Vtop__Syms::Vtop__Syms(VerilatedContext* contextp, const char* namep, Vtop* mode
         __Vscope_uart_controller.varInsert(__Vfinal,"tx_valid_reg", &(TOP.uart_controller__DOT__tx_valid_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"uart_rx", &(TOP.uart_controller__DOT__uart_rx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"uart_tx", &(TOP.uart_controller__DOT__uart_tx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
-        __Vscope_uart_controller.varInsert(__Vfinal,"weight_seq_idx", &(TOP.uart_controller__DOT__weight_seq_idx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,1,0);
+        __Vscope_uart_controller.varInsert(__Vfinal,"weight_seq_idx", &(TOP.uart_controller__DOT__weight_seq_idx), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,2,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"weights_ready", &(TOP.uart_controller__DOT__weights_ready), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"weights_ready_reg", &(TOP.uart_controller__DOT__weights_ready_reg), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,0);
         __Vscope_uart_controller.varInsert(__Vfinal,"wf_data_in", &(TOP.uart_controller__DOT__wf_data_in), false, VLVT_UINT8,VLVD_NODIR|VLVF_PUB_RW,0,1 ,7,0);

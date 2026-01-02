@@ -20,6 +20,7 @@ module tpu_bridge (
     output logic [3:0]  mlp_state,
     output logic [4:0]  mlp_cycle_cnt,
     output logic signed [31:0] mlp_acc0,
+    output logic signed [31:0] mlp_acc1,
 
     // MLP Top interface
     output logic        mlp_wf_push_col0,
@@ -39,7 +40,8 @@ module tpu_bridge (
 
     input  logic [3:0]  mlp_state_in,
     input  logic [4:0]  mlp_cycle_cnt_in,
-    input  logic signed [31:0] mlp_acc0_in
+    input  logic signed [31:0] mlp_acc0_in,
+    input  logic signed [31:0] mlp_acc1_in
 );
 
     // Pass-through: UART Controller → MLP
@@ -72,5 +74,6 @@ module tpu_bridge (
     assign mlp_state = mlp_state_in;
     assign mlp_cycle_cnt = mlp_cycle_cnt_in;
     assign mlp_acc0 = mlp_acc0_in;
+    assign mlp_acc1 = mlp_acc1_in;
 
 endmodule

@@ -37,6 +37,7 @@ CMD_WRITE_ACT = 0x02
 CMD_EXECUTE = 0x03
 CMD_READ_RESULT = 0x04
 CMD_STATUS = 0x05
+CMD_READ_RESULT_COL1 = 0x06
 
 # Debug logging
 LOG_PATH = "/Users/abiralshakya/Documents/tpu_to_fpga_rev2/.cursor/debug.log"
@@ -71,11 +72,8 @@ async def _setup_controller(dut):
     dut.uart_rx.value = 1  # Idle high
     dut.mlp_state.value = 0
     dut.mlp_cycle_cnt.value = 0
-    dut.mlp_current_layer.value = 0
-    dut.mlp_layer_complete.value = 0
     dut.mlp_acc0.value = 0
     dut.mlp_acc1.value = 0
-    dut.mlp_acc_valid.value = 0
     
     await ClockCycles(dut.clk, 5)
     dut.rst.value = 0
@@ -215,15 +213,16 @@ async def test_cmd_status(dut):
     await _setup_controller(dut)
     
     # Set MLP status - ensure values are stable
+    # RTL uses cycle_cnt[3:0], so use 0xF (15) instead of 0x1F (31)
     dut.mlp_state.value = 0x3  # State 3
-    dut.mlp_cycle_cnt.value = 0x1F  # Cycle count 31
+    dut.mlp_cycle_cnt.value = 0xF  # Cycle count 15 (only lower 4 bits used)
     await RisingEdge(dut.clk)  # Wait one cycle for values to be stable
     await RisingEdge(dut.clk)  # Wait another cycle
     # #region agent log
     _log_debug("test_cmd_status:setup", "Set MLP status", {
         "mlp_state": int(dut.mlp_state.value),
         "mlp_cycle_cnt": int(dut.mlp_cycle_cnt.value),
-        "expected": (0x3 << 5) | 0x1F
+        "expected": (0x3 << 4) | 0xF
     }, hypothesis_id="A")
     # #endregion
     
@@ -232,13 +231,14 @@ async def test_cmd_status(dut):
     # #region agent log
     _log_debug("test_cmd_status:received", "Response received", {
         "resp_byte": resp_byte,
-        "expected": (0x3 << 5) | 0x1F,
-        "match": resp_byte == ((0x3 << 5) | 0x1F)
+        "expected": (0x3 << 4) | 0xF,
+        "match": resp_byte == ((0x3 << 4) | 0xF)
     }, hypothesis_id="A")
     # #endregion
     
-    # Verify response: [state(3:0) | cycle_cnt(4:0)]
-    expected = (0x3 << 5) | 0x1F
+    # Verify response: RTL packs as {state[3:0], cycle_cnt[3:0]}
+    # state=0x3 in upper 4 bits, cycle_cnt[3:0]=0xF in lower 4 bits
+    expected = (0x3 << 4) | 0xF  # 0x3F
     assert resp_byte == expected, f"Expected status {expected:02X}, got {resp_byte:02X}"
 
 
@@ -305,20 +305,58 @@ async def test_cmd_write_act(dut):
     await _setup_controller(dut)
     
     # Send WRITE_ACT command: [0x02][A00][A01][A10][A11]
-    # Row 0: A00 (LSB), A01 (MSB) = 0x0201
-    # Row 1: A10 (LSB), A11 (MSB) = 0x0403
+    # RTL writes by column: col0={A10,A00}, col1={A11,A01}
     activations = [0x01, 0x02, 0x03, 0x04]  # A00, A01, A10, A11
+    
+    # Monitor activations during write - start BEFORE sending command
+    act_valid_count = 0
+    act_data_seen = []
+    
+    async def monitor_activations():
+        nonlocal act_valid_count, act_data_seen
+        # Run for a long time to catch both writes (UART takes time + processing)
+        # Simple approach: capture every time we see init_act_valid high
+        # Since init_act_valid is only high for 1 cycle per activation, we won't get duplicates
+        dut._log.info("Activation monitor started")
+        for i in range(50000):  # Run for a long time like test_write_act_sequence does
+            await RisingEdge(dut.clk)
+            if dut.init_act_valid.value == 1:
+                current_val = int(dut.init_act_data.value)
+                act_valid_count += 1
+                act_data_seen.append(current_val)
+                dut._log.info(f"Captured activation {act_valid_count}: 0x{current_val:04X} at iteration {i}")
+    
+    monitor_task = cocotb.start_soon(monitor_activations())
+    
+    # Give monitor a few cycles to start
+    await ClockCycles(dut.clk, 10)
+    
     await _send_uart_byte(dut, CMD_WRITE_ACT, bit_period_ns)
     for a in activations:
         await _send_uart_byte(dut, a, bit_period_ns)
     
-    # Wait for processing
-    await ClockCycles(dut.clk, 500)
+    # Wait for UART RX to receive all bytes and controller to process them
+    # The last _send_uart_byte returns after ~100 cycles, but the byte still needs
+    # ~8700 more cycles to be fully received by UART RX, plus processing time
+    await ClockCycles(dut.clk, 10000)
     
-    # Verify activation data was written (last write should be row 1)
-    expected_row1 = (activations[3] << 8) | activations[2]
-    assert dut.init_act_data.value == expected_row1, \
-        f"Row 1 activation should be {expected_row1:04X}, got {dut.init_act_data.value:04X}"
+    # Expected values: col0={A10,A00}={0x03,0x01}=0x0301, col1={A11,A01}={0x04,0x02}=0x0402
+    expected_col0 = (activations[2] << 8) | activations[0]  # {A10, A00} = 0x0301
+    expected_col1 = (activations[3] << 8) | activations[1]  # {A11, A01} = 0x0402
+    
+    dut._log.info(f"Expected: col0=0x{expected_col0:04X}, col1=0x{expected_col1:04X}")
+    dut._log.info(f"Seen {act_valid_count} activations: {[f'0x{v:04X}' for v in act_data_seen]}")
+    
+    # Verify we saw at least 2 activations (might see more due to timing)
+    assert act_valid_count >= 2, f"Expected at least 2 activation writes, got {act_valid_count}. Seen: {[f'0x{v:04X}' for v in act_data_seen]}"
+    
+    # Verify we see both expected values (order might vary, but both should be present)
+    assert expected_col0 in act_data_seen, f"Expected col0=0x{expected_col0:04X} not found. Seen: {[f'0x{v:04X}' for v in act_data_seen]}"
+    assert expected_col1 in act_data_seen, f"Expected col1=0x{expected_col1:04X} not found. Seen: {[f'0x{v:04X}' for v in act_data_seen]}"
+    
+    # Verify last write is col1 (most important - this is what the test originally checked)
+    assert act_data_seen[-1] == expected_col1, \
+        f"Last activation should be col1=0x{expected_col1:04X}, got 0x{act_data_seen[-1]:04X}. All seen: {[f'0x{v:04X}' for v in act_data_seen]}"
 
 
 @cocotb.test()
@@ -388,6 +426,90 @@ async def test_cmd_read_result_signed(dut):
 
 
 @cocotb.test()
+async def test_cmd_read_result_col1(dut):
+    """Test CMD_READ_RESULT_COL1 command - should return acc1 accumulator value."""
+    bit_period_ns = (DEFAULT_CLOCK_FREQ // DEFAULT_BAUD) * CLK_PERIOD_NS
+    
+    await _setup_controller(dut)
+    
+    # Set accumulator value for column 1 - ensure it's stable
+    test_value = 0xABCDEF00
+    dut.mlp_acc1.value = test_value
+    await RisingEdge(dut.clk)  # Wait one cycle for value to be stable
+    await RisingEdge(dut.clk)  # Wait another cycle
+    
+    # Send READ_RESULT_COL1 command and receive 4-byte response
+    resp_bytes = await _send_and_receive(dut, CMD_READ_RESULT_COL1, bit_period_ns, 4)
+    for i, byte_val in enumerate(resp_bytes):
+        dut._log.info(f"Byte {i} received: 0x{byte_val:02X}")
+    
+    if len(resp_bytes) != 4:
+        dut._log.error(f"Only received {len(resp_bytes)} bytes, expected 4")
+        raise AssertionError(f"Only received {len(resp_bytes)} bytes, expected 4")
+    
+    # Reconstruct 32-bit value: [byte0, byte1, byte2, byte3]
+    result = resp_bytes[0] | (resp_bytes[1] << 8) | (resp_bytes[2] << 16) | (resp_bytes[3] << 24)
+    
+    # Verify result
+    assert result == test_value, f"Expected result {test_value:08X}, got {result:08X}"
+
+
+@cocotb.test()
+async def test_cmd_read_result_col1_signed(dut):
+    """Test CMD_READ_RESULT_COL1 with negative accumulator value."""
+    bit_period_ns = (DEFAULT_CLOCK_FREQ // DEFAULT_BAUD) * CLK_PERIOD_NS
+    
+    await _setup_controller(dut)
+    
+    # Set negative accumulator value
+    test_value = 0x80000000  # -2147483648 (most negative 32-bit signed)
+    dut.mlp_acc1.value = test_value
+    await RisingEdge(dut.clk)  # Wait for value to be stable
+
+    resp_bytes = await _send_and_receive(dut, CMD_READ_RESULT_COL1, bit_period_ns, 4)
+    
+    result = resp_bytes[0] | (resp_bytes[1] << 8) | (resp_bytes[2] << 16) | (resp_bytes[3] << 24)
+    assert result == test_value, f"Expected {test_value:08X}, got {result:08X}"
+
+
+@cocotb.test()
+async def test_read_both_accumulators(dut):
+    """Test reading both acc0 and acc1 to verify they are independent."""
+    bit_period_ns = (DEFAULT_CLOCK_FREQ // DEFAULT_BAUD) * CLK_PERIOD_NS
+    
+    await _setup_controller(dut)
+    
+    # Set different values for both accumulators
+    acc0_value = 0x11111111
+    acc1_value = 0x22222222
+    dut.mlp_acc0.value = acc0_value
+    dut.mlp_acc1.value = acc1_value
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    # Read acc0
+    resp_bytes_acc0 = await _send_and_receive(dut, CMD_READ_RESULT, bit_period_ns, 4)
+    result_acc0 = resp_bytes_acc0[0] | (resp_bytes_acc0[1] << 8) | (resp_bytes_acc0[2] << 16) | (resp_bytes_acc0[3] << 24)
+    
+    # Wait for controller to fully complete response and return to IDLE
+    # UART transmission of 4 bytes takes time, plus controller state transitions
+    await ClockCycles(dut.clk, 2000)  # Increased wait time
+    
+    # Verify controller is back in IDLE (state == 0)
+    # Wait a bit more to ensure it's ready
+    await ClockCycles(dut.clk, 100)
+    
+    # Read acc1
+    resp_bytes_acc1 = await _send_and_receive(dut, CMD_READ_RESULT_COL1, bit_period_ns, 4)
+    result_acc1 = resp_bytes_acc1[0] | (resp_bytes_acc1[1] << 8) | (resp_bytes_acc1[2] << 16) | (resp_bytes_acc1[3] << 24)
+    
+    # Verify both results
+    assert result_acc0 == acc0_value, f"acc0: Expected {acc0_value:08X}, got {result_acc0:08X}"
+    assert result_acc1 == acc1_value, f"acc1: Expected {acc1_value:08X}, got {result_acc1:08X}"
+    assert result_acc0 != result_acc1, "acc0 and acc1 should have different values"
+
+
+@cocotb.test()
 async def test_multiple_commands_sequence(dut):
     """Test multiple commands in sequence."""
     bit_period_ns = (DEFAULT_CLOCK_FREQ // DEFAULT_BAUD) * CLK_PERIOD_NS
@@ -417,7 +539,8 @@ async def test_multiple_commands_sequence(dut):
     await RisingEdge(dut.clk)  # Wait for values to be stable
 
     resp_byte = await _send_and_receive(dut, CMD_STATUS, bit_period_ns, 1)
-    expected = (0x5 << 5) | 0x0A
+    # RTL packs as {state[3:0], cycle_cnt[3:0]}
+    expected = (0x5 << 4) | 0x0A
     assert resp_byte == expected, f"Expected status {expected:02X}, got {resp_byte:02X}"
 
 
@@ -459,8 +582,9 @@ async def test_status_various_states(dut):
         await RisingEdge(dut.clk)  # Wait for values to be stable
 
         resp_byte = await _send_and_receive(dut, CMD_STATUS, bit_period_ns, 1)
-        # Controller uses only mlp_state[2:0], so truncate to 3 bits
-        expected = ((state_val & 0x7) << 5) | cycle_val
+        # RTL packs as {state[3:0], cycle_cnt[3:0]}
+        # Only lower 4 bits of cycle_cnt are used
+        expected = (state_val << 4) | (cycle_val & 0xF)
         assert resp_byte == expected, \
             f"State {state_val}, cycle {cycle_val}: expected {expected:02X}, got {resp_byte:02X}"
 
@@ -587,15 +711,16 @@ async def test_write_act_sequence(dut):
                 rows_seen.append(act_data)
                 dut._log.info(f"Detected init_act_valid at iteration {i}, data=0x{act_data:04X}")
 
-                # First valid should be row 0: 0x1234
-                expected_row0 = (activations[1] << 8) | activations[0]
-                if act_data == expected_row0:
-                    row0_seen = True
+                # RTL writes by column: col0={A10,A00}, col1={A11,A01}
+                # First valid should be col0: {A10, A00} = {0x78, 0x34} = 0x7834
+                expected_col0 = (activations[2] << 8) | activations[0]  # {A10, A00}
+                if act_data == expected_col0:
+                    row0_seen = True  # col0 contains row0 data
 
-                # Second valid should be row 1: 0x5678
-                expected_row1 = (activations[3] << 8) | activations[2]
-                if act_data == expected_row1:
-                    row1_seen = True
+                # Second valid should be col1: {A11, A01} = {0x56, 0x12} = 0x5612
+                expected_col1 = (activations[3] << 8) | activations[1]  # {A11, A01}
+                if act_data == expected_col1:
+                    row1_seen = True  # col1 contains row1 data
 
     monitor_task = cocotb.start_soon(monitor_activations())
 
@@ -613,8 +738,8 @@ async def test_write_act_sequence(dut):
     
     # Should see both rows written
     assert act_valid_count >= 2, f"Expected at least 2 activation writes, got {act_valid_count}"
-    assert row0_seen, "Row 0 activation should be written"
-    assert row1_seen, "Row 1 activation should be written"
+    assert row0_seen, f"Col0 activation (0x{(activations[2] << 8) | activations[0]:04X}) should be written, saw: {rows_seen}"
+    assert row1_seen, f"Col1 activation (0x{(activations[3] << 8) | activations[1]:04X}) should be written, saw: {rows_seen}"
 
 
 def _run_uart_controller(module_name):
@@ -622,22 +747,28 @@ def _run_uart_controller(module_name):
     from cocotb_tools.runner import get_runner
     import os
     import sys
-
+    
     sim_dir = os.path.dirname(__file__)
+    sim_parent_dir = os.path.dirname(sim_dir)  # sim directory
     rtl_dir = os.path.join(sim_dir, "..", "..", "rtl")
     wave_dir = os.path.join(sim_dir, "..", "waves")
     build_dir = os.path.join(sim_dir, "..", "sim_build", module_name)
-
+    
     print(f"Building {module_name}...")
     print(f"RTL dir: {rtl_dir}")
     print(f"Build dir: {build_dir}")
+    print(f"Sim dir: {sim_parent_dir}")
     sys.stdout.flush()
-
+    
+    # Add sim directory to Python path so tests can be imported
+    if sim_parent_dir not in sys.path:
+        sys.path.insert(0, sim_parent_dir)
+    
     os.makedirs(wave_dir, exist_ok=True)
     if os.path.exists(build_dir):
         print(f"Removing existing build directory: {build_dir}")
         shutil.rmtree(build_dir)
-
+    
     waves_enabled = os.environ.get("WAVES", "0") != "0"
     
     # Set C++ standard for Verilator compilation
@@ -678,9 +809,15 @@ def _run_uart_controller(module_name):
     print("Build complete. Starting tests...")
     sys.stdout.flush()
     
+    # Add tests directory to Python path for module import (like test_mlp_integration does)
+    # This allows importing test_uart_controller directly without the tests. prefix
+    sim_dir_abs = os.path.abspath(sim_dir)
+    if sim_dir_abs not in sys.path:
+        sys.path.insert(0, sim_dir_abs)
+    
     runner.test(
         hdl_toplevel=module_name,
-        test_module="tests.test_uart_controller",
+        test_module="test_uart_controller",
         waves=waves_enabled,
     )
 

@@ -46,15 +46,9 @@ void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) {
     // Body
     vlSelfRef.uart_controller__DOT__mlp_state = vlSelfRef.mlp_state;
     vlSelfRef.uart_controller__DOT__mlp_cycle_cnt = vlSelfRef.mlp_cycle_cnt;
-    vlSelfRef.uart_controller__DOT__mlp_current_layer 
-        = vlSelfRef.mlp_current_layer;
-    vlSelfRef.uart_controller__DOT__mlp_layer_complete 
-        = vlSelfRef.mlp_layer_complete;
     vlSelfRef.uart_controller__DOT__mlp_acc0 = vlSelfRef.mlp_acc0;
     vlSelfRef.uart_controller__DOT__mlp_acc1 = vlSelfRef.mlp_acc1;
-    vlSelfRef.uart_controller__DOT__mlp_acc_valid = vlSelfRef.mlp_acc_valid;
     vlSelfRef.uart_controller__DOT__rx_data = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_data;
-    vlSelfRef.uart_controller__DOT__rx_valid = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_valid;
     vlSelfRef.uart_controller__DOT__uart_rx = vlSelfRef.uart_rx;
     vlSelfRef.uart_controller__DOT__uart_tx = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx;
     vlSelfRef.uart_controller__DOT__wf_push_col0 = vlSelfRef.uart_controller__DOT__wf_push_col0_reg;
@@ -66,14 +60,26 @@ void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) {
     vlSelfRef.uart_controller__DOT__init_act_data = vlSelfRef.uart_controller__DOT__init_act_data_reg;
     vlSelfRef.uart_controller__DOT__start_mlp = vlSelfRef.uart_controller__DOT__start_mlp_reg;
     vlSelfRef.uart_controller__DOT__weights_ready = vlSelfRef.uart_controller__DOT__weights_ready_reg;
+    vlSelfRef.uart_controller__DOT__dbg_weights_ready 
+        = vlSelfRef.uart_controller__DOT__weights_ready_reg;
+    vlSelfRef.uart_controller__DOT__dbg_state = vlSelfRef.uart_controller__DOT__state;
+    vlSelfRef.uart_controller__DOT__dbg_cmd_reg = vlSelfRef.uart_controller__DOT__cmd_reg;
+    vlSelfRef.uart_controller__DOT__dbg_byte_count 
+        = vlSelfRef.uart_controller__DOT__byte_count;
+    vlSelfRef.uart_controller__DOT__dbg_resp_byte_idx 
+        = vlSelfRef.uart_controller__DOT__resp_byte_idx;
+    vlSelfRef.uart_controller__DOT__dbg_tx_valid = vlSelfRef.uart_controller__DOT__tx_valid_reg;
     vlSelfRef.uart_controller__DOT__tx_valid = vlSelfRef.uart_controller__DOT__tx_valid_reg;
+    vlSelfRef.uart_controller__DOT__dbg_rx_data = vlSelfRef.uart_controller__DOT__rx_data_captured;
+    vlSelfRef.uart_controller__DOT__dbg_start_mlp = vlSelfRef.uart_controller__DOT__start_mlp_sticky;
     vlSelfRef.uart_controller__DOT__tx_data = vlSelfRef.uart_controller__DOT__tx_data_reg;
     vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_ready 
         = (0U == (IData)(vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__state));
-    vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready 
-        = (0U == (IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__state));
     vlSelfRef.uart_controller__DOT__clk = vlSelfRef.clk;
     vlSelfRef.uart_controller__DOT__rst = vlSelfRef.rst;
+    vlSelfRef.uart_controller__DOT__rx_valid = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_valid;
+    vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready 
+        = (0U == (IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__state));
     vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx 
         = vlSelfRef.uart_controller__DOT__uart_rx;
     vlSelfRef.uart_tx = vlSelfRef.uart_controller__DOT__uart_tx;
@@ -85,12 +91,19 @@ void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) {
     vlSelfRef.init_act_data = vlSelfRef.uart_controller__DOT__init_act_data;
     vlSelfRef.start_mlp = vlSelfRef.uart_controller__DOT__start_mlp;
     vlSelfRef.weights_ready = vlSelfRef.uart_controller__DOT__weights_ready;
+    vlSelfRef.dbg_weights_ready = vlSelfRef.uart_controller__DOT__dbg_weights_ready;
+    vlSelfRef.dbg_state = vlSelfRef.uart_controller__DOT__dbg_state;
+    vlSelfRef.dbg_cmd_reg = vlSelfRef.uart_controller__DOT__dbg_cmd_reg;
+    vlSelfRef.dbg_byte_count = vlSelfRef.uart_controller__DOT__dbg_byte_count;
+    vlSelfRef.dbg_resp_byte_idx = vlSelfRef.uart_controller__DOT__dbg_resp_byte_idx;
+    vlSelfRef.dbg_tx_valid = vlSelfRef.uart_controller__DOT__dbg_tx_valid;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_valid 
         = vlSelfRef.uart_controller__DOT__tx_valid;
+    vlSelfRef.dbg_rx_data = vlSelfRef.uart_controller__DOT__dbg_rx_data;
+    vlSelfRef.dbg_start_mlp = vlSelfRef.uart_controller__DOT__dbg_start_mlp;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_data 
         = vlSelfRef.uart_controller__DOT__tx_data;
     vlSelfRef.uart_controller__DOT__rx_ready = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_ready;
-    vlSelfRef.uart_controller__DOT__tx_ready = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready;
     vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__clk 
         = vlSelfRef.uart_controller__DOT__clk;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__clk 
@@ -99,6 +112,11 @@ void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) {
         = vlSelfRef.uart_controller__DOT__rst;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__rst 
         = vlSelfRef.uart_controller__DOT__rst;
+    vlSelfRef.uart_controller__DOT__dbg_rx_valid = vlSelfRef.uart_controller__DOT__rx_valid;
+    vlSelfRef.uart_controller__DOT__tx_ready = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready;
+    vlSelfRef.dbg_rx_valid = vlSelfRef.uart_controller__DOT__dbg_rx_valid;
+    vlSelfRef.uart_controller__DOT__dbg_tx_ready = vlSelfRef.uart_controller__DOT__tx_ready;
+    vlSelfRef.dbg_tx_ready = vlSelfRef.uart_controller__DOT__dbg_tx_ready;
 }
 
 void Vtop___024root___eval_ico(Vtop___024root* vlSelf) {
@@ -136,35 +154,20 @@ void Vtop___024root___eval_triggers__act(Vtop___024root* vlSelf) {
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.__VactTriggered[0U] = (QData)((IData)(
-                                                    (((((IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__rst) 
-                                                        & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_tx_u__DOT__rst__0))) 
-                                                       << 5U) 
-                                                      | (((IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__clk) 
-                                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_tx_u__DOT__clk__0))) 
-                                                         << 4U)) 
-                                                     | (((((IData)(vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rst) 
-                                                           & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_rx_u__DOT__rst__0))) 
-                                                          << 3U) 
-                                                         | (((IData)(vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__clk) 
-                                                             & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_rx_u__DOT__clk__0))) 
-                                                            << 2U)) 
-                                                        | ((((IData)(vlSelfRef.uart_controller__DOT__rst) 
-                                                             & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__rst__0))) 
-                                                            << 1U) 
-                                                           | ((IData)(vlSelfRef.uart_controller__DOT__clk) 
-                                                              & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__clk__0))))))));
+                                                    ((((IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__clk) 
+                                                       & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_tx_u__DOT__clk__0))) 
+                                                      << 2U) 
+                                                     | ((((IData)(vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__clk) 
+                                                          & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_rx_u__DOT__clk__0))) 
+                                                         << 1U) 
+                                                        | ((IData)(vlSelfRef.uart_controller__DOT__clk) 
+                                                           & (~ (IData)(vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__clk__0)))))));
     vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__clk__0 
         = vlSelfRef.uart_controller__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__rst__0 
-        = vlSelfRef.uart_controller__DOT__rst;
     vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_rx_u__DOT__clk__0 
         = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_rx_u__DOT__rst__0 
-        = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rst;
     vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_tx_u__DOT__clk__0 
         = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__clk;
-    vlSelfRef.__Vtrigprevexpr___TOP__uart_controller__DOT__uart_tx_u__DOT__rst__0 
-        = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__rst;
 #ifdef VL_DEBUG
     if (VL_UNLIKELY(vlSymsp->_vm_contextp__->debug())) {
         Vtop___024root___dump_triggers__act(vlSelfRef.__VactTriggered, "act"s);
@@ -270,9 +273,9 @@ void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) {
         = __Vdly__uart_controller__DOT__uart_tx_u__DOT__tx_byte;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__state 
         = __Vdly__uart_controller__DOT__uart_tx_u__DOT__state;
+    vlSelfRef.uart_controller__DOT__uart_tx = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready 
         = (0U == (IData)(vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__state));
-    vlSelfRef.uart_controller__DOT__uart_tx = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx;
     vlSelfRef.uart_tx = vlSelfRef.uart_controller__DOT__uart_tx;
 }
 
@@ -370,6 +373,10 @@ void Vtop___024root___nba_sequent__TOP__1(Vtop___024root* vlSelf) {
         = __Vdly__uart_controller__DOT__uart_rx_u__DOT__state;
     vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_ready 
         = (0U == (IData)(vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__state));
+    vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_2 
+        = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_1;
+    vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_1 
+        = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx;
 }
 
 void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
@@ -383,7 +390,7 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
     __Vdly__uart_controller__DOT__cmd_reg = 0;
     CData/*2:0*/ __Vdly__uart_controller__DOT__byte_count;
     __Vdly__uart_controller__DOT__byte_count = 0;
-    CData/*1:0*/ __Vdly__uart_controller__DOT__weight_seq_idx;
+    CData/*2:0*/ __Vdly__uart_controller__DOT__weight_seq_idx;
     __Vdly__uart_controller__DOT__weight_seq_idx = 0;
     CData/*1:0*/ __Vdly__uart_controller__DOT__act_seq_idx;
     __Vdly__uart_controller__DOT__act_seq_idx = 0;
@@ -393,8 +400,14 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
     __Vdly__uart_controller__DOT__byte_sent = 0;
     CData/*7:0*/ __Vdly__uart_controller__DOT__resp_delay_count;
     __Vdly__uart_controller__DOT__resp_delay_count = 0;
+    CData/*0:0*/ __Vdly__uart_controller__DOT__start_mlp_reg;
+    __Vdly__uart_controller__DOT__start_mlp_reg = 0;
     CData/*0:0*/ __Vdly__uart_controller__DOT__tx_valid_reg;
     __Vdly__uart_controller__DOT__tx_valid_reg = 0;
+    CData/*0:0*/ __Vdly__uart_controller__DOT__weights_ready_reg;
+    __Vdly__uart_controller__DOT__weights_ready_reg = 0;
+    CData/*3:0*/ __Vdly__uart_controller__DOT__mlp_state_prev;
+    __Vdly__uart_controller__DOT__mlp_state_prev = 0;
     CData/*1:0*/ __VdlyDim0__uart_controller__DOT__data_buffer__v0;
     __VdlyDim0__uart_controller__DOT__data_buffer__v0 = 0;
     CData/*1:0*/ __VdlyDim0__uart_controller__DOT__resp_buffer__v0;
@@ -409,21 +422,49 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
     __VdlyVal__uart_controller__DOT__resp_buffer__v4 = 0;
     CData/*7:0*/ __VdlyVal__uart_controller__DOT__resp_buffer__v5;
     __VdlyVal__uart_controller__DOT__resp_buffer__v5 = 0;
+    CData/*7:0*/ __VdlyVal__uart_controller__DOT__resp_buffer__v6;
+    __VdlyVal__uart_controller__DOT__resp_buffer__v6 = 0;
+    CData/*7:0*/ __VdlyVal__uart_controller__DOT__resp_buffer__v7;
+    __VdlyVal__uart_controller__DOT__resp_buffer__v7 = 0;
+    CData/*7:0*/ __VdlyVal__uart_controller__DOT__resp_buffer__v8;
+    __VdlyVal__uart_controller__DOT__resp_buffer__v8 = 0;
+    CData/*7:0*/ __VdlyVal__uart_controller__DOT__resp_buffer__v9;
+    __VdlyVal__uart_controller__DOT__resp_buffer__v9 = 0;
     CData/*7:0*/ __VdlyVal__uart_controller__DOT__data_buffer__v1;
     __VdlyVal__uart_controller__DOT__data_buffer__v1 = 0;
     CData/*1:0*/ __VdlyDim0__uart_controller__DOT__data_buffer__v1;
     __VdlyDim0__uart_controller__DOT__data_buffer__v1 = 0;
     // Body
-    __Vdly__uart_controller__DOT__state = vlSelfRef.uart_controller__DOT__state;
-    __Vdly__uart_controller__DOT__cmd_reg = vlSelfRef.uart_controller__DOT__cmd_reg;
-    __Vdly__uart_controller__DOT__byte_count = vlSelfRef.uart_controller__DOT__byte_count;
     __Vdly__uart_controller__DOT__weight_seq_idx = vlSelfRef.uart_controller__DOT__weight_seq_idx;
     __Vdly__uart_controller__DOT__act_seq_idx = vlSelfRef.uart_controller__DOT__act_seq_idx;
-    __Vdly__uart_controller__DOT__resp_byte_idx = vlSelfRef.uart_controller__DOT__resp_byte_idx;
     __Vdly__uart_controller__DOT__byte_sent = vlSelfRef.uart_controller__DOT__byte_sent;
     __Vdly__uart_controller__DOT__resp_delay_count 
         = vlSelfRef.uart_controller__DOT__resp_delay_count;
+    __Vdly__uart_controller__DOT__mlp_state_prev = vlSelfRef.uart_controller__DOT__mlp_state_prev;
+    __Vdly__uart_controller__DOT__state = vlSelfRef.uart_controller__DOT__state;
+    __Vdly__uart_controller__DOT__cmd_reg = vlSelfRef.uart_controller__DOT__cmd_reg;
+    __Vdly__uart_controller__DOT__byte_count = vlSelfRef.uart_controller__DOT__byte_count;
+    __Vdly__uart_controller__DOT__resp_byte_idx = vlSelfRef.uart_controller__DOT__resp_byte_idx;
+    __Vdly__uart_controller__DOT__start_mlp_reg = vlSelfRef.uart_controller__DOT__start_mlp_reg;
     __Vdly__uart_controller__DOT__tx_valid_reg = vlSelfRef.uart_controller__DOT__tx_valid_reg;
+    __Vdly__uart_controller__DOT__weights_ready_reg 
+        = vlSelfRef.uart_controller__DOT__weights_ready_reg;
+    if (vlSelfRef.uart_controller__DOT__rst) {
+        vlSelfRef.uart_controller__DOT__rx_data_captured = 0U;
+        vlSelfRef.uart_controller__DOT__start_mlp_sticky = 0U;
+    } else {
+        if (vlSelfRef.uart_controller__DOT__rx_valid) {
+            vlSelfRef.uart_controller__DOT__rx_data_captured 
+                = vlSelfRef.uart_controller__DOT__rx_data;
+        }
+        if (vlSelfRef.uart_controller__DOT__start_mlp_reg) {
+            vlSelfRef.uart_controller__DOT__start_mlp_sticky = 1U;
+        }
+        if (((0U == (IData)(vlSelfRef.uart_controller__DOT__state)) 
+             & (0U == (IData)(vlSelfRef.uart_controller__DOT__byte_count)))) {
+            vlSelfRef.uart_controller__DOT__start_mlp_sticky = 0U;
+        }
+    }
     if (vlSelfRef.uart_controller__DOT__rst) {
         vlSelfRef.uart_controller__DOT__unnamedblk1__DOT__i = 0U;
         __Vdly__uart_controller__DOT__state = 0U;
@@ -449,16 +490,34 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
         vlSelfRef.uart_controller__DOT__wf_data_in_reg = 0U;
         vlSelfRef.uart_controller__DOT__init_act_valid_reg = 0U;
         vlSelfRef.uart_controller__DOT__init_act_data_reg = 0U;
-        vlSelfRef.uart_controller__DOT__start_mlp_reg = 0U;
+        __Vdly__uart_controller__DOT__start_mlp_reg = 0U;
         __Vdly__uart_controller__DOT__tx_valid_reg = 0U;
         vlSelfRef.uart_controller__DOT__tx_data_reg = 0U;
         vlSelfRef.uart_controller__DOT__wf_reset_reg = 0U;
-        vlSelfRef.uart_controller__DOT__weights_ready_reg = 0U;
+        __Vdly__uart_controller__DOT__weights_ready_reg = 0U;
+        __Vdly__uart_controller__DOT__mlp_state_prev = 0U;
     } else {
         vlSelfRef.uart_controller__DOT__wf_push_col0_reg = 0U;
         vlSelfRef.uart_controller__DOT__wf_push_col1_reg = 0U;
+        vlSelfRef.uart_controller__DOT__wf_reset_reg = 0U;
         vlSelfRef.uart_controller__DOT__init_act_valid_reg = 0U;
-        vlSelfRef.uart_controller__DOT__start_mlp_reg = 0U;
+        if (VL_UNLIKELY(((((IData)(vlSelfRef.uart_controller__DOT__start_mlp_reg) 
+                           & (0U != (IData)(vlSelfRef.uart_controller__DOT__mlp_state))) 
+                          & (0U == (IData)(vlSelfRef.uart_controller__DOT__mlp_state_prev)))))) {
+            VL_WRITEF_NX("[UART_CTRL] MLP started! Clearing start_mlp_reg and weights_ready_reg (state %2# -> %2#)\n",0,
+                         4,vlSelfRef.uart_controller__DOT__mlp_state_prev,
+                         4,(IData)(vlSelfRef.uart_controller__DOT__mlp_state));
+            __Vdly__uart_controller__DOT__start_mlp_reg = 0U;
+            __Vdly__uart_controller__DOT__weights_ready_reg = 0U;
+        } else if (((IData)(vlSelfRef.uart_controller__DOT__start_mlp_reg) 
+                    & (0U == (IData)(vlSelfRef.uart_controller__DOT__mlp_state)))) {
+            if (VL_UNLIKELY(((0U == (0x0000007fU & (IData)(vlSelfRef.uart_controller__DOT__resp_delay_count)))))) {
+                VL_WRITEF_NX("[UART_CTRL] start_mlp_reg still set, MLP still in IDLE (state=%2#)\n",0,
+                             4,vlSelfRef.uart_controller__DOT__mlp_state);
+            }
+        }
+        __Vdly__uart_controller__DOT__mlp_state_prev 
+            = vlSelfRef.uart_controller__DOT__mlp_state;
         if ((8U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
             __Vdly__uart_controller__DOT__state = 0U;
         } else if ((4U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
@@ -468,61 +527,77 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                 } else if (VL_UNLIKELY(((0U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))))) {
                     vlSelfRef.uart_controller__DOT__init_act_data_reg 
                         = ((vlSelfRef.uart_controller__DOT__data_buffer
-                            [1U] << 8U) | vlSelfRef.uart_controller__DOT__data_buffer
+                            [2U] << 8U) | vlSelfRef.uart_controller__DOT__data_buffer
                            [0U]);
                     vlSelfRef.uart_controller__DOT__init_act_valid_reg = 1U;
                     __Vdly__uart_controller__DOT__act_seq_idx = 1U;
-                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing row0=0x%04x (A01=%02x, A00=%02x), init_act_valid=1\n",0,
+                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[0]: Writing col0=0x%04x (A10=%02x, A00=%02x), init_act_valid=1\n",0,
                                  16,((vlSelfRef.uart_controller__DOT__data_buffer
-                                      [1U] << 8U) | 
+                                      [2U] << 8U) | 
                                      vlSelfRef.uart_controller__DOT__data_buffer
                                      [0U]),8,vlSelfRef.uart_controller__DOT__data_buffer
-                                 [1U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                 [2U],8,vlSelfRef.uart_controller__DOT__data_buffer
                                  [0U]);
                 } else if (VL_UNLIKELY(((1U == (IData)(vlSelfRef.uart_controller__DOT__act_seq_idx))))) {
                     vlSelfRef.uart_controller__DOT__init_act_data_reg 
                         = ((vlSelfRef.uart_controller__DOT__data_buffer
                             [3U] << 8U) | vlSelfRef.uart_controller__DOT__data_buffer
-                           [2U]);
+                           [1U]);
                     vlSelfRef.uart_controller__DOT__init_act_valid_reg = 1U;
                     __Vdly__uart_controller__DOT__state = 0U;
-                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing row1=0x%04x (A11=%02x, A10=%02x), init_act_valid=1, going to IDLE\n",0,
+                    VL_WRITEF_NX("[UART_CTRL] WRITE_ACT_SEQ[1]: Writing col1=0x%04x (A11=%02x, A01=%02x), init_act_valid=1, going to IDLE\n",0,
                                  16,((vlSelfRef.uart_controller__DOT__data_buffer
                                       [3U] << 8U) | 
                                      vlSelfRef.uart_controller__DOT__data_buffer
-                                     [2U]),8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [1U]),8,vlSelfRef.uart_controller__DOT__data_buffer
                                  [3U],8,vlSelfRef.uart_controller__DOT__data_buffer
-                                 [2U]);
+                                 [1U]);
                 } else {
                     __Vdly__uart_controller__DOT__state = 0U;
                 }
             } else if ((1U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
-                if ((2U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
-                    if ((1U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
-                        vlSelfRef.uart_controller__DOT__wf_data_in_reg 
-                            = vlSelfRef.uart_controller__DOT__data_buffer
-                            [3U];
-                        vlSelfRef.uart_controller__DOT__wf_push_col1_reg = 1U;
-                        vlSelfRef.uart_controller__DOT__weights_ready_reg = 1U;
+                if ((4U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
+                    if ((2U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
+                        __Vdly__uart_controller__DOT__state = 0U;
+                    } else if (VL_LIKELY(((1U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))))) {
                         __Vdly__uart_controller__DOT__state = 0U;
                     } else {
                         vlSelfRef.uart_controller__DOT__wf_data_in_reg 
                             = vlSelfRef.uart_controller__DOT__data_buffer
+                            [3U];
+                        vlSelfRef.uart_controller__DOT__wf_push_col1_reg = 1U;
+                        __Vdly__uart_controller__DOT__weights_ready_reg = 1U;
+                        __Vdly__uart_controller__DOT__state = 0U;
+                        VL_WRITEF_NX("[UART_CTRL] WRITE_WEIGHT_SEQ[4]: Completed, weights=[%02x,%02x,%02x,%02x]\n",0,
+                                     8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [0U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [1U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [2U],8,vlSelfRef.uart_controller__DOT__data_buffer
+                                     [3U]);
+                    }
+                } else if ((2U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
+                    if ((1U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
+                        vlSelfRef.uart_controller__DOT__wf_data_in_reg 
+                            = vlSelfRef.uart_controller__DOT__data_buffer
                             [2U];
                         vlSelfRef.uart_controller__DOT__wf_push_col0_reg = 1U;
+                        __Vdly__uart_controller__DOT__weight_seq_idx = 4U;
+                    } else {
+                        vlSelfRef.uart_controller__DOT__wf_data_in_reg 
+                            = vlSelfRef.uart_controller__DOT__data_buffer
+                            [1U];
+                        vlSelfRef.uart_controller__DOT__wf_push_col1_reg = 1U;
                         __Vdly__uart_controller__DOT__weight_seq_idx = 3U;
                     }
-                } else if ((1U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))) {
-                    vlSelfRef.uart_controller__DOT__wf_data_in_reg 
-                        = vlSelfRef.uart_controller__DOT__data_buffer
-                        [1U];
-                    vlSelfRef.uart_controller__DOT__wf_push_col1_reg = 1U;
-                    __Vdly__uart_controller__DOT__weight_seq_idx = 2U;
-                } else {
+                } else if (VL_LIKELY(((1U & (IData)(vlSelfRef.uart_controller__DOT__weight_seq_idx))))) {
                     vlSelfRef.uart_controller__DOT__wf_data_in_reg 
                         = vlSelfRef.uart_controller__DOT__data_buffer
                         [0U];
                     vlSelfRef.uart_controller__DOT__wf_push_col0_reg = 1U;
+                    __Vdly__uart_controller__DOT__weight_seq_idx = 2U;
+                } else {
+                    VL_WRITEF_NX("[UART_CTRL] WRITE_WEIGHT_SEQ[0]: Resetting weight FIFO\n",0);
+                    vlSelfRef.uart_controller__DOT__wf_reset_reg = 1U;
                     __Vdly__uart_controller__DOT__weight_seq_idx = 1U;
                 }
             } else if ((0x0aU > (IData)(vlSelfRef.uart_controller__DOT__resp_delay_count))) {
@@ -545,7 +620,8 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                              [vlSelfRef.uart_controller__DOT__resp_byte_idx],
                              8,vlSelfRef.uart_controller__DOT__cmd_reg,
                              1,(IData)(vlSelfRef.uart_controller__DOT__tx_ready),
-                             32,((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))
+                             32,(((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg)) 
+                                  | (6U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg)))
                                   ? 4U : 1U));
             } else if (VL_UNLIKELY((((IData)(vlSelfRef.uart_controller__DOT__tx_valid_reg) 
                                      & (IData)(vlSelfRef.uart_controller__DOT__tx_ready))))) {
@@ -567,18 +643,21 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                     if (VL_UNLIKELY(((5U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
                         VL_WRITEF_NX("[UART_CTRL] SEND_RESP: STATUS done, going to IDLE\n",0);
                         __Vdly__uart_controller__DOT__state = 0U;
-                    } else if (VL_LIKELY(((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
+                    } else if (VL_LIKELY((((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg)) 
+                                           | (6U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg)))))) {
                         if ((3U == (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx))) {
-                            VL_WRITEF_NX("[UART_CTRL] SEND_RESP: All 4 bytes sent (0,1,2,3), going to IDLE\n",0);
+                            VL_WRITEF_NX("[UART_CTRL] SEND_RESP: All 4 bytes sent (0,1,2,3), going to IDLE (cmd=0x%02x)\n",0,
+                                         8,vlSelfRef.uart_controller__DOT__cmd_reg);
                             __Vdly__uart_controller__DOT__state = 0U;
                         } else {
                             __Vdly__uart_controller__DOT__resp_byte_idx 
                                 = (3U & ((IData)(1U) 
                                          + (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx)));
-                            VL_WRITEF_NX("[UART_CTRL] SEND_RESP: Moving to next byte, resp_byte_idx=%0#->%0#\n",0,
+                            VL_WRITEF_NX("[UART_CTRL] SEND_RESP: Moving to next byte, resp_byte_idx=%0#->%0# (cmd=0x%02x)\n",0,
                                          2,vlSelfRef.uart_controller__DOT__resp_byte_idx,
                                          32,((IData)(1U) 
-                                             + (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx)));
+                                             + (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx)),
+                                         8,(IData)(vlSelfRef.uart_controller__DOT__cmd_reg));
                             __Vdly__uart_controller__DOT__byte_sent = 0U;
                             __Vdly__uart_controller__DOT__resp_delay_count = 0x0aU;
                         }
@@ -587,18 +666,37 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                         __Vdly__uart_controller__DOT__state = 0U;
                     }
                 } else {
-                    VL_WRITEF_NX("[UART_CTRL] SEND_RESP: Unexpected state - tx_valid=%b, tx_ready=%b, byte_sent=%b\n",0,
+                    VL_WRITEF_NX("[UART_CTRL] SEND_RESP: Unexpected state - recovering (tx_valid=%b, tx_ready=%b, byte_sent=%b)\n",0,
                                  1,vlSelfRef.uart_controller__DOT__tx_valid_reg,
                                  1,(IData)(vlSelfRef.uart_controller__DOT__tx_ready),
                                  1,vlSelfRef.uart_controller__DOT__byte_sent);
+                    __Vdly__uart_controller__DOT__tx_valid_reg = 0U;
+                    if (((IData)(vlSelfRef.uart_controller__DOT__byte_sent) 
+                         & (IData)(vlSelfRef.uart_controller__DOT__tx_ready))) {
+                        if ((5U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))) {
+                            __Vdly__uart_controller__DOT__state = 0U;
+                        } else if (((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg)) 
+                                    & (3U == (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx)))) {
+                            __Vdly__uart_controller__DOT__state = 0U;
+                        } else if ((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))) {
+                            __Vdly__uart_controller__DOT__resp_byte_idx 
+                                = (3U & ((IData)(1U) 
+                                         + (IData)(vlSelfRef.uart_controller__DOT__resp_byte_idx)));
+                            __Vdly__uart_controller__DOT__byte_sent = 0U;
+                            __Vdly__uart_controller__DOT__resp_delay_count = 0x0aU;
+                        } else {
+                            __Vdly__uart_controller__DOT__state = 0U;
+                        }
+                    }
                 }
             }
         } else if ((2U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
             if ((1U & (IData)(vlSelfRef.uart_controller__DOT__state))) {
                 if (VL_UNLIKELY(((3U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
-                    VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, state=%0#\n",0,
-                                 4,vlSelfRef.uart_controller__DOT__state);
-                    vlSelfRef.uart_controller__DOT__start_mlp_reg = 1U;
+                    VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_EXECUTE - setting start_mlp_reg=1, weights_ready_reg=%b, mlp_state=%2#\n",0,
+                                 1,vlSelfRef.uart_controller__DOT__weights_ready_reg,
+                                 4,(IData)(vlSelfRef.uart_controller__DOT__mlp_state));
+                    __Vdly__uart_controller__DOT__start_mlp_reg = 1U;
                     __Vdly__uart_controller__DOT__state = 0U;
                 } else if (VL_UNLIKELY(((4U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
                     VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_READ_RESULT - acc0=0x%08x, packing bytes: [7:0]=0x%02x, [15:8]=0x%02x, [23:16]=0x%02x, [31:24]=0x%02x, resp_buffer current=[0x%02x,0x%02x,0x%02x,0x%02x]\n",0,
@@ -616,6 +714,7 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                                  [3U]);
                     __Vdly__uart_controller__DOT__resp_byte_idx = 0U;
                     __Vdly__uart_controller__DOT__byte_sent = 0U;
+                    __Vdly__uart_controller__DOT__resp_delay_count = 0U;
                     __Vdly__uart_controller__DOT__state = 4U;
                     __VdlyVal__uart_controller__DOT__resp_buffer__v1 
                         = (0x000000ffU & vlSelfRef.uart_controller__DOT__mlp_acc0);
@@ -632,25 +731,54 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                         = (vlSelfRef.uart_controller__DOT__mlp_acc0 
                            >> 0x18U);
                     vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v4, 3U);
+                } else if (VL_UNLIKELY(((6U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
+                    VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_READ_RESULT_COL1 - acc1=0x%08x, packing bytes: [7:0]=0x%02x, [15:8]=0x%02x, [23:16]=0x%02x, [31:24]=0x%02x\n",0,
+                                 32,vlSelfRef.uart_controller__DOT__mlp_acc1,
+                                 8,(0x000000ffU & vlSelfRef.uart_controller__DOT__mlp_acc1),
+                                 8,(0x000000ffU & (vlSelfRef.uart_controller__DOT__mlp_acc1 
+                                                   >> 8U)),
+                                 8,(0x000000ffU & (vlSelfRef.uart_controller__DOT__mlp_acc1 
+                                                   >> 0x10U)),
+                                 8,(vlSelfRef.uart_controller__DOT__mlp_acc1 
+                                    >> 0x18U));
+                    __VdlyVal__uart_controller__DOT__resp_buffer__v5 
+                        = (0x000000ffU & vlSelfRef.uart_controller__DOT__mlp_acc1);
+                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v5, 0U);
+                    __Vdly__uart_controller__DOT__resp_byte_idx = 0U;
+                    __Vdly__uart_controller__DOT__byte_sent = 0U;
+                    __Vdly__uart_controller__DOT__resp_delay_count = 0U;
+                    __Vdly__uart_controller__DOT__state = 4U;
+                    __VdlyVal__uart_controller__DOT__resp_buffer__v6 
+                        = (0x000000ffU & (vlSelfRef.uart_controller__DOT__mlp_acc1 
+                                          >> 8U));
+                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v6, 1U);
+                    __VdlyVal__uart_controller__DOT__resp_buffer__v7 
+                        = (0x000000ffU & (vlSelfRef.uart_controller__DOT__mlp_acc1 
+                                          >> 0x10U));
+                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v7, 2U);
+                    __VdlyVal__uart_controller__DOT__resp_buffer__v8 
+                        = (vlSelfRef.uart_controller__DOT__mlp_acc1 
+                           >> 0x18U);
+                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v8, 3U);
                 } else if (VL_UNLIKELY(((5U == (IData)(vlSelfRef.uart_controller__DOT__cmd_reg))))) {
-                    VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_STATUS - mlp_state=0x%x[3:0], mlp_cycle_cnt=0x%x[4:0], packed_value=0x%02x (packed: state[2:0]=0x%x, cycle[4:0]=0x%x), resp_buffer[0] current=0x%02x\n",0,
+                    VL_WRITEF_NX("[UART_CTRL] EXEC_CMD: CMD_STATUS - mlp_state=0x%x[3:0], mlp_cycle_cnt=0x%x[4:0], packed_value=0x%02x (packed: state[3:0]=0x%x, cycle[3:0]=0x%x), resp_buffer[0] current=0x%02x\n",0,
                                  4,vlSelfRef.uart_controller__DOT__mlp_state,
                                  5,(IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt),
-                                 8,((0x000000e0U & 
-                                     ((IData)(vlSelfRef.uart_controller__DOT__mlp_state) 
-                                      << 5U)) | (IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt)),
-                                 3,(7U & (IData)(vlSelfRef.uart_controller__DOT__mlp_state)),
-                                 5,(IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt),
+                                 8,(((IData)(vlSelfRef.uart_controller__DOT__mlp_state) 
+                                     << 4U) | (0x0000000fU 
+                                               & (IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt))),
+                                 4,(IData)(vlSelfRef.uart_controller__DOT__mlp_state),
+                                 4,(0x0000000fU & (IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt)),
                                  8,vlSelfRef.uart_controller__DOT__resp_buffer
                                  [0U]);
                     __Vdly__uart_controller__DOT__resp_byte_idx = 0U;
                     __Vdly__uart_controller__DOT__byte_sent = 0U;
+                    __Vdly__uart_controller__DOT__resp_delay_count = 0U;
                     __Vdly__uart_controller__DOT__state = 4U;
-                    __VdlyVal__uart_controller__DOT__resp_buffer__v5 
-                        = ((0x000000e0U & ((IData)(vlSelfRef.uart_controller__DOT__mlp_state) 
-                                           << 5U)) 
-                           | (IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt));
-                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v5, 0U);
+                    __VdlyVal__uart_controller__DOT__resp_buffer__v9 
+                        = (((IData)(vlSelfRef.uart_controller__DOT__mlp_state) 
+                            << 4U) | (0x0000000fU & (IData)(vlSelfRef.uart_controller__DOT__mlp_cycle_cnt)));
+                    vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.enqueue(__VdlyVal__uart_controller__DOT__resp_buffer__v9, 0U);
                 } else {
                     __Vdly__uart_controller__DOT__state = 0U;
                 }
@@ -695,8 +823,9 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
                 __Vdly__uart_controller__DOT__state 
                     = (((1U == (IData)(vlSelfRef.uart_controller__DOT__rx_data)) 
                         | (2U == (IData)(vlSelfRef.uart_controller__DOT__rx_data)))
-                        ? 2U : ((((3U == (IData)(vlSelfRef.uart_controller__DOT__rx_data)) 
-                                  | (4U == (IData)(vlSelfRef.uart_controller__DOT__rx_data))) 
+                        ? 2U : (((((3U == (IData)(vlSelfRef.uart_controller__DOT__rx_data)) 
+                                   | (4U == (IData)(vlSelfRef.uart_controller__DOT__rx_data))) 
+                                  | (6U == (IData)(vlSelfRef.uart_controller__DOT__rx_data))) 
                                  | (5U == (IData)(vlSelfRef.uart_controller__DOT__rx_data)))
                                  ? 3U : 0U));
             }
@@ -712,42 +841,66 @@ void Vtop___024root___nba_sequent__TOP__2(Vtop___024root* vlSelf) {
             }
         }
     }
-    vlSelfRef.uart_controller__DOT__state = __Vdly__uart_controller__DOT__state;
-    vlSelfRef.uart_controller__DOT__cmd_reg = __Vdly__uart_controller__DOT__cmd_reg;
-    vlSelfRef.uart_controller__DOT__byte_count = __Vdly__uart_controller__DOT__byte_count;
     vlSelfRef.uart_controller__DOT__weight_seq_idx 
         = __Vdly__uart_controller__DOT__weight_seq_idx;
     vlSelfRef.uart_controller__DOT__act_seq_idx = __Vdly__uart_controller__DOT__act_seq_idx;
-    vlSelfRef.uart_controller__DOT__resp_byte_idx = __Vdly__uart_controller__DOT__resp_byte_idx;
     vlSelfRef.uart_controller__DOT__byte_sent = __Vdly__uart_controller__DOT__byte_sent;
     vlSelfRef.uart_controller__DOT__resp_delay_count 
         = __Vdly__uart_controller__DOT__resp_delay_count;
+    vlSelfRef.uart_controller__DOT__mlp_state_prev 
+        = __Vdly__uart_controller__DOT__mlp_state_prev;
     vlSelfRef.__VdlyCommitQueueuart_controller__DOT__data_buffer.commit(vlSelfRef.uart_controller__DOT__data_buffer);
     vlSelfRef.__VdlyCommitQueueuart_controller__DOT__resp_buffer.commit(vlSelfRef.uart_controller__DOT__resp_buffer);
+    vlSelfRef.uart_controller__DOT__cmd_reg = __Vdly__uart_controller__DOT__cmd_reg;
+    vlSelfRef.uart_controller__DOT__resp_byte_idx = __Vdly__uart_controller__DOT__resp_byte_idx;
+    vlSelfRef.uart_controller__DOT__start_mlp_reg = __Vdly__uart_controller__DOT__start_mlp_reg;
+    vlSelfRef.uart_controller__DOT__state = __Vdly__uart_controller__DOT__state;
+    vlSelfRef.uart_controller__DOT__byte_count = __Vdly__uart_controller__DOT__byte_count;
     vlSelfRef.uart_controller__DOT__tx_valid_reg = __Vdly__uart_controller__DOT__tx_valid_reg;
+    vlSelfRef.uart_controller__DOT__weights_ready_reg 
+        = __Vdly__uart_controller__DOT__weights_ready_reg;
+    vlSelfRef.uart_controller__DOT__dbg_rx_data = vlSelfRef.uart_controller__DOT__rx_data_captured;
+    vlSelfRef.uart_controller__DOT__dbg_start_mlp = vlSelfRef.uart_controller__DOT__start_mlp_sticky;
+    vlSelfRef.uart_controller__DOT__dbg_cmd_reg = vlSelfRef.uart_controller__DOT__cmd_reg;
+    vlSelfRef.uart_controller__DOT__dbg_resp_byte_idx 
+        = vlSelfRef.uart_controller__DOT__resp_byte_idx;
     vlSelfRef.uart_controller__DOT__wf_push_col0 = vlSelfRef.uart_controller__DOT__wf_push_col0_reg;
     vlSelfRef.uart_controller__DOT__wf_push_col1 = vlSelfRef.uart_controller__DOT__wf_push_col1_reg;
     vlSelfRef.uart_controller__DOT__wf_data_in = vlSelfRef.uart_controller__DOT__wf_data_in_reg;
     vlSelfRef.uart_controller__DOT__init_act_valid 
         = vlSelfRef.uart_controller__DOT__init_act_valid_reg;
     vlSelfRef.uart_controller__DOT__init_act_data = vlSelfRef.uart_controller__DOT__init_act_data_reg;
-    vlSelfRef.uart_controller__DOT__start_mlp = vlSelfRef.uart_controller__DOT__start_mlp_reg;
-    vlSelfRef.uart_controller__DOT__tx_valid = vlSelfRef.uart_controller__DOT__tx_valid_reg;
     vlSelfRef.uart_controller__DOT__tx_data = vlSelfRef.uart_controller__DOT__tx_data_reg;
     vlSelfRef.uart_controller__DOT__wf_reset = vlSelfRef.uart_controller__DOT__wf_reset_reg;
+    vlSelfRef.uart_controller__DOT__start_mlp = vlSelfRef.uart_controller__DOT__start_mlp_reg;
+    vlSelfRef.uart_controller__DOT__dbg_state = vlSelfRef.uart_controller__DOT__state;
+    vlSelfRef.uart_controller__DOT__dbg_byte_count 
+        = vlSelfRef.uart_controller__DOT__byte_count;
+    vlSelfRef.uart_controller__DOT__dbg_tx_valid = vlSelfRef.uart_controller__DOT__tx_valid_reg;
+    vlSelfRef.uart_controller__DOT__tx_valid = vlSelfRef.uart_controller__DOT__tx_valid_reg;
     vlSelfRef.uart_controller__DOT__weights_ready = vlSelfRef.uart_controller__DOT__weights_ready_reg;
+    vlSelfRef.uart_controller__DOT__dbg_weights_ready 
+        = vlSelfRef.uart_controller__DOT__weights_ready_reg;
+    vlSelfRef.dbg_rx_data = vlSelfRef.uart_controller__DOT__dbg_rx_data;
+    vlSelfRef.dbg_start_mlp = vlSelfRef.uart_controller__DOT__dbg_start_mlp;
+    vlSelfRef.dbg_cmd_reg = vlSelfRef.uart_controller__DOT__dbg_cmd_reg;
+    vlSelfRef.dbg_resp_byte_idx = vlSelfRef.uart_controller__DOT__dbg_resp_byte_idx;
     vlSelfRef.wf_push_col0 = vlSelfRef.uart_controller__DOT__wf_push_col0;
     vlSelfRef.wf_push_col1 = vlSelfRef.uart_controller__DOT__wf_push_col1;
     vlSelfRef.wf_data_in = vlSelfRef.uart_controller__DOT__wf_data_in;
     vlSelfRef.init_act_valid = vlSelfRef.uart_controller__DOT__init_act_valid;
     vlSelfRef.init_act_data = vlSelfRef.uart_controller__DOT__init_act_data;
-    vlSelfRef.start_mlp = vlSelfRef.uart_controller__DOT__start_mlp;
-    vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_valid 
-        = vlSelfRef.uart_controller__DOT__tx_valid;
     vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_data 
         = vlSelfRef.uart_controller__DOT__tx_data;
     vlSelfRef.wf_reset = vlSelfRef.uart_controller__DOT__wf_reset;
+    vlSelfRef.start_mlp = vlSelfRef.uart_controller__DOT__start_mlp;
+    vlSelfRef.dbg_state = vlSelfRef.uart_controller__DOT__dbg_state;
+    vlSelfRef.dbg_byte_count = vlSelfRef.uart_controller__DOT__dbg_byte_count;
+    vlSelfRef.dbg_tx_valid = vlSelfRef.uart_controller__DOT__dbg_tx_valid;
+    vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_valid 
+        = vlSelfRef.uart_controller__DOT__tx_valid;
     vlSelfRef.weights_ready = vlSelfRef.uart_controller__DOT__weights_ready;
+    vlSelfRef.dbg_weights_ready = vlSelfRef.uart_controller__DOT__dbg_weights_ready;
 }
 
 void Vtop___024root___nba_sequent__TOP__3(Vtop___024root* vlSelf) {
@@ -755,10 +908,11 @@ void Vtop___024root___nba_sequent__TOP__3(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_2 
-        = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_1;
-    vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_sync_1 
-        = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx;
+    vlSelfRef.uart_controller__DOT__rx_ready = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_ready;
+    vlSelfRef.uart_controller__DOT__rx_data = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_data;
+    vlSelfRef.uart_controller__DOT__rx_valid = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_valid;
+    vlSelfRef.uart_controller__DOT__dbg_rx_valid = vlSelfRef.uart_controller__DOT__rx_valid;
+    vlSelfRef.dbg_rx_valid = vlSelfRef.uart_controller__DOT__dbg_rx_valid;
 }
 
 void Vtop___024root___nba_sequent__TOP__4(Vtop___024root* vlSelf) {
@@ -767,16 +921,8 @@ void Vtop___024root___nba_sequent__TOP__4(Vtop___024root* vlSelf) {
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     vlSelfRef.uart_controller__DOT__tx_ready = vlSelfRef.uart_controller__DOT__uart_tx_u__DOT__tx_ready;
-}
-
-void Vtop___024root___nba_sequent__TOP__5(Vtop___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___nba_sequent__TOP__5\n"); );
-    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
-    vlSelfRef.uart_controller__DOT__rx_valid = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_valid;
-    vlSelfRef.uart_controller__DOT__rx_data = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_data;
-    vlSelfRef.uart_controller__DOT__rx_ready = vlSelfRef.uart_controller__DOT__uart_rx_u__DOT__rx_ready;
+    vlSelfRef.uart_controller__DOT__dbg_tx_ready = vlSelfRef.uart_controller__DOT__tx_ready;
+    vlSelfRef.dbg_tx_ready = vlSelfRef.uart_controller__DOT__dbg_tx_ready;
 }
 
 void Vtop___024root___eval_nba(Vtop___024root* vlSelf) {
@@ -784,27 +930,20 @@ void Vtop___024root___eval_nba(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
-    if ((0x0000000000000030ULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((4ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__0(vlSelf);
     }
-    if ((0x000000000000000cULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((2ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__1(vlSelf);
     }
-    if ((3ULL & vlSelfRef.__VnbaTriggered[0U])) {
+    if ((1ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__2(vlSelf);
     }
-    if ((4ULL & vlSelfRef.__VnbaTriggered[0U])) {
+    if ((2ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__3(vlSelf);
     }
-    if ((0x0000000000000030ULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
+    if ((4ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vtop___024root___nba_sequent__TOP__4(vlSelf);
-    }
-    if ((0x000000000000000cULL & vlSelfRef.__VnbaTriggered
-         [0U])) {
-        Vtop___024root___nba_sequent__TOP__5(vlSelf);
     }
 }
 
@@ -919,16 +1058,6 @@ void Vtop___024root___eval_debug_assertions(Vtop___024root* vlSelf) {
     }
     if (VL_UNLIKELY(((vlSelfRef.mlp_cycle_cnt & 0xe0U)))) {
         Verilated::overWidthError("mlp_cycle_cnt");
-    }
-    if (VL_UNLIKELY(((vlSelfRef.mlp_current_layer & 0xf8U)))) {
-        Verilated::overWidthError("mlp_current_layer");
-    }
-    if (VL_UNLIKELY(((vlSelfRef.mlp_layer_complete 
-                      & 0xfeU)))) {
-        Verilated::overWidthError("mlp_layer_complete");
-    }
-    if (VL_UNLIKELY(((vlSelfRef.mlp_acc_valid & 0xfeU)))) {
-        Verilated::overWidthError("mlp_acc_valid");
     }
 }
 #endif  // VL_DEBUG
